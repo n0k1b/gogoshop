@@ -40,7 +40,7 @@ use App\Models\product_required_filed;
 class AdminController extends Controller
 {
 
-   // public $role_permission;
+   // public $role_permissions;
     public function permission ()
 {
 
