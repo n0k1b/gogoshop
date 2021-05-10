@@ -70,7 +70,7 @@
                                                         <th>Reference Name</th>
                                                         <th>Active Status</th>
                                                         <th>Action</th>
-                                                        {{-- <th>Reset Password</th> --}}
+                                                        <th>Reset Password</th>
 
 													</tr>
 												</thead>
@@ -107,10 +107,14 @@
                                                             @endif
 
                                                         </td>
-                                                        {{-- <td>
-															<a href="edit_user_content/{{$data->id}}" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>
+                                                         <td>
+															@if(in_array('courier_man_edit',$permission))
+															<a href="reset_courier_man_password/{{$data->id}}" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>
+                                                            @else
+                                                            <a href="javascript:void(0);" onclick="access_alert()" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>
+                                                            @endif
 
-                                                        </td> --}}
+                                                        </td>
 
 													</tr>
 

@@ -466,6 +466,24 @@ class AdminController extends Controller
 
 
     //All courier man Start
+    public function reset_courier_man_password(Request $request)
+    {
+        $id = $request->id;
+       $data = courier_man::where('id',$id)->first();
+        return view('admin.courier_man.reset_pass',compact('data'));
+    }
+    public function update_password(Request $request)
+    {
+            $validator = Validator::make($request->all(), [
+            'password' => ['required','confirmed'],
+         ]);
+    if($validator->fails())
+    {
+        return redirect()->back()->with('errors',collect($validator->errors()->all()));
+    }
+    return redirect()->route('show-all-courier')->with('success','Password Reset Successfully');
+    }
+
     public function show_all_courier_man()
     {
         $datas = courier_man::where('delete_status',0)->get();
