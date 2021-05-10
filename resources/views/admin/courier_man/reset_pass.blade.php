@@ -38,7 +38,7 @@
 										<div class="col-lg-12 col-md-12 col-sm-12">
                                             <div class="form-group">
                                                 <label class="form-label">Password</label>
-
+                                                <input type="hidden" name="id" value="{{ $data->id }}">
                                                 <input type="password" class="form-control" name="password">
                                             </div>
 										</div>

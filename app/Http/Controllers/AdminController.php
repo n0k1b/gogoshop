@@ -481,6 +481,10 @@ class AdminController extends Controller
     {
         return redirect()->back()->with('errors',collect($validator->errors()->all()));
     }
+    $id = $request->id;
+    ///file_put_contents('test.txt',$id);
+    $user_id = courier_man::where('id',$id)->first()->user_id;
+    user::where('id',$user_id)->update(['password'=>Hash::make($request->password)]);
     return redirect()->route('show-all-courier')->with('success','Password Reset Successfully');
     }
 
