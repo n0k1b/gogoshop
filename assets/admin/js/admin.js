@@ -437,6 +437,7 @@ function  update_product_value()
     if(column_name =='category')
     {
 
+        formdata.append('category', $('.category').val());
         formdata.append('sub_category', $('.sub_category').val());
 
     }

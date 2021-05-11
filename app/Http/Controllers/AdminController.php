@@ -2463,18 +2463,23 @@ class AdminController extends Controller
        // file_put_contents('test.txt','hello');
         if($column_name == 'category')
         {
-            $sub_category_id = $request->sub_category;
-            $brand_id = 1;
 
-            product::where('id',$product_id)->update(['brand_id'=>$brand_id,'sub_category_id'=>$sub_category_id]);
+            $sub_category_id = $request->sub_category;
+            $category_id = $request->category;
+           // $brand_id = 1;
+
+           //file_put_contents('test.txt',$sub_category_id." ".$category_id);
+
+           product::where('id',$product_id)->update(['category_id'=>$category_id,'sub_category_id'=>$sub_category_id]);
 
         }
-        if($column_name == 'sub_ategory')
+        if($column_name == 'sub_category')
         {
             $sub_category_id = $request->sub_category;
-            $brand_id = 1;
+
+            //$brand_id = 1;
            // file_put_contents('test.txt',$product_id." ".$brand_id." ".$sub_category_id);
-            product::where('id',$product_id)->update(['brand_id'=>$brand_id,'sub_category_id'=>$sub_category_id]);
+            product::where('id',$product_id)->update(['sub_category_id'=>$sub_category_id]);
 
         }
 
