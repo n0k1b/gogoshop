@@ -74,14 +74,14 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Name</label>
-                                    <input type="text" class="form-control" name="name" placeholder="Product Name"/>
+                                    <input type="text" class="form-control" name="name" placeholder="Product Name" value="{{ old('name') }}"/>
                                 </div>
                             </div>
 
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Unit Selling Price</label>
-                                    <input type="number" class="form-control" name="price" placeholder="100" />
+                                    <input type="number" class="form-control" name="price" placeholder="100" value="{{ old('price') }}" />
                                 </div>
                             </div>
 
@@ -90,7 +90,7 @@
                                 <div class="form-group">
                                     <div class="field" align="left">
                                         <label class="form-label">Product Thumbnail Image</label>
-                                        <input type="file" id="single_files" name="thumbnail_image" />
+                                        <input type="file" id="single_files" name="thumbnail_image"  />
                                     </div>
                                 </div>
                             </div>
@@ -98,21 +98,21 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Unit Type</label>
-                                    <input type="text" class="form-control" name="unit_type" placeholder="Kg/Pcs/Gm"/>
+                                    <input type="text" class="form-control" name="unit_type" placeholder="Kg/Pcs/Gm" value="{{ old('unit_type') }}" />
                                 </div>
                             </div>
 
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Unit Quantity</label>
-                                    <input type="number" class="form-control" name="unit_quantity" placeholder="1/12" />
+                                    <input type="number" class="form-control" name="unit_quantity" placeholder="1/12" value="{{ old('unit_quantity') }}" />
                                 </div>
                             </div>
 
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Stock in Unit</label>
-                                    <input type="number" class="form-control" name="unit_stock" placeholder="100" />
+                                    <input type="number" class="form-control" name="unit_stock" placeholder="100" value="{{ old('unit_stock') }}" />
                                 </div>
                             </div>
 
@@ -120,7 +120,7 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Net Weight (In Gram)</label>
-                                    <input type="text" class="form-control" name="net_weight" placeholder="1000" />
+                                    <input type="text" class="form-control" name="net_weight" placeholder="1000" value="{{ old('net_weight') }}" />
                                 </div>
                             </div>
 
@@ -128,7 +128,7 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Size(Optional)</label>
-                                    <input type="text" class="form-control" name="size" />
+                                    <input type="text" class="form-control" name="size" value="{{ old('price') }}" />
                                 </div>
                             </div>
                             @endif

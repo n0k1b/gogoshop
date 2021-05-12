@@ -43,27 +43,27 @@
 									 <div class="col-lg-12 col-md-12 col-sm-12">
 											<div class="form-group">
 												<label class="form-label">Name</label>
-												<input type="text" class="form-control" name="name">
+												<input type="text" class="form-control" name="name" placeholder="User Name" value="{{ old('name') }}">
 											</div>
 									    </div>
 
                                         <div class="col-lg-12 col-md-12 col-sm-12">
 											<div class="form-group">
 												<label class="form-label">Mobile</label>
-												<input type="text" class="form-control" name="contact_no">
+												<input type="text" class="form-control" name="contact_no" placeholder="018..." value="{{ old('contact_no') }}">
 											</div>
 									    </div>
                                         <div class="col-lg-12 col-md-12 col-sm-12">
 											<div class="form-group">
 												<label class="form-label">Reference Name</label>
-												<input type="text" class="form-control" name="reference_name">
+												<input type="text" class="form-control" name="reference_name" placeholder="Reference Name" value="{{ old('reference_name') }}">
 											</div>
 									    </div>
 
                                         <div class="col-lg-12 col-md-12 col-sm-12">
 											<div class="form-group">
 												<label class="form-label">Address</label>
-												<input type="text" class="form-control" name="address">
+												<input type="text" class="form-control" name="address" placeholder="Address" value="{{ old('address') }}">
 											</div>
 									    </div>
 
@@ -98,7 +98,14 @@
                                         <div class="col-lg-12 col-md-12 col-sm-12">
 											<div class="form-group">
 												<label class="form-label">Default Password</label>
-												<input type="text" class="form-control" name="password">
+												<input type="password" class="form-control" name="password">
+											</div>
+									    </div>
+
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+											<div class="form-group">
+												<label class="form-label">Retype Password</label>
+												<input type="password" class="form-control" name="password_confirmation">
 											</div>
 									    </div>
 

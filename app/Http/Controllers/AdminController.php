@@ -510,6 +510,15 @@ class AdminController extends Controller
     {
 
         $rules = ['contact_no'=>'required|unique:users|regex:/01[13-9]\d{8}$/',
+                'name'=>'required',
+                'reference_name'=>'required',
+                'address'=>'required',
+                'personal_document_front'=>'required',
+                'personal_document_back'=>'required',
+                'user_image'=>'required',
+                'password'=>'required|confirmed',
+
+
 
 
 
@@ -529,7 +538,7 @@ class AdminController extends Controller
     //      ]);
     if($validator->fails())
     {
-        return redirect()->back()->with('errors',collect($validator->errors()->all()));
+        return redirect()->back()->withInput()->with('errors',collect($validator->errors()->all()));
     }
         $user = new user();
         $user->name = $request->name;
@@ -2104,7 +2113,7 @@ class AdminController extends Controller
         //  ]);
     if($validator->fails())
     {
-        return redirect()->back()->with('errors',collect($validator->errors()->all()));
+        return redirect()->back()->withInput()->with('errors',collect($validator->errors()->all()));
     }
         $image = time() . '.' . request()->thumbnail_image->getClientOriginalExtension();
 
