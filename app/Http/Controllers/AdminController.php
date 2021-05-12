@@ -1841,7 +1841,7 @@ class AdminController extends Controller
 
                         if(in_array('product_edit',$permission))
 
-                        $column = '<p onclick='.'edit('. $datas->id.',"category")'.'>'. $datas->sub_category->category->name .'</p>';
+                        $column = '<p onclick='.'edit('. $datas->id.',"category")'.'>'. $datas->category->name .'</p>';
                         else
                         $column = '<p >'. $datas->sub_category->category->name .'</p>';
                          return $column;
@@ -2084,6 +2084,7 @@ class AdminController extends Controller
     }
         $image = time() . '.' . request()->thumbnail_image->getClientOriginalExtension();
 
+
         $request->thumbnail_image->move(public_path('../image/product_image') , $image);
         $image = "image/product_image/" . $image;
         if($request->description)
@@ -2095,6 +2096,7 @@ class AdminController extends Controller
             $description = NULL;
         }
         $user_role = Auth::user()->role;
+
         if($user_role == 'Admin' || $user_role == 'admin')
         {
             $product = product::create(['category_id'=>$request->category_id,'sub_category_id'=>$request->sub_category_id,'brand_id'=>$request->brand_id,'name'=>$request->name,'price'=>$request->price,'thumbnail_image'=>$image,'description'=>$description,'net_weight'=>$request->net_weight]);
@@ -3066,6 +3068,7 @@ class AdminController extends Controller
         public function show_all_company_info()
         {
                 $data = company_info::first();
+
                 return view('admin.company_info.all',compact('data'));
         }
         public function add_company_info(Request $request)
