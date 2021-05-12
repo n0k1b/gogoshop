@@ -4,6 +4,15 @@
 @endsection
 @section('content')
 <div class="container-fluid">
+    @if (count($errors)>0)
+    <div class="col-md-10 col-sm-10 col-10 offset-md-1 offset-sm-10 alert alert-danger" >
+        <ul>
+            @foreach($errors->all() as $error)
+                <li style="display: list-item;list-style-type:disc">{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 				<div class="row page-titles mx-0">
                     <div class="col-sm-6 p-md-0">
@@ -33,7 +42,7 @@
 									 <div class="col-lg-12 col-md-12 col-sm-12">
 											<div class="form-group">
 												<label class="form-label">Category Name</label>
-												<input type="text" class="form-control" name="name">
+												<input type="text" class="form-control" name="name" value="{{ old('name') }}">
 											</div>
 										</div>
 
@@ -41,7 +50,7 @@
 										<div class="col-lg-12 col-md-12 col-sm-12">
 											<div class="form-group">
 												<div class="field" align="left">
-													<label class="form-label">Domain Image</label>
+													<label class="form-label">Category Image(Optional)</label>
 													<input type="file" id="files" name="image" />
 												  </div>
 											</div>

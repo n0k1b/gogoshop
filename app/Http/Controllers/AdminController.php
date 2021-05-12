@@ -275,6 +275,27 @@ class AdminController extends Controller
     }
     public function add_category(Request $request)
     {
+
+        $rules = [
+                'name'=>'required',
+
+
+            ];
+        $customMessages = [
+            'name.required' => 'Category field is required.',
+
+
+        ];
+
+        $validator = Validator::make( $request->all(), $rules, $customMessages );
+
+
+        if($validator->fails())
+        {
+            return redirect()->back()->withInput()->with('errors',collect($validator->errors()->all()));
+        }
+
+
         if($request->image)
         {
         $image = time() . '.' . request()->image->getClientOriginalExtension();
@@ -1634,6 +1655,28 @@ class AdminController extends Controller
     }
     public function add_sub_category(Request $request)
     {
+
+        $rules = [
+            'name'=>'required',
+
+            'category_id'=>'required',
+
+        ];
+    $customMessages = [
+        'name.required' => 'Sub Category field is required.',
+
+        'category_id.required' => 'Category field is required.',
+
+
+    ];
+
+    $validator = Validator::make( $request->all(), $rules, $customMessages );
+
+
+    if($validator->fails())
+    {
+        return redirect()->back()->withInput()->with('errors',collect($validator->errors()->all()));
+    }
         if($request->image)
         {
         $image = time() . '.' . request()->image->getClientOriginalExtension();
