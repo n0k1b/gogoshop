@@ -4,6 +4,16 @@
 @endsection
 @section('content')
 <div class="container-fluid">
+    @if (count($errors)>0)
+    <div class="col-md-10 col-sm-10 col-10 offset-md-1 offset-sm-10 alert alert-danger" >
+        <ul>
+            @foreach($errors->all() as $error)
+                <li style="display: list-item;list-style-type:disc">{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 
 				<div class="row page-titles mx-0">
                     <div class="col-sm-6 p-md-0">
@@ -13,7 +23,7 @@
                     </div>
                     <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url('admin') }}">Home</a></li>
 
                             <li class="breadcrumb-item active"><a href="javascript:void(0);">Add Courier Man</a></li>
                         </ol>
@@ -60,8 +70,18 @@
                                         <div class="col-lg-12 col-md-12 col-sm-12">
 											<div class="form-group">
 												<div class="field" align="left">
-													<label class="form-label">User Document(NID/Birth Certificate)</label>
-													<input type="file" id="files" name="personal_document" />
+													<label class="form-label">User Document Front(NID/Birth Certificate)</label>
+													<input type="file" id="files" name="personal_document_front" />
+												  </div>
+											</div>
+										</div>
+
+
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+											<div class="form-group">
+												<div class="field" align="left">
+													<label class="form-label">User Document Back(NID/Birth Certificate)</label>
+													<input type="file" id="files3" name="personal_document_back" />
 												  </div>
 											</div>
 										</div>

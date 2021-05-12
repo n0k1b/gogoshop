@@ -126,9 +126,9 @@ class AndroidController extends Controller
         //file_put_contents('test.txt',$request);
         $address_id = $request->address_id;
         file_put_contents('order_id_test.txt',$address_id);
-       
+
         $carts  = json_decode(json_encode($request->cart));
-        
+
         $user_id = auth('api')->user()->id;
         $order_no = 'GG'.$user_id.mt_rand(10000,99999);
         $area_id = user_address::where('id',$address_id)->first()->area_id;
@@ -571,7 +571,7 @@ class AndroidController extends Controller
                   $courier_man->user_id = $user->id;
                   $courier_man->address = $a->address;
                   $courier_man->reference_name = $a->reference_name;
-                  $personal_document_front = 'nid_front_'.time() . '.' . request()->user_nid_front->getClientOriginalExtension();
+                  $personal_document_front = 'nid_front_'.$user->id.'_'.time() . '.' . request()->user_nid_front->getClientOriginalExtension();
 
 
                     $request
@@ -580,7 +580,7 @@ class AndroidController extends Controller
                     $personal_document_front = "image/courier_man_document/" . $personal_document_front;
 
 
-                     $personal_document_back ='nid_back_'. time() . '.' . request()->user_nid_back->getClientOriginalExtension();
+                     $personal_document_back ='nid_back_'.$user->id.'_'. time() . '.' . request()->user_nid_back->getClientOriginalExtension();
 
                     $request
                         ->user_nid_back

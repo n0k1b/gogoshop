@@ -508,13 +508,29 @@ class AdminController extends Controller
     }
     public function add_courier_man(Request $request)
     {
+
+        $rules = ['contact_no'=>'required|unique:users|regex:/01[13-9]\d{8}$/',
+
+
+
+            ];
+        $customMessages = [
+            'contact_no.required' => 'Mobile number field is required.',
+            'contact_no.unique' => 'Mobile number has already been taken. Try another number',
+            'contact_no.regex'=>'Please enter a valid number'
+
+
+
+        ];
+        $validator = Validator::make( $request->all(), $rules, $customMessages );
+
     //     $validator = Validator::make($request->all(), [
     //         'mobile_number' => ['required', 'regex:/01[13-9]\d{8}$/'],
     //      ]);
-    // if($validator->fails())
-    // {
-    //     return redirect()->back()->with('errors',collect($validator->errors()->all()));
-    // }
+    if($validator->fails())
+    {
+        return redirect()->back()->with('errors',collect($validator->errors()->all()));
+    }
         $user = new user();
         $user->name = $request->name;
         $user->contact_no = $request->contact_no;
@@ -522,12 +538,20 @@ class AdminController extends Controller
         $user->role = 'courier_man';
         $user->save();
 
-        $personal_document = time() . '.' . request()->personal_document->getClientOriginalExtension();
+        $personal_document_front = 'nid_front_'.$user->id.'_'.time() . '.' . request()->personal_document_front->getClientOriginalExtension();
 
         $request
-            ->personal_document
-            ->move(public_path('../image/courier_man_document') , $personal_document);
-        $personal_document = "image/courier_man_document/" . $personal_document;
+            ->personal_document_front
+            ->move(public_path('../image/courier_man_document') , $personal_document_front);
+        $personal_document_front = "image/courier_man_document/" . $personal_document_front;
+
+
+        $personal_document_back = 'nid_back_'.$user->id.'_'.time() . '.' . request()->personal_document_back->getClientOriginalExtension();
+
+        $request
+            ->personal_document_back
+            ->move(public_path('../image/courier_man_document') , $personal_document_back);
+        $personal_document_back = "image/courier_man_document/" . $personal_document_back;
 
         $courier_man_image = time() . '.' . request()->user_image->getClientOriginalExtension();
 
@@ -537,7 +561,7 @@ class AdminController extends Controller
         $courier_man_image = "image/courier_man_image/" . $courier_man_image;
         //user::create(['name'=>$request->name,'contact_no'=>$request->contact_no,'password'=>Hash::make($request->password),'role'=>'courier_man']);
 
-       courier_man::create(['user_id'=>$user->id,'personal_document_front'=>$personal_document,'user_image'=>$courier_man_image,'address'=>$request->address,'reference_name'=>$request->reference_name]);
+       courier_man::create(['user_id'=>$user->id,'personal_document_front'=>$personal_document_front,'personal_document_back'=>$personal_document_back,'user_image'=>$courier_man_image,'address'=>$request->address,'reference_name'=>$request->reference_name]);
         return redirect()->route('show-all-courier')->with('success','courier_man Added Successfully');
 
 

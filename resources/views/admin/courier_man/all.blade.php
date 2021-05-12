@@ -34,9 +34,9 @@
                     </div>
                     <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url('admin') }}">Home</a></li>
 
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);">category List</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);">Courier Man</a></li>
                         </ol>
                     </div>
                 </div>
@@ -64,7 +64,8 @@
 														<th>#</th>
 														<th>Name</th>
 														<th>Mobile Number</th>
-                                                        <th>User Document</th>
+                                                        <th>User Document Front</th>
+                                                        <th>User Document Back</th>
                                                         <th>User Image</th>
                                                         <th>Address</th>
                                                         <th>Reference Name</th>
@@ -84,7 +85,8 @@
 														<td><strong>{{$data->sl_no}}</strong></td>
                                                         <td>{{$data->user->name}}</td>
                                                         <td>{{$data->user->contact_no}}</td>
-                                                        <td><a href="../{{$data->personal_document }}" data-lightbox="image-1" > <img src='../{{$data->personal_document }}' width='100px' class='img-thumbnail' /></a></td>
+                                                        <td><a href="../{{$data->personal_document_front }}" data-lightbox="image-1" > <img src='../{{$data->personal_document_front }}' width='100px' class='img-thumbnail' /></a></td>
+                                                        <td><a href="../{{$data->personal_document_back }}" data-lightbox="image-1" > <img src='../{{$data->personal_document_back }}' width='100px' class='img-thumbnail' /></a></td>
                                                         {{-- <td><img id="myImg" src='../{{$data->personal_document }}' width='100px' class='img-thumbnail' /></td> --}}
 
                                                         <td><a href="../{{$data->user_image }}" data-lightbox="image-1" > <img  src='../{{$data->user_image }}' width='100px' class='img-thumbnail' /></a></td>
