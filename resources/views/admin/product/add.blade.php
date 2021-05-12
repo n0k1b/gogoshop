@@ -1,5 +1,6 @@
 @extends('admin.layout.app')
  @section('page_css')
+
 <link rel="stylesheet" href="{{asset('assets')}}/admin/css/single_and_multiple_image_preview.css?{{time()}}" />
 <link rel="stylesheet" href="{{asset('assets')}}/admin/css/select2.min.css?{{time()}}" />
 <link rel="stylesheet" href="{{asset('assets')}}/admin/css/select2_custom.css?{{time()}}" />
@@ -9,6 +10,16 @@
 @endsection
  @section('content')
 <div class="container-fluid">
+    @if (count($errors)>0)
+    <div class="col-md-10 col-sm-10 col-10 offset-md-1 offset-sm-10 alert alert-danger" >
+        <ul>
+            @foreach($errors->all() as $error)
+                <li style="display: list-item;list-style-type:disc">{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
     <div class="row page-titles mx-0">
         <div class="col-sm-6 p-md-0">
             <div class="welcome-text">
@@ -17,8 +28,8 @@
         </div>
         <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item active"><a href="javascript:void(0);">Homepage Content</a></li>
+                <li class="breadcrumb-item"><a href="{{ url('admin') }}">Home</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0);">Product</a></li>
                 <li class="breadcrumb-item active"><a href="javascript:void(0);">Add Product</a></li>
             </ol>
         </div>
@@ -43,7 +54,7 @@
                                 <div class="form-group">
                                     <label>Warehouse</label>
                                     <select class="form-control select2"  name="warehouse_id">
-                                        <option>Select Warehous</option>
+                                        <option disabled selected>Select Warehouse</option>
                                         @foreach ($warehouses as $data )
                                             <option value="{{ $data->id }}">{{ $data->name }}</option>
                                         @endforeach
@@ -63,14 +74,14 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Name</label>
-                                    <input type="text" class="form-control" name="name" />
+                                    <input type="text" class="form-control" name="name" placeholder="Product Name"/>
                                 </div>
                             </div>
 
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Unit Selling Price</label>
-                                    <input type="text" class="form-control" name="price" />
+                                    <input type="number" class="form-control" name="price" placeholder="100" />
                                 </div>
                             </div>
 
@@ -87,21 +98,21 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Unit Type</label>
-                                    <input type="text" class="form-control" name="unit_type" />
+                                    <input type="text" class="form-control" name="unit_type" placeholder="Kg/Pcs/Gm"/>
                                 </div>
                             </div>
 
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Unit Quantity</label>
-                                    <input type="text" class="form-control" name="unit_quantity" />
+                                    <input type="number" class="form-control" name="unit_quantity" placeholder="1/12" />
                                 </div>
                             </div>
 
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Stock in Unit</label>
-                                    <input type="text" class="form-control" name="unit_stock" />
+                                    <input type="number" class="form-control" name="unit_stock" placeholder="100" />
                                 </div>
                             </div>
 
@@ -109,7 +120,7 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Product Net Weight (In Gram)</label>
-                                    <input type="text" class="form-control" name="net_weight" />
+                                    <input type="text" class="form-control" name="net_weight" placeholder="1000" />
                                 </div>
                             </div>
 

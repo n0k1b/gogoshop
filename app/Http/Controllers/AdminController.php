@@ -2045,7 +2045,43 @@ class AdminController extends Controller
         return view('admin.product.add',['description_status'=>$description_status,'detail_image_status'=>$detail_image_status,'brand_status'=>$brand_status,'color_status'=>$color_status,'size_status'=>$size_status,'warehouses'=>$warehouses]);
     }
     public function add_product(Request $request)
+
     {
+        $rules = ['category_id'=>'required',
+                 'warehouse_id'=>'required',
+                 'name'=>'required',
+                 'price'=>'required',
+                 'thumbnail_image'=>'required',
+                 'unit_type'=>'required',
+                 'unit_quantity'=>'required',
+                 'unit_stock'=>'required',
+                 'net_weight'=>'required',
+
+            ];
+        $customMessages = [
+            'category_id.required' => 'Category field is required.',
+            'warehouse_id.required' => 'Warehouse field is required.',
+            'name.required' => 'Product name  field is required.',
+            'price.required' => 'Product price field is required.',
+            'thumbnail_image.required' => 'Product image field is required.',
+            'unit_type.required' => 'Product unit type field is required.',
+            'unit_quantity.required' => 'Product unit quantity field is required.',
+            'unit_stock.required' => 'Product unit stock field is required.',
+            'net_weight.required' => 'Product net weight field is required.',
+
+
+
+        ];
+        $validator = Validator::make( $request->all(), $rules, $customMessages );
+
+        // $validator = Validator::make($request->all(), [
+        //     'category_id' => ['required'],
+        //     'warehouse_id'=>['required'],
+        //  ]);
+    if($validator->fails())
+    {
+        return redirect()->back()->with('errors',collect($validator->errors()->all()));
+    }
         $image = time() . '.' . request()->thumbnail_image->getClientOriginalExtension();
 
         $request->thumbnail_image->move(public_path('../image/product_image') , $image);
@@ -2189,7 +2225,7 @@ class AdminController extends Controller
     public function get_category()
     {
         $categories = category::get();
-        $data = '<option>Select Category</option>';
+        $data = '<option disabled selected>Select Category</option>';
         foreach($categories as $category)
         {
 
@@ -2202,7 +2238,7 @@ class AdminController extends Controller
     {
         $category_id = $request->category_id;
         $sub_categories = sub_category::where('category_id',$category_id)->get();
-        $data = '<option>Select Sub Category</option>';
+        $data = '<option disabled selected>Select Sub Category</option>';
         foreach($sub_categories as $sub_category)
         {
             $data.='<option value='.$sub_category->id.'>'.$sub_category->name.'</option>';
