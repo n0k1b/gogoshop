@@ -4,6 +4,15 @@
 @endsection
 @section('content')
 <div class="container-fluid">
+    @if (count($errors)>0)
+    <div class="col-md-10 col-sm-10 col-10 offset-md-1 offset-sm-10 alert alert-danger" >
+        <ul>
+            @foreach($errors->all() as $error)
+                <li style="display: list-item;list-style-type:disc">{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 				<div class="row page-titles mx-0">
                     <div class="col-sm-6 p-md-0">
@@ -13,7 +22,7 @@
                     </div>
                     <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url('admin') }}">Home</a></li>
 
                             <li class="breadcrumb-item active"><a href="javascript:void(0);">Add Banner</a></li>
                         </ol>

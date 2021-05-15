@@ -2838,6 +2838,27 @@ class AdminController extends Controller
     }
     public function add_banner(Request $request)
     {
+        $rules = [
+
+            'image'=>'required'
+
+
+        ];
+    $customMessages = [
+
+        'image.required'=>'Banner image field is required'
+
+
+    ];
+
+    $validator = Validator::make( $request->all(), $rules, $customMessages );
+
+
+    if($validator->fails())
+    {
+        return redirect()->back()->withInput()->with('errors',collect($validator->errors()->all()));
+    }
+
         $banner = banner::get();
         if(sizeof($banner)>0)
         {
