@@ -2680,6 +2680,27 @@ class AdminController extends Controller
     }
     public function add_homepage_section(Request $request)
     {
+        $rules = [
+            'name'=>'required',
+            'image'=>'required'
+
+
+        ];
+    $customMessages = [
+        'name.required' => 'Section name field is required.',
+        'image.required'=>'Section image field is required'
+
+
+    ];
+
+    $validator = Validator::make( $request->all(), $rules, $customMessages );
+
+
+    if($validator->fails())
+    {
+        return redirect()->back()->withInput()->with('errors',collect($validator->errors()->all()));
+    }
+
         $homepage_section = homepage_section::get();
         if(sizeof($homepage_section)>0)
         {
