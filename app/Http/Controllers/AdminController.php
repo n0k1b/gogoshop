@@ -688,13 +688,36 @@ class AdminController extends Controller
     }
     public function add_warehouse(Request $request)
     {
-    //     $validator = Validator::make($request->all(), [
-    //         'mobile_number' => ['required', 'regex:/01[13-9]\d{8}$/'],
-    //      ]);
-    // if($validator->fails())
-    // {
-    //     return redirect()->back()->with('errors',collect($validator->errors()->all()));
-    // }
+        $rules = [
+
+            'area_id'=>'required',
+            'name'=>'required',
+            'address'=>'required',
+            'contact_no'=>'required|regex:/01[13-9]\d{8}$/',
+
+
+
+        ];
+    $customMessages = [
+
+        'area_id.required'=>'Area field is required',
+        'name.required'=>'Name field is required',
+        'address.required'=>'Address field is required',
+        'contact_no.required'=>'Contact no field is required',
+        'contact_no.regex'=>'Please enter a valid mobile number',
+
+
+
+
+    ];
+
+    $validator = Validator::make( $request->all(), $rules, $customMessages );
+
+
+    if($validator->fails())
+    {
+        return redirect()->back()->withInput()->with('errors',collect($validator->errors()->all()));
+    }
        warehouse::create($request->all());
         return redirect()->route('show-all-warehouse')->with('success','warehouse Added Successfully');
 
