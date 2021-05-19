@@ -191,7 +191,7 @@
 
       var table = $('#product').DataTable({
         //dom: '<"row"lfB>rtip',
-       dom: 'Bfrtip',
+       dom: 'Blfrtip',
         buttons: [
                 {
                     extend: 'pdf',
@@ -235,6 +235,9 @@
 
           pageLength: 20,
           processing: true,
+         language: {
+    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+},
           serverSide: true,
 
           ajax: "{{ route('get_all_product') }}",
