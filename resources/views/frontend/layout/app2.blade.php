@@ -60,16 +60,16 @@
                                             </li>
                                             <li> <a href="#">Account Setting</a>
                                             </li>
-                                            <li> <a href="shopping-cart.html">Orders</a>
+                                            <li> <a href="#">Orders</a>
                                             </li>
-                                            <li> <a href="wishlist.html">Wishlist</a>
+                                            <li> <a href="#">Wishlist</a>
                                             </li>
                                             <li> <a href="#">Shipping Address</a>
                                             </li>
                                         </ul>
                                         <hr>
 
-                                        <hr><a class="account-logout" href="#"><i class="icon-exit-left"></i>Log out</a>
+                                        <hr><a class="account-logout" href="{{ route('logout') }}"><i class="icon-exit-left"></i>Log out</a>
                                     </div>
                                 </div>
                             </li>

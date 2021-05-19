@@ -1988,11 +1988,17 @@ class AdminController extends Controller
 
                  ->addColumn('product_image', function($datas){
                     $permission = $this->permission();
+                    $url = $datas->thumbnail_image;
+                    $type = pathinfo($url, PATHINFO_EXTENSION);
+                    $image = file_get_contents($url);
+                    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($image);
 
                     if(in_array('product_edit',$permission))
-                    $column = '<img onclick='.'edit('. $datas->id.',"product_image")'.'  src="../'.$datas->thumbnail_image.'" width="100px" class="img-thumbnail" />';
+                    {
+                    $column = '<img onclick='.'edit('. $datas->id.',"product_image")'.'  src="'.$base64.'" width="100px" class="img-thumbnail product-image" />';
+                    }
                     else
-                    $column = '<img   src="../'.$datas->thumbnail_image.'" width="100px" class="img-thumbnail" />';
+                    $column = '<img   src="../'.$base64.'" width="100px" class="img-thumbnail" />';
                      return $column;
                  })
                  ->addColumn('product_price', function($datas){

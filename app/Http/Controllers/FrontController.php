@@ -109,6 +109,9 @@ class FrontController extends Controller
 
         foreach($category as $cat)
            {
+              $sub_cat_avail = sub_category::where('category_id',$cat->id)->first();
+              if($sub_cat_avail)
+              {
             $data.='
             <li class="has-mega-menu category-item"><a href="javascript:void(0);">'.$cat->name.'</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
             <div class="mega-menu">
@@ -131,6 +134,14 @@ class FrontController extends Controller
 
        </div>
    </li>';
+            }
+            else
+            {
+                $data.='
+                <li class="has-mega-menu category-item"><a href="view_all/category_prodcut-'.$cat->id.'">'.$cat->name.'</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
+
+             </li>';
+            }
               // array_push($data_category,['id'=>$cat->id,'name'=>$cat->name,'image'=>$this->base_url.$cat->image,'sub_category'=>$data_sub_category]);
            }
 
@@ -1080,6 +1091,6 @@ class FrontController extends Controller
     public function logout()
     {
         auth()->logout();
-        return redirect()->route('login');
+        return redirect()->to('/');
     }
 }

@@ -15,7 +15,10 @@
 <link rel="stylesheet" href="{{asset('assets')}}/admin/css/image_preview.css?{{time()}}">
 <link rel="stylesheet" href="{{asset('assets')}}/admin/css/select2_custom.css?{{time()}}" />
 <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap.css" rel="stylesheet">
+
 <style>
     table.dataTable.display tbody td
     {
@@ -117,6 +120,7 @@
 									</div>
 									<div class="card-body">
 										<div class="table-responsive">
+
 											<table id="product" class="display" style="min-width: 845px">
 												<thead>
 													<tr>
@@ -174,10 +178,65 @@
 <script type="text/javascript">
     $(function () {
 
+        var buttonCommon = {
+    //         format: {
+    //      body: function(data, column, row) {
+    //        data = data.replace(/<div class="flagtext"\">/, '');
+    //        data = data.replace(/<.*?>/g, "");
+    //        return data;
+    //      }
+    //    }
+
+    };
+
       var table = $('#product').DataTable({
-         pageLength: 20,
+        //dom: '<"row"lfB>rtip',
+       dom: 'Bfrtip',
+        buttons: [
+                {
+                    extend: 'pdf',
+                    text: 'PDF',
+                    exportOptions: {
+                        columns: ':visible:not(.not-exported)',
+                        rows: ':visible',
+
+                    },
+
+                },
+                // {
+                //     extend: 'csv',
+                //     text: 'CSV',
+                //     exportOptions: {
+                //         columns: ':visible:not(.not-exported)',
+                //         rows: ':visible',
+                //         stripHtml: true,
+                //         format: {
+                //             body: function ( data, row, column, node ) {
+                //                 if (column === 0 && (data.toString().indexOf('<img src=') !== -1)) {
+                //                     var regex = /<img.*?src=['"](.*?)['"]/;
+                //                     data = regex.exec(data)[1];
+                //                 }
+                //                 return data;
+                //             }
+                //         }
+                //     }
+                // },
+                {
+                    extend: 'print',
+                    text: 'Print',
+                    exportOptions: {
+                        columns: ':visible:not(.not-exported)',
+                        rows: ':visible',
+                        stripHtml: false
+                    }
+                },
+
+            ],
+
+          pageLength: 20,
           processing: true,
           serverSide: true,
+
           ajax: "{{ route('get_all_product') }}",
           columns: [
               {data: 'sl_no', name: 'sl_no'},
@@ -209,6 +268,7 @@
 
                 },
 
+          ],
 
 
 
@@ -216,15 +276,31 @@
 
 
 
-          ]
+
+
       });
+
+
 
     });
   </script>
 
-@endsection
-@section('page_js')
+
+
 <script src="{{asset('assets')}}/admin/js/single_image_preview.js?{{time()}}"></script>
 <script src="{{asset('assets')}}/admin/js/select2.full.js"></script>
 <script src="{{asset('assets')}}/admin/js/advanced-form-element.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.18/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/vfs_fonts.js"></script>
+
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.bootstrap.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.print.js"></script>
+
 @endsection
