@@ -154,7 +154,7 @@
                 <div class="col-sm-3">
                   <div class="wrapper count-title text-center">
                     <div class="icon"><i class="dripicons-graph-bar" style="color: #733686"></i></div>
-                    <div class="name"><strong style="color: #733686">Revenue</strong></div>
+                    <div class="name"><strong style="color: #733686">Sale</strong></div>
                     <div class="count-number revenue-data">{{number_format((float)$revenue, 2, '.', '')}}</div>
                   </div>
                 </div>
@@ -162,7 +162,7 @@
                 <div class="col-sm-3">
                   <div class="wrapper count-title text-center">
                     <div class="icon"><i class="dripicons-return" style="color: #ff8952"></i></div>
-                    <div class="name"><strong style="color: #ff8952">Sale Return</strong></div>
+                    <div class="name"><strong style="color: #ff8952">Expense</strong></div>
                     <div class="count-number return-data">{{number_format((float)$return, 2, '.', '')}}</div>
                   </div>
                 </div>
@@ -170,7 +170,7 @@
                 <div class="col-sm-3">
                   <div class="wrapper count-title text-center">
                     <div class="icon"><i class="dripicons-media-loop" style="color: #00c689"></i></div>
-                    <div class="name"><strong style="color: #00c689">Purchase Return</strong></div>
+                    <div class="name"><strong style="color: #00c689">Order</strong></div>
                     <div class="count-number purchase_return-data">{{number_format((float)$purchase_return, 2, '.', '')}}</div>
                   </div>
                 </div>
@@ -192,43 +192,7 @@
 
               </div>
 
-              <div class="row mt-2">
 
-
-
-
-                <div class="col-sm-3">
-                    <div class="wrapper count-title text-center">
-                      <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i></div>
-                      <div class="name"><strong style="color: #297ff9">Total Category</strong></div>
-                      <div class="count-number profit-data">{{number_format((float)$total_category, 2, '.', '')}}</div>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-3">
-                    <div class="wrapper count-title text-center">
-                      <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i></div>
-                      <div class="name"><strong style="color: #297ff9">Total Sub Category</strong></div>
-                      <div class="count-number profit-data">{{number_format((float)$total_sub_category, 2, '.', '')}}</div>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-3">
-                    <div class="wrapper count-title text-center">
-                      <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i></div>
-                      <div class="name"><strong style="color: #297ff9">Total Product</strong></div>
-                      <div class="count-number profit-data">{{number_format((float)$total_product, 2, '.', '')}}</div>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-3">
-                    <div class="wrapper count-title text-center">
-                      <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i></div>
-                      <div class="name"><strong style="color: #297ff9">Total Order</strong></div>
-                      <div class="count-number profit-data">{{number_format((float)$total_order, 2, '.', '')}}</div>
-                    </div>
-                  </div>
-              </div>
             </div>
             <div class="col-md-7 mt-4">
               <div class="card line-chart-example">
