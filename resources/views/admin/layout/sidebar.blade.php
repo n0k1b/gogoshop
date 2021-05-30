@@ -132,6 +132,14 @@
                 </li>
 
 
+                <li><a class="ai-icon" href="{{ route('show-all-expense') }}" aria-expanded="false">
+                    <i class="la la-bank"></i>
+                    <span class="nav-text">Expense</span>
+                </a>
+                </li>
+
+
+
 
                 @if($user_role == 'Admin' || $user_role =='admin')
 

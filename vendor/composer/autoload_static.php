@@ -616,6 +616,7 @@ class ComposerStaticInit8f4608ca6843fad06abb19e7d73b4b4b
         'App\\Models\\discount' => __DIR__ . '/../..' . '/app/Models/discount.php',
         'App\\Models\\domain' => __DIR__ . '/../..' . '/app/Models/domain.php',
         'App\\Models\\ecommerce_type' => __DIR__ . '/../..' . '/app/Models/ecommerce_type.php',
+        'App\\Models\\expense' => __DIR__ . '/../..' . '/app/Models/expense.php',
         'App\\Models\\homepage_product_list' => __DIR__ . '/../..' . '/app/Models/homepage_product_list.php',
         'App\\Models\\homepage_section' => __DIR__ . '/../..' . '/app/Models/homepage_section.php',
         'App\\Models\\order' => __DIR__ . '/../..' . '/app/Models/order.php',

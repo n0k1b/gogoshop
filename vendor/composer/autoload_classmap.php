@@ -40,6 +40,7 @@ return array(
     'App\\Models\\discount' => $baseDir . '/app/Models/discount.php',
     'App\\Models\\domain' => $baseDir . '/app/Models/domain.php',
     'App\\Models\\ecommerce_type' => $baseDir . '/app/Models/ecommerce_type.php',
+    'App\\Models\\expense' => $baseDir . '/app/Models/expense.php',
     'App\\Models\\homepage_product_list' => $baseDir . '/app/Models/homepage_product_list.php',
     'App\\Models\\homepage_section' => $baseDir . '/app/Models/homepage_section.php',
     'App\\Models\\order' => $baseDir . '/app/Models/order.php',

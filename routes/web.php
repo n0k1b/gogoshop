@@ -282,6 +282,17 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
    Route::get('area_product/{id}','AdminController@area_content_delete')->name('area_content_delete');
    //area end
 
+     //Expense start
+
+     Route::get('show-all-expense','AdminController@show_all_expense')->name('show-all-expense');
+     Route::get('add-expense','AdminController@add_expense_ui');
+     Route::post('add-expense','AdminController@add_expense')->name('add-expense');
+     Route::get('expense_active_status_update/{id}','AdminController@expense_active_status_update');
+     Route::get('edit_expense_content/{id}','AdminController@edit_expense_content_ui');
+     Route::post('update_expense_content','AdminController@update_expense_content')->name('update_expense_content');
+     Route::get('expense_content_delete/{id}','AdminController@expense_content_delete')->name('expense_content_delete');
+     Route::get('expense_product/{id}','AdminController@expense_content_delete')->name('expense_content_delete');
+     //Expense End
 
    //Deposit start
 
@@ -293,7 +304,7 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
    Route::post('update_deposit_content','AdminController@update_deposit_content')->name('update_deposit_content');
    Route::get('deposit_content_delete/{id}','AdminController@deposit_content_delete')->name('deposit_content_delete');
    Route::get('deposit_product/{id}','AdminController@deposit_content_delete')->name('deposit_content_delete');
-   //Deposit Essnd
+   //Deposit End
 
    //role start
 

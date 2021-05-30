@@ -29,6 +29,7 @@ use App\Models\terms_and_condition;
 use App\Models\delivery_charge;
 use App\Models\role_permisiion;
 use App\Models\deposit;
+use App\Models\expense;
 use Hash;
 use Illuminate\Support\Facades\Validator;
 use DB;
@@ -1398,6 +1399,58 @@ class AdminController extends Controller
 
     //area end
 
+    //expense start
+    public function show_all_expense(Request $request )
+      {
+
+        if ($request->ajax()) {
+            $data = expense::where('delete_status',0)->get();
+            $i=1;
+                foreach($data as $datas)
+                {
+
+                    $datas['sl_no'] = $i++;
+                    $datas['date'] = date("d-m-Y", strtotime($datas->expense_date));
+
+
+
+
+
+
+
+                }
+
+            return Datatables::of($data)
+                    ->addIndexColumn()
+
+                    ->addColumn('action', function($data){
+
+                        $permission = $this->permission();
+                        $button = '';
+                        if(in_array('category_edit',$permission))
+                        $button .= ' <a href="edit_expense_content/'.$data->id.'" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
+                        else
+                        $button .= ' <a href="javascript:void(0);" onclick="access_alert()" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
+                        $button .= '&nbsp;&nbsp;';
+                        if(in_array('category_delete',$permission))
+                        $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="expense_content_delete('.$data->id.')"><i class="la la-trash-o"></i></a>';
+                        else
+                        $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="access_alert()"><i class="la la-trash-o"></i></a>';
+                        return $button;
+                 })
+
+
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+
+        return view('admin.expense.all');
+
+
+      }
+
+    //expene end
+
 
       //deposit start
       public function show_all_deposit(Request $request )
@@ -1449,6 +1502,29 @@ class AdminController extends Controller
 
 
       }
+
+      public function add_expense_ui()
+      {
+          $datas = courier_man::get();
+          return view('admin.expense.add',compact('datas'));
+      }
+      public function add_expense(Request $request)
+      {
+      //     $validator = Validator::make($request->all(), [
+      //         'mobile_number' => ['required', 'regex:/01[13-9]\d{8}$/'],
+      //      ]);
+      // if($validator->fails())
+      // {
+      //     return redirect()->back()->with('errors',collect($validator->errors()->all()));
+      // }
+
+      $request['deposit_received_by'] = Auth::user()->id;
+         deposit::create($request->all());
+          return redirect()->route('show-all-deposit')->with('success','deposit Added Successfully');
+
+
+      }
+
 
       public function add_deposit_ui()
       {
