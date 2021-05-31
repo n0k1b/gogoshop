@@ -2103,7 +2103,7 @@ class AdminController extends Controller
                     $column = '<img onclick='.'edit('. $datas->id.',"product_image")'.'  src="../'.$datas->thumbnail_image.'"  width="100px" class="img-thumbnail product-image" />';
                     }
                     else
-                    $column = '<img   src="../'.$base64.'" width="100px" class="img-thumbnail" />';
+                    $column = '<img   src="../'.$datas->thumbnail_image.'" width="100px" class="img-thumbnail" />';
                      return $column;
                  })
                  ->addColumn('product_price', function($datas){
