@@ -120,7 +120,7 @@
 									</div>
 									<div class="card-body">
 										<div class="table-responsive">
-
+                                            {{-- <p>This page took {{ (microtime(true) - LARAVEL_START) }} seconds to render</p> --}}
 											<table id="product" class="display" style="min-width: 845px">
 												<thead>
 													<tr>
@@ -227,8 +227,9 @@
                     exportOptions: {
                         columns: ':visible:not(.not-exported)',
                         rows: ':visible',
-                        stripHtml: false
-                    }
+                        stripHtml: false,
+                    },
+
                 },
 
             ],
@@ -241,6 +242,7 @@
           serverSide: true,
 
           ajax: "{{ route('get_all_product') }}",
+          deferRender: true,
           columns: [
               {data: 'sl_no', name: 'sl_no'},
 
