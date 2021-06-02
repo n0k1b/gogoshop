@@ -2252,6 +2252,7 @@ class AdminController extends Controller
 
         }
         $warehouses = warehouse::where('status',1)->where('delete_status',0)->get();
+        file_put_contents('test.txt',json_encode($warehouses));
         return view('admin.product.add',['description_status'=>$description_status,'detail_image_status'=>$detail_image_status,'brand_status'=>$brand_status,'color_status'=>$color_status,'size_status'=>$size_status,'warehouses'=>$warehouses]);
     }
     public function add_product(Request $request)
