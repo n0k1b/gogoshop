@@ -167,9 +167,14 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
       Route::post('update_product_value','AdminController@update_product_value')->name('update_product_value');
       Route::get('product_content_delete/{id}','AdminController@product_content_delete')->name('product_content_delete');
 
-
-
       //product end
+
+      //purchase start
+      Route::post('add-purchase','AdminController@add_purchase')->name('add-purchase');
+      Route::get('add-purchase','AdminController@add_purchase_ui')->name('add-purchase');
+      Route::get('show-all-purchase','AdminController@show_all_purchase')->name('show-all-purchase');
+
+      //purchase end
 
       //brand start
       Route::get('edit_brand_content/get_category','AdminController@get_category')->name('get_category');
@@ -305,6 +310,8 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
    Route::get('deposit_content_delete/{id}','AdminController@deposit_content_delete')->name('deposit_content_delete');
    Route::get('deposit_product/{id}','AdminController@deposit_content_delete')->name('deposit_content_delete');
    //Deposit End
+
+
 
    //role start
 

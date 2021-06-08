@@ -30,11 +30,14 @@ use App\Models\delivery_charge;
 use App\Models\role_permisiion;
 use App\Models\deposit;
 use App\Models\expense;
+use App\Models\supplier;
+use App\Models\purchase;
 use Hash;
 use Illuminate\Support\Facades\Validator;
 use DB;
 use DataTables;
 use Auth;
+
 
 use App\Models\product_required_filed;
 
@@ -2792,6 +2795,90 @@ class AdminController extends Controller
 
     //product end
 
+    //purchase start
+    public function show_all_purchase(Request $request)
+    {
+
+        if ($request->ajax()) {
+            $data = purchase::get();
+            $i=1;
+                foreach($data as $datas)
+                {
+                    //$checked = $datas->status=='1'?'checked':'';
+                    $datas['sl_no'] = $i++;
+                    $datas->supplier = $datas->supplier->supplier_name;
+                    $datas->product = $datas->product->name;
+                    file_put_contents('test.txt',$datas->product->id);
+
+                   // $datas['checked'] =$checked;
+
+                }
+
+            return Datatables::of($data)
+                    ->addIndexColumn()
+
+                    ->addColumn('action', function($data){
+
+                        $permission = $this->permission();
+                        $button = '';
+                        if(in_array('category_edit',$permission))
+                        $button .= ' <a href="edit_category_content/'.$data->id.'" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
+                        else
+                        $button .= ' <a href="javascript:void(0);" onclick="access_alert()" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
+                        $button .= '&nbsp;&nbsp;';
+                        if(in_array('category_delete',$permission))
+                        $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="category_content_delete('.$data->id.')"><i class="la la-trash-o"></i></a>';
+                        else
+                        $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="access_alert()"><i class="la la-trash-o"></i></a>';
+                        return $button;
+                 })
+
+
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+
+        return view('admin.purchase.all');
+
+    }
+    public function add_purchase_ui()
+    {
+        $products = product::where('delete_status',0)->get();
+        $suppliers = supplier::get();
+        return view('admin.purchase.add',compact('products','suppliers'));
+
+
+    }
+
+    public function add_purchase(Request $request)
+    {
+        $product_id = $request->product_id;
+        $supplier_id = $request->supplier_id;
+        $purchase_quantity = $request->product_quantity;
+        $unit_purchasing_price = $request->unit_purchasing_price;
+        $net_price = $purchase_quantity*$unit_purchasing_price;
+        $total_price = $net_price+($net_price*($request->vat/100))-($net_price*($request->discount/100))+$request->shipping_cost;
+        $purchase_note = $request->purchase_note;
+        purchase::create([
+            'supplier_id'=>$supplier_id,
+            'product_id'=>$product_id,
+            'product_quantity'=>$purchase_quantity,
+            'unit_purchasing_price'=>$unit_purchasing_price,
+            'net_price'=>$net_price,
+            'discount'=>$request->discount,
+            'vat'=>$request->vat,
+            'shipping_cost'=>$request->shipping_cost,
+            'purchase_note'=>$purchase_note,
+            'total_price'=>$total_price
+
+
+        ]);
+            return back()->with('success','Data Addess Successfully');
+
+
+    }
+
+    //purchase end
 
     //homepage section start
 

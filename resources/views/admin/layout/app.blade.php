@@ -216,7 +216,7 @@
     ***********************************-->
     <!-- Required vendors -->
     <script src="{{asset('assets')}}/admin/vendor/global/global.min.js?{{time()}}"></script>
-	 {{-- <script src="{{asset('assets')}}/admin/vendor/bootstrap-select/dist/js/bootstrap-select.min.js?{{time()}}"></script> --}}
+
 	<script src="{{asset('assets')}}/admin/js/custom.min.js?{{time()}}"></script>
     {{-- <script src="{{asset('assets')}}/admin/js/dlabnav-init.js?{{time()}}"></script> --}}
 

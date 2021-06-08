@@ -61,6 +61,37 @@ function search_product()
 
 }
 
+function search_product_mobile()
+{
+    //alert('hello')
+
+    var input_value =  $('#search_input_mobile').val();
+
+    var formdata = new FormData();
+
+    formdata.append('input_value',input_value);
+     $.ajax({
+     processData: false,
+     contentType: false,
+     type: 'POST',
+     url: 'search_product',
+     data:formdata,
+     success: function (data) {
+        $("#search_result_mobile").html(data)
+
+     }
+ })
+   // alert(input_value);
+
+    var toggle_state = $("#toggle_state").val();
+    if(toggle_state == 'close')
+    {
+   $('.result-search').toggleClass('open');
+   $("#toggle_state").val('open');
+    }
+
+}
+
 
 
 function show_cart_modal(id) {
