@@ -19,7 +19,7 @@ use App\Models\homepage_product_list;
 use App\Models\banner;
 use Session;
 use App\Models\user_otp;
-use App\Models\user;
+use App\Models\User;
 use App\Models\area;
 use App\Models\user_address;
 use App\Models\courier_man;
@@ -919,8 +919,8 @@ class FrontController extends Controller
         Auth::login($user);
         return redirect()->to('/');
 
-        //user::create(['contact_no'=>$mobile_number,'name'=>$name]);
-       // user::where('contact_no',$mobile_number)->update(['name'=>$name]);
+        //User::create(['contact_no'=>$mobile_number,'name'=>$name]);
+       // User::where('contact_no',$mobile_number)->update(['name'=>$name]);
     }
 
     public function submit_otp(Request $request)
@@ -931,7 +931,7 @@ class FrontController extends Controller
         $mobile_number = Session::get('mobile_number');
         $check = user_otp::where('token',$token)->where('otp',$otp)->first();
 
-         $user = user::where('contact_no', $mobile_number)->first();
+         $user = User::where('contact_no', $mobile_number)->first();
 
 
         if($check)
@@ -1054,7 +1054,7 @@ class FrontController extends Controller
         Session::put('otp_token',$otp_token);
         Session::put('mobile_number',$mobile_number);
        $this->otp($mobile_number,$otp);
-        // $check_user = user::where('contact_no',$mobile_number)->first();
+        // $check_user = User::where('contact_no',$mobile_number)->first();
         // if(!$check_user)
         // {
         //     $user = new user();
