@@ -237,7 +237,7 @@ class AndroidController extends Controller
     public function get_address()
     {
            $user_id = auth('api')->user()->id;
-           $address = user_address::where('user_id',$user_id)->orderBy('id')->get();
+           $address = user_address::where('user_id',$user_id)->where('delete_status',0)->orderBy('id')->get();
            $adress_list = array();
            foreach ($address as $data)
            {
@@ -249,7 +249,7 @@ class AndroidController extends Controller
     }
     public function update_address(Request $request)
     {
-        $user_id = auth('api')->user()->id;
+        //$user_id = auth('api')->user()->id;
         $area_id = $request->area_id;
         $delivery_address = $request->delivery_address;
         $contact_no = $request->msisdn;
