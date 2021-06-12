@@ -257,7 +257,7 @@ class AndroidController extends Controller
         $address = user_address::where('id',$request->id)->update(['area_id'=>$area_id,'address'=>$delivery_address,'contact_no'=>$contact_no,'address_type'=>$address_type]);
         if($address)
         {
-            $response = ['status_code'=>200,'address_id'=>$address->id];
+            $response = ['status_code'=>200];
            return response($response, 200);
         }
         else
