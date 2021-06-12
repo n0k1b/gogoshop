@@ -24,6 +24,7 @@ Route::group(['middleware' => ['json.response'],'middleware' => ['auth:api']], f
        Route::post('save_address','AndroidController@save_address');
        Route::post('get_address','AndroidController@get_address');
        Route::post('delete_address','AndroidController@delete_address');
+       Route::post('update_address','AndroidControoler@update_address');
         Route::post('user_order','AndroidController@get_order_details');
 
         Route::post('submit_order','AndroidController@submit_order');

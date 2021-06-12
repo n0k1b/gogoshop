@@ -247,6 +247,25 @@ class AndroidController extends Controller
            // $response = ['address'=>$adress_list,'status_code'=>200];
            return response($adress_list, 200);
     }
+    public function update_address(Request $request)
+    {
+        $user_id = auth('api')->user()->id;
+        $area_id = $request->area_id;
+        $delivery_address = $request->delivery_address;
+        $contact_no = $request->msisdn;
+        $address_type = $request->address_type;
+        $address = user_address::where('id',$request->id)->update(['area_id'=>$area_id,'address'=>$delivery_address,'contact_no'=>$contact_no,'address_type'=>$address_type]);
+        if($address)
+        {
+            $response = ['status_code'=>200,'address_id'=>$address->id];
+           return response($response, 200);
+        }
+        else
+        {
+            $response = ['status_code'=>400,'message'=>"Some Error Occured"];
+            return response($response, 200);
+        }
+    }
     public function save_address(Request $request)
     {
          //file_put_contents("test.txt",$request);
