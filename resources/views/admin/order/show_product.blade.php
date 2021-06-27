@@ -44,7 +44,7 @@
 								<div class="card">
 									<div class="card-header">
 										<h4 class="card-title"></h4>
-									
+
 									</div>
 									<div class="card-body">
 										<div class="table-responsive">
@@ -58,21 +58,21 @@
 														<th>Product Name</th>
 														<th>Quantity</th>
 
-                                                      
-                                                       
+
+
 													</tr>
 												</thead>
 												<tbody>
 
                                                     @foreach($datas as $data)
-												
+
 														<td><strong>{{$data->sl_no}}</strong></td>
 														<td>{{$data->id}}</td>
 														<td>{{$data->product->name}}</td>
 														<td>{{$data->unit_quantity}}</td>
-													
-													
-                                                       
+
+
+
 													</tr>
 
 												@endforeach

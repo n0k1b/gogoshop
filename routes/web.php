@@ -230,6 +230,7 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
 
     Route::get('new-order','AdminController@new_order')->name('new-order');
     Route::get('all-order','AdminController@all_order')->name('all-order');
+    Route::get('show-order-product/{order_no}','AdminController@show_order_product');
 
     //order end
 
