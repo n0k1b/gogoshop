@@ -75,7 +75,7 @@
                                 </div>
                                 <div class="ps-product__total"></div>
                                 <button class="ps-product__addcart" onclick="cart_add({{ $product_list->product->id }})"><i class="icon-cart"></i>Add to cart</button>
-                                <div class="ps-product__box"><a class="ps-product__wishlist" href="wishlist.html">Wishlist</a></div>
+                                <div class="ps-product__box"><a class="ps-product__wishlist" href="#">Wishlist</a></div>
                             </div>
                         </div>
                     </div>
@@ -101,8 +101,8 @@
 
     <section class="ps-component--register">
         <div class="container">
-            <h3 class="component__title">Get started to Farmart! Your first delivery is free</h3>
-            <p>Join other shoppers in your area, and try farmart.com today.</p><a class="ps-button" href="vendor-registration.html">Register An Account</a>
+            <h3 class="component__title">Get started to GoGoShop! Your first delivery is free</h3>
+            <p>Join other shoppers in your area, and try GoGoShop.</p><a class="ps-button" href="#">Register An Account</a>
         </div>
     </section>
 </main>
