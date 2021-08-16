@@ -28,6 +28,7 @@ Route::get('/clear-cache', function() {
 });
 Route::get('/','FrontController@index');
 Route::get('get_all_category','FrontController@get_all_category')->name('get_all_category');
+Route::get('get_all_category_mobile','FrontController@get_all_category_mobile')->name('get_all_category_mobile');
 Route::post('cart_add','FrontController@cart_add')->name('cart_add');
 Route::get('get_cart_count','FrontController@get_cart_count')->name('get_cart_count');
 Route::get('get_cart_box','FrontController@get_cart_box')->name('get_cart_box');

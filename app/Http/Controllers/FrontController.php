@@ -19,13 +19,17 @@ use App\Models\homepage_product_list;
 use App\Models\banner;
 use Session;
 use App\Models\user_otp;
-use App\Models\User;
+use App\Models\User as user;
 use App\Models\area;
 use App\Models\user_address;
 use App\Models\courier_man;
 use App\Models\company_info;
 use App\Models\order;
 use App\Models\order_details;
+use App\Models\package;
+use App\Models\package_product;
+use App\Models\delivery_charge;
+
 
 use DB;
 
@@ -54,7 +58,7 @@ class FrontController extends Controller
            // array_push($order_details,['id'=>$order_detail[$j]->id,'price'=>$order_detail[$j]->price,'count'=>$order_detail[$j]->count,'unit'=>$order_detail[$j]->unit_quantity,'name'=>$order_detail[$j]->product->name,'image'=>$this->base_url.$order_detail[$j]->product->thumbnail_image,'total'=>$order_detail[$j]->price*$order_detail[$j]->count]);
 
         }
-        $delivery_charge = 60;
+        $delivery_charge = delivery_charge::first()->unit_charge;
         $total = $sub_total+$delivery_charge;
 
 
@@ -95,7 +99,72 @@ class FrontController extends Controller
 
         return view('frontend.order_list',compact('all_order','delivered','picked','pending'));
     }
+    public function abc_func()
 
+    {
+        return view('welcome');
+    }
+    public function get_all_category_mobile()
+
+
+    {
+
+
+        $data = '';
+        $category = category::where('status',1)->where('delete_status',0)->get();
+      // return $category[1]->sub_category;
+
+        foreach($category as $cat)
+           {
+              $sub_cat_avail = sub_category::where('status',1)->where('delete_status',0)->where('category_id',$cat->id)->first();
+              if($sub_cat_avail)
+              {
+            $data.='
+            <li class="menu-item-has-children category-item"><a href="#">'.$cat->name.'</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
+                <ul class="sub-menu">';
+            $data_sub_category = array();
+               foreach($cat->sub_category as $sub_category)
+               {
+                $data.='<li> <a href="view_all/sub_category-'.$sub_category->id.'">'.$sub_category->name.'</a></li>';
+                   //array_push($data_sub_category,['id'=>$sub_category->id,'name'=>$sub_category->name,'image'=>$this->base_url.$sub_category->image]);
+               }
+               $data.='
+
+               </ul>
+
+   </li>';
+            }
+            else
+            {
+                $data.='
+                <li class="has-mega-menu category-item"><a href="view_all/category_prodcut-'.$cat->id.'">'.$cat->name.'</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
+
+             </li>';
+            }
+              // array_push($data_category,['id'=>$cat->id,'name'=>$cat->name,'image'=>$this->base_url.$cat->image,'sub_category'=>$data_sub_category]);
+           }
+
+           $data.='<script>
+           $(function() {
+               $(".menu--mobile .menu-item-has-children > .sub-toggle").on("click", function(e) {
+                   e.preventDefault();
+                   var current = $(this).parent(".menu-item-has-children")
+                   $(this).toggleClass("active");
+                   current.siblings().find(".sub-toggle").removeClass("active");
+                   current.children(".sub-menu").slideToggle(350);
+                   current.siblings().find(".sub-menu").slideUp(350);
+                   $(this).parent().find("a").toggleClass("active");
+               });
+           });
+
+
+
+           </script>';
+//           // return response($response, 200);
+//            $data2 = "";
+      echo $data;
+
+    }
     public function get_all_category()
 
 
@@ -104,12 +173,12 @@ class FrontController extends Controller
         //$data2 = "hello";
         $data="";
 
-        $category = category::where('status',1)->get();
+        $category = category::where('status',1)->where('delete_status',0)->get();
       // return $category[1]->sub_category;
 
         foreach($category as $cat)
            {
-              $sub_cat_avail = sub_category::where('category_id',$cat->id)->first();
+              $sub_cat_avail = sub_category::where('status',1)->where('delete_status',0)->where('category_id',$cat->id)->first();
               if($sub_cat_avail)
               {
             $data.='
@@ -153,14 +222,18 @@ class FrontController extends Controller
     }
     public function index()
     {
+       // session()->forget('cart');
         $banners = banner::where('status',1)->orderBy('order')->get();
-        $categories = category::get();
-        $homepage_section_content = homepage_section::where('status',1)->orderBy('section_order')->get();
+        $categories = category::where('status',1)->get();
+        $homepage_section_content = homepage_section::where('status',1)->where('delete_status',0)->orderBy('section_order')->get();
         $company_info = company_info::first();
+
+      //  $packages = package::where('status',1)->where('delete_status',0)->get();
 
 
         return view ('frontend.index',compact('banners','categories','homepage_section_content','company_info'));
     }
+
 
 
     public function get_cart_count()
@@ -176,7 +249,60 @@ class FrontController extends Controller
         echo $total_product;
     }
 
+    public function cart_add_package(Request $request)
+    {
+        $id = $request->id;
+        $quantity = $request->quantity;
+        $package = package::find($id);
+        //$product = product::find($id);
+       // $discount_avail = homepage_product_list::where('product_list',$id)->where('status',1)->first();
 
+
+        $cart = session()->get('cart');
+        // if cart is empty then this the first product
+        if(!$cart) {
+            $cart = [
+                    $id => [
+                        "package_id"=>$package->id,
+                        "name" => $package->package_name,
+                        "quantity" => $quantity,
+                        "price" => $package->discount_price,
+                        "photo" => $package->package_image,
+                        'unit'=>$quantity.' pcs',
+                        'type'=>'package'
+                    ]
+            ];
+            session()->put('cart', $cart);
+            //return redirect()->back()->with('success', 'Product added to cart successfully!');
+        }
+        else{
+        // if cart not empty then check if this product exist then increment quantity
+        if(isset($cart[$id])) {
+            $update_quantity = $cart[$id]['quantity'] +$quantity;
+            $cart[$id]['quantity'] = $update_quantity;
+            session()->put('cart', $cart);
+           // file_put_contents('test.txt',json_encode($cart));
+            //return redirect()->back()->with('success', 'Product added to cart successfully!');
+        }
+        else{
+        // if item not exist in cart then add to cart with quantity = 1
+        $cart[$id] = [
+                        "package_id"=>$package->id,
+                        "name" => $package->package_name,
+                        "quantity" => $quantity,
+                        "price" => $package->discount_price,
+                        "photo" => $package->package_image,
+                        'unit'=>$quantity.' pcs',
+                        'type'=>'package'
+        ];
+        session()->put('cart', $cart);
+             }
+            }
+
+
+
+       // return redirect()->back()->with('success', 'Product added to cart successfully!');
+    }
 
     public function cart_add(Request $request)
     {
@@ -200,7 +326,8 @@ class FrontController extends Controller
                         "quantity" => $quantity,
                         "price" => $product->price,
                         "photo" => $product->thumbnail_image,
-                        'unit'=>$product->unit->unit_quantity.' '.$product->unit->unit_type
+                        'unit'=>$product->unit->unit_quantity.' '.$product->unit->unit_type,
+                        'type'=>'product'
                     ]
             ];
             session()->put('cart', $cart);
@@ -223,7 +350,8 @@ class FrontController extends Controller
             "quantity" => $quantity,
             "price" => $product->price,
             "photo" => $product->thumbnail_image,
-            'unit'=>$product->unit->unit_quantity.' '.$product->unit->unit_type
+            'unit'=>$product->unit->unit_quantity.' '.$product->unit->unit_type,
+            'type'=>'product'
         ];
         session()->put('cart', $cart);
              }
@@ -255,7 +383,7 @@ class FrontController extends Controller
     public function search_product(Request $request)
     {
         $input_value = $request->input_value;
-        $products = product::where('name','LIKE','%'.$input_value.'%')->get();
+        $products = product::where('name','LIKE','%'.$input_value.'%')->where('status',1)->get();
         $data='';
         if(sizeof($products)>0){
         foreach($products as $product)
@@ -283,7 +411,9 @@ class FrontController extends Controller
                     </p>
                 </div>
             </div>
-        </li>';
+        </li>
+
+        ';
         echo $data;
     }
 
@@ -324,23 +454,44 @@ class FrontController extends Controller
 
     }
 
+    public function cancel_order(Request $request)
+    {
+        $order_no = $request->order_no;
+        order::where('order_no',$order_no)->update(['status'=>'canceled']);
+    }
+
     public function place_order(Request $request)
     {
-             $validator = Validator::make($request->all(), [
-            'address_id' => ['required'],
-         ]);
+        //session()->forget('cart');
+        $rules = [
+            'address_id'=>'required',
+
+        ];
+
+
+
+         $customMessages = [
+            'address_id.required' => 'Please select or add an address.',
+
+
+        ];
+        $validator = Validator::make( $request->all(), $rules, $customMessages );
     if($validator->fails())
     {
-        return redirect()->back()->with('error','Please select an address');
+        return redirect()->back()->with('errors',collect($validator->errors()->all()));
     }
         $address_id = $request->address_id;
+        $delivery_date = $request->delivery_date;
+        $delivery_time = $request->delivery_time;
         $cart = session()->get('cart');
         $total = 0;
 
         $user_id = auth()->user()->id;
         $order_no = 'GG'.$user_id.mt_rand(10000,99999);
         $area_id = user_address::where('id',$address_id)->first()->area_id;
-        $courier_man =$this->search_courier_man($area_id);
+       // $courier_man = 1;//$this->search_courier_man($area_id);
+
+       $courier_man =$this->search_courier_man($area_id);
         if($courier_man == 0)
         {
         //$response = ['status_code'=>414,];
@@ -349,13 +500,21 @@ class FrontController extends Controller
         }
 
 
+
         foreach( $cart as $id => $details)
         {
            $total += $details['price'] * $details['quantity'];
+           $remaining_stock = product_stock::where('product_id',$id)->first()->stock_amount;
+           $stock = $remaining_stock-$details['quantity'];
+           product_stock::where('product_id',$id)->update(['stock_amount'=>$stock]);
+
+           if($details['type'] == 'product')
            order_details::create(['order_no'=>$order_no,'product_id'=>$id,'unit_quantity'=>$details['unit'],'count'=>$details['quantity'],'price'=>$details['price']]);
+           else
+           order_details::create(['order_no'=>$order_no,'package_id'=>$id,'unit_quantity'=>$details['unit'],'count'=>$details['quantity'],'price'=>$details['price']]);
         }
-        $delivery_fee = 60;
-        $order = order::create(['address_id'=>$address_id,'user_id'=>$user_id,'order_no'=>$order_no,'courier_man'=>$courier_man,'status'=>'pending','total_price'=>$total,'delivery_fee'=>$delivery_fee]);
+        $delivery_fee =delivery_charge::first()->unit_charge ;
+        $order = order::create(['address_id'=>$address_id,'user_id'=>$user_id,'order_no'=>$order_no,'status'=>'pending','total_price'=>$total,'delivery_fee'=>$delivery_fee]);
 
         $status = $order->status;
         $order_no = $order->order_no;
@@ -370,7 +529,7 @@ class FrontController extends Controller
            // array_push($order_details,['id'=>$order_detail[$j]->id,'price'=>$order_detail[$j]->price,'count'=>$order_detail[$j]->count,'unit'=>$order_detail[$j]->unit_quantity,'name'=>$order_detail[$j]->product->name,'image'=>$this->base_url.$order_detail[$j]->product->thumbnail_image,'total'=>$order_detail[$j]->price*$order_detail[$j]->count]);
 
         }
-        $delivery_charge = 60;
+        $delivery_charge = delivery_charge::first()->unit_charge;
         $total = $sub_total+$delivery_charge;
         session()->forget('cart');
         return view('frontend.order_tracking',compact('status','order_no','order_date','delivery_address','delivery_charge','total','sub_total','order_detail'));
@@ -426,6 +585,7 @@ class FrontController extends Controller
 
     public function get_all_cart_info()
     {
+       //session()->forget('cart');
             $data = "";
             $total = 0;
             $cart = session()->get('cart');
@@ -434,11 +594,12 @@ class FrontController extends Controller
             {
                 $total += $details['price'] * $details['quantity'];
             }
-            $delivery_charge = 20;
+            $delivery_charge = delivery_charge::first()->unit_charge ;
             $sub_total = $total+$delivery_charge;
             foreach($cart as $id =>$details)
             {
-
+                if($details['type'] == 'product')
+                {
                 $data.='   <div class="shopping-cart-row">
                 <div class="cart-product">
                     <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="'.$details['photo'].'" alt="alt" /></a>
@@ -448,32 +609,73 @@ class FrontController extends Controller
 
                             <p class="ps-product__meta">Price: <span class="ps-product__price">TK '.$details['price'].'</span></p>
                             <div class="def-number-input number-input safari_only">
-                                <button class="minus" onclick=""><i class="icon-minus"></i></button>
-                                <input class="quantity" min="0" name="quantity" value="1" type="number" />
-                                <button class="plus" onclick=""><i class="icon-plus"></i></button>
+                                <button class="minus dec_view_cart" ><i class="icon-minus"></i></button>
+                                <input type="hidden" class="input_quantity">
+                              <input type="hidden" name="hidden_product_id" value="'.$details['product_id'].'">
+                              <input class="quantity quantity-'.$details['product_id'].'" min="0" name="quantity" value="'.$details['quantity'].'" type="number" id="quantity-'.$details['product_id'].'" readonly="readonly"/>
+                                <button class="plus inc_view_cart"><i class="icon-plus"></i></button>
                             </div><span class="ps-product__total">Total: <span>TK '.$details['price']*$details['quantity'].' </span></span>
                         </div>
-                        <div class="ps-product__remove"><i class="icon-trash2"></i></div>
+                        <div class="ps-product__remove" onclick="delete_cart_view_cart('.$details['product_id'].')"><i class="icon-trash2"></i></div>
                     </div>
                 </div>
                 <div class="cart-price"><span class="ps-product__price">TK '.$details['price'].'</span>
                 </div>
                 <div class="cart-quantity">
                     <div class="def-number-input number-input safari_only">
-                        <button class="minus dec" onclick="dec('.$id.')"><i class="icon-minus"></i></button>
-                        <input type="hidden" id="input_quantity">
-
-                        <input class="quantity" min="0" name="quantity" value="'.$details['quantity'].'" type="number" id="quantity-'.$details['product_id'].'"/>
-                        <button class="plus inc" onclick="inc('.$id.')"><i class="icon-plus"></i></button>
+                        <button class="minus dec_view_cart" ><i class="icon-minus"></i></button>
+                        <input type="hidden" class="input_quantity">
+                        <input type="hidden" name="hidden_product_id" value="'.$details['product_id'].'">
+                        <input class="quantity quantity-'.$details['product_id'].'" min="0" name="quantity" value="'.$details['quantity'].'" type="number" id="quantity-'.$details['product_id'].'" readonly="readonly"/>
+                        <button class="plus inc_view_cart" ><i class="icon-plus"></i></button>
                     </div>
                 </div>
                 <div class="cart-total"> <span class="ps-product__total">TK '.$details['price']*$details['quantity'].'</span>
                 </div>
-                <div class="cart-action"> <i class="icon-trash2"></i></div>
+                <div class="cart-action" onclick="delete_cart_view_cart('.$details['product_id'].')"> <i class="icon-trash2"></i></div>
             </div>
             ';
+                }
+                else
+                {
+                    $data.='   <div class="shopping-cart-row">
+                    <div class="cart-product">
+                    <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="'.$details['photo'].'" alt="alt" /></a>
+                        <div class="ps-product__content">
+                            <h5><a class="ps-product__name" href="#">'.$details['name'].'</a></h5>
+
+
+                            <p class="ps-product__meta">Price: <span class="ps-product__price">TK '.$details['price'].'</span></p>
+                            <div class="def-number-input number-input safari_only">
+                                <button class="minus dec_view_cart_package" onclick=""><i class="icon-minus"></i></button>
+                                <input type="hidden" class="input_quantity">
+                                <input type="hidden" name="hidden_product_id_package" value="'.$details['package_id'].'">
+                                <input class="quantity quantity_package-'.$details['package_id'].'" min="0" name="quantity" value="'.$details['quantity'].'" type="number" readonly="readonly" />
+                                <button class="plus inc_view_cart_package" onclick=""><i class="icon-plus"></i></button>
+                            </div><span class="ps-product__total">Total: <span>TK '.$details['price']*$details['quantity'].' </span></span>
+                        </div>
+                        <div class="ps-product__remove" onclick="delete_cart_view_cart('.$details['package_id'].')"><i class="icon-trash2"></i></div>
+                    </div>
+                </div>
+                    <div class="cart-price"><span class="ps-product__price">TK '.$details['price'].'</span>
+                    </div>
+                    <div class="cart-quantity">
+                        <div class="def-number-input number-input safari_only">
+                            <button class="minus dec_view_cart_package" ><i class="icon-minus"></i></button>
+                            <input type="hidden" class="input_quantity">
+                            <input type="hidden" name="hidden_product_id_package" value="'.$details['package_id'].'">
+                            <input class="quantity quantity_package-'.$details['package_id'].'" min="0" name="quantity" value="'.$details['quantity'].'" type="number" id="quantity_package-'.$details['package_id'].'" readonly="readonly"/>
+                            <button class="plus inc_view_cart_package" ><i class="icon-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="cart-total"> <span class="ps-product__total">TK '.$details['price']*$details['quantity'].'</span>
+                    </div>
+                    <div class="cart-action" onclick="delete_cart_view_cart('.$details['package_id'].')> <i class="icon-trash2"></i></div>
+                </div>
+                ';
+                }
             }
-            $data.='<script src="assets/frontend/js/cart_increment.js?'.time().'"></script>';
+             //$data.='<script src="assets/frontend/js/cart_increment.js?'.time().'"></script>';
             $total_cart = '<div class="shopping-cart__right">
             <div class="shopping-cart__total">
                 <p class="shopping-cart__subtotal"><span>Subtotal</span><span class="price">TK '.$total.'</span></p>
@@ -513,6 +715,18 @@ class FrontController extends Controller
         }
     }
 
+    public function cart_update_package(Request $request)
+    {
+        if($request->id && $request->quantity)
+        {
+            $cart = session()->get('cart');
+            $cart[$request->id]["quantity"] = $request->quantity;
+            session()->put('cart', $cart);
+            session()->flash('success', 'Cart updated successfully');
+        }
+    }
+
+
     public function get_cart_box()
     {
         $total = 0;
@@ -536,7 +750,14 @@ class FrontController extends Controller
         <li class="cart-item">
         <div class="ps-product--mini-cart"><a href="product-default.html"><img style="min-width:60px" class="ps-product__thumbnail" src="'.$details['photo'].'" alt="alt" /></a>
             <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">'.$details['name'].'</a>
+               ';
+               if($details['type']=='product')
+               {
+               $data.='
                 <p class="ps-product__unit">'.$details['unit'].'</p>
+                ';
+               }
+                $data.='
 
                 <p class="ps-product__meta"> <span class="ps-product__price">TK '.$details['price'].'</span><span class="ps-product__quantity">(x'.$details['quantity'].')</span>
                 </p>
@@ -590,14 +811,14 @@ class FrontController extends Controller
     {
         if (strpos($type, 'section') !== false) {
 
-        $section_category = homepage_section::get();
-        file_put_contents('test.txt',json_encode($section_category));
-        $data = ' <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="3000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="8" data-owl-item-xs="3" data-owl-item-sm="3" data-owl-item-md="5" data-owl-item-lg="8" data-owl-duration="1000"
+        $section_category = homepage_section::where('delete_status',0)->get();
+        //file_put_contents('test.txt',json_encode($section_category));
+        $data = ' <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="3000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="8" data-owl-item-xs="3" data-owl-item-sm="3" data-owl-item-md="4" data-owl-item-lg="8" data-owl-duration="1000"
         data-owl-mousedrag="on">';
         foreach($section_category as $category)
         {
             $data.=' <div class="ps-category__item">
-            <a href="shop-categories.html"><img class="ps-categories__thumbnail" style="width:100px;height:100px" src="'.$category->image.'" alt></a><a class="ps-categories__name" href="shop-categories.html">'.$category->section_name.'</a>
+            <a href="view_all/section_prodcut-'.$category->id.'"><img class="ps-categories__thumbnail" style="width:100px;height:100px" src="'.$category->image.'" alt></a><a class="ps-categories__name" href="view_all/section_prodcut-'.$category->id.'">'.$category->section_name.'</a>
         </div>';
         }
         $data.=' </div>';
@@ -608,18 +829,19 @@ class FrontController extends Controller
 
         $category = explode('-',$type);
         $category_id = $category[1];
-        $sub_category = sub_category::where('category_id',$category_id)->get();
+        $sub_category = sub_category::where('delete_status',0)->where('category_id',$category_id)->get();
       //  file_put_contents('test.txt',json_encode($section_category));
-        $data = ' <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="3000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="8" data-owl-item-xs="3" data-owl-item-sm="3" data-owl-item-md="5" data-owl-item-lg="8" data-owl-duration="1000"
+        $data = ' <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="3000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="8" data-owl-item-xs="3" data-owl-item-sm="3" data-owl-item-md="4" data-owl-item-lg="8" data-owl-duration="1000"
         data-owl-mousedrag="on">';
         foreach( $sub_category as $category)
         {
             $data.=' <div class="ps-category__item">
-            <a href="shop-categories.html"><img class="ps-categories__thumbnail" style="width:100px;height:100px" src="'.$category->image.'" alt></a><a class="ps-categories__name" href="shop-categories.html">'.$category->name.'</a>
+            <a href="view_all/sub_category-'.$category->id.'"><img class="ps-categories__thumbnail" style="width:100px;height:100px" src="'.$category->image.'" alt></a><a class="ps-categories__name" href="view_all/sub_category-'.$category->id.'">'.$category->name.'</a>
         </div>';
         }
         $data.=' </div>';
-        $data.='<script src="assets/frontend/js/main.js?'.time().'"></script>';
+        $data.='<script src="assets/frontend/js/main2.js?'.time().'"></script>
+       ';
     }
 
     if (strpos($type, 'sub_category') !== false) {
@@ -628,18 +850,18 @@ class FrontController extends Controller
         $sub_category = explode('-',$type);
         $sub_category_id = $sub_category[1];
         $category_id = sub_category::where('id',$sub_category_id)->first()->category_id;
-        $sub_category = sub_category::where('category_id',$category_id)->get();
+        $sub_category = sub_category:: where('delete_status',0)->where('category_id',$category_id)->get();
       //  file_put_contents('test.txt',json_encode($section_category));
-        $data = ' <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="3000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="8" data-owl-item-xs="3" data-owl-item-sm="3" data-owl-item-md="5" data-owl-item-lg="8" data-owl-duration="1000"
+        $data = ' <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="3000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="8" data-owl-item-xs="3" data-owl-item-sm="3" data-owl-item-md="4" data-owl-item-lg="8" data-owl-duration="1000"
         data-owl-mousedrag="on">';
         foreach( $sub_category as $category)
         {
             $data.=' <div class="ps-category__item">
-            <a href="shop-categories.html"><img class="ps-categories__thumbnail" style="width:100px;height:100px" src="'.$category->image.'" alt></a><a class="ps-categories__name" href="shop-categories.html">'.$category->name.'</a>
+            <a href="view_all/sub_category-'.$category->id.'"><img class="ps-categories__thumbnail" style="width:100px;height:100px" src="'.$category->image.'" alt></a><a class="ps-categories__name" href="view_all/sub_category-'.$category->id.'">'.$category->name.'</a>
         </div>';
         }
         $data.=' </div>';
-        $data.='<script src="assets/frontend/js/main.js?'.time().'"></script>';
+        $data.='<script src="assets/frontend/js/main2.js?'.time().'"></script>';
     }
 
         echo $data;
@@ -651,7 +873,7 @@ class FrontController extends Controller
         if (strpos($type, 'section') !== false) {
             $homepage_section = explode('-',$type);
             $homepage_section_id = $homepage_section[1];
-            $home_page_product = homepage_product_list::where('homepage_section_id',$homepage_section_id)->get();
+            $home_page_product = homepage_product_list::where('delete_status',0)->where('status',1)->where('homepage_section_id',$homepage_section_id)->get();
             //file_put_contents('test.txt',$homepage_section_id);
 
             foreach($home_page_product as $product)
@@ -662,23 +884,25 @@ class FrontController extends Controller
                     <div class="ps-product__content">
 
                         <h5><a class="ps-product__name" href="javascript:void(0);" onclick="show_cart_modal('.$product->product->id.')" >'.$product->product->name.'</a></h5>
-                        <p class="ps-product__unit">'.$product->product->unit->unit_quantity .$product->product->unit->unit_type.'</p>
 
-                        <p class="ps-product-price-block"><span class="ps-product__sale">'.$discount_price.'</span><span class="ps-product__price">TK '.$product->product->price.' </span><span class="ps-product__off">'.$product->discount_percentage.'% Off</span>
-                        </p>
 
-                        <p class="ps-product__sold">Stock in Unit: '.$product->product->stock->stock_amount.'</p>
+
+                        <p class="ps-product__unit">'.$product->product->unit->unit_quantity .$product->product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">'.$discount_price.'</span><span class="ps-product__price">TK '.$product->product->price.' </span><span class="ps-product__off">'.$product->discount_percentage.'% Off</span> </span></p>
+
+
+
+
                     </div>
                     <div class="ps-product__footer">
                                     <div class="def-number-input number-input safari_only">
                                         <button class="minus dec" onclick="dec('.$product->product->id.')" ><i class="icon-minus"></i></button>
-                                        <input class="quantity quantity-{{ $product_list->product->id }}" value="1" min="0" name="quantity" type="number" id="quantity-'.$product->product->id.'"   />
+                                        <input class="quantity quantity-{{ $product_list->product->id }}" value="1" min="0" name="quantity" type="number" id="quantity-'.$product->product->id.'" readonly="readonly"  />
                                         <input type="hidden" id="input_quantity-'.$product->product->id.'">
                                         <button class="plus inc" onclick="inc('.$product->product->id.')" ><i class="icon-plus"></i></button>
                                     </div>
                         <div class="ps-product__total"></span> </div>
                         <button class="ps-product__addcart" onclick="cart_add('.$product->product->id.')"><i class="icon-cart"></i>Add to cart</button>
-                        <div class="ps-product__box"><a class="ps-product__wishlist" href="wishlist.html">Wishlist</a><a class="ps-product__compare" href="wishlist.html">Compare</a></div>
+
                     </div>
                 </div>
             </div>
@@ -692,7 +916,7 @@ class FrontController extends Controller
 
             $category = explode('-',$type);
             $category_id = $category[1];
-            $sub_category = sub_category::where('category_id',$category_id)->get();
+            $sub_category = sub_category::where('delete_status',0)->where('category_id',$category_id)->get();
            // file_put_contents('test3.txt',json_encode($sub_category[0]->product));
 
 
@@ -715,6 +939,7 @@ class FrontController extends Controller
                 {
                     //   $myfile = fopen("test3.txt", "a+") or die("Unable to open file!");
                     //   fwrite($myfile,json_encode($product)."\n");
+                    $discount_avail = homepage_product_list::where('product_list',$product->id)->where('status',1)->where('delete_status',0)->first();
 
 
                // file_put_contents('test2.txt',json_encode($product->product));
@@ -724,23 +949,51 @@ class FrontController extends Controller
                     <div class="ps-product__content">
 
                         <h5><a class="ps-product__name" href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')" >'.$product->name.'</a></h5>
-                        <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.'</p>
+                        ';
+                        if($discount_avail)
+                        {
 
-                        <p class="ps-product-price-block"><span class="ps-product__sale">'.$product->price.'</span><span class="ps-product__price">TK '.$product->price.' </span><span class="ps-product__off">'.$product->discount_percentage.'% Off</span>
-                        </p>
+                            if($discount_avail->discount_percentage>0)
+                            {
+                            $discount_price =$product->price- floor(($product->price*$discount_avail->discount_percentage)/100);
+                        $data.='
+                        <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.
+                        '<span class="ps-product-price-block"> Tk <span class="ps-product__sale">'. $discount_price.'</span><span class="ps-product__price">TK  '.$product->price.'</span><span class="ps-product__off">'.$discount_avail->discount_percentage.'% Off</span></span></p>
 
-                        <p class="ps-product__sold">Stock in Unit: '.$product->stock->stock_amount.'</p>
+                        ';
+                        }
+                        else
+                        {
+                            $data.='
+                            <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            '.$product->price.'</span> </span></p>
+                            ';
+                        }
+
+
+                        }
+                        else
+                        {
+                            $data.='
+                            <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            '.$product->price.'</span> </span></p>
+                            ';
+                        }
+                        $data.='
+
+
+
                     </div>
                     <div class="ps-product__footer">
                                     <div class="def-number-input number-input safari_only">
                                         <button class="minus dec" onclick="dec('.$product->id.')" ><i class="icon-minus"></i></button>
-                                        <input class="quantity quantity-{{ $product_list->product->id }}" value="1" min="0" name="quantity" type="number" id="quantity-'.$product->id.'"   />
+                                        <input class="quantity quantity-{{ $product_list->product->id }}" value="1" min="0" name="quantity" type="number" id="quantity-'.$product->id.'"  readonly="readonly" />
                                         <input type="hidden" id="input_quantity-'.$product->id.'">
                                         <button class="plus inc" onclick="inc('.$product->id.')" ><i class="icon-plus"></i></button>
                                     </div>
                         <div class="ps-product__total"></span> </div>
                         <button class="ps-product__addcart" onclick="cart_add('.$product->id.')"><i class="icon-cart"></i>Add to cart</button>
-                        <div class="ps-product__box"><a class="ps-product__wishlist" href="wishlist.html">Wishlist</a><a class="ps-product__compare" href="wishlist.html">Compare</a></div>
+
                     </div>
                 </div>
             </div>
@@ -758,8 +1011,9 @@ class FrontController extends Controller
 
             $sub_category = explode('-',$type);
             $sub_category_id = $sub_category[1];
-            $product_list = product::where('sub_category_id',$sub_category_id)->get();
-           // file_put_contents('test3.txt',json_encode($sub_category[0]->product));
+            $product_list = product::where('delete_status',0)->where('status',1)->where('sub_category_id',$sub_category_id)->get();
+
+          // file_put_contents('test3.txt',json_encode($product_list));
 
 
             // return $category[1]->sub_category;
@@ -776,8 +1030,8 @@ class FrontController extends Controller
 
                 foreach($product_list as $product)
                 {
-                    //   $myfile = fopen("test3.txt", "a+") or die("Unable to open file!");
-                    //   fwrite($myfile,json_encode($product)."\n");
+
+                    $discount_avail = homepage_product_list::where('product_list',$product->id)->where('status',1)->where('delete_status',0)->first();
 
 
                // file_put_contents('test2.txt',json_encode($product->product));
@@ -786,24 +1040,49 @@ class FrontController extends Controller
                 <div class="ps-product--standard"><a  href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')"><img class="ps-product__thumbnail" height="150px"   src="'.$product->thumbnail_image.'" alt="alt" /></a><a class="ps-product__expand" href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')"><i class="icon-expand"></i></a>
                     <div class="ps-product__content">
 
-                        <h5><a class="ps-product__name" href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')" >'.$product->name.'</a></h5>
-                        <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.'</p>
+                        <h5><a class="ps-product__name" style="height:48px" href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')" >'.$product->name.'</a></h5>';
 
-                        <p class="ps-product-price-block"><span class="ps-product__sale">'.$product->price.'</span><span class="ps-product__price">TK '.$product->price.' </span><span class="ps-product__off">'.$product->discount_percentage.'% Off</span>
-                        </p>
+                        if($discount_avail)
+                        {
+                            if($discount_avail->discount_percentage>0)
+                            {
+                            $discount_price =$product->price- floor(($product->price*$discount_avail->discount_percentage)/100);
+                        $data.='
+                        <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.
+                        '<span class="ps-product-price-block"> Tk <span class="ps-product__sale">'. $discount_price.'</span><span class="ps-product__price">TK  '.$product->price.'</span><span class="ps-product__off">'.$discount_avail->discount_percentage.'% Off</span></span></p>
 
-                        <p class="ps-product__sold">Stock in Unit: '.$product->stock->stock_amount.'</p>
+                        ';
+                        }
+                        else
+                        {
+                            $data.='
+                            <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            '.$product->price.'</span> </span></p>
+                            ';
+                        }
+                    }
+                        else
+                        {
+                            $data.='
+                            <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            '.$product->price.'</span> </span></p>
+                            ';
+                        }
+                        $data.='
+
+
+
                     </div>
                     <div class="ps-product__footer">
                                     <div class="def-number-input number-input safari_only">
                                         <button class="minus dec" onclick="dec('.$product->id.')" ><i class="icon-minus"></i></button>
-                                        <input class="quantity quantity-{{ $product_list->product->id }}" value="1" min="0" name="quantity" type="number" id="quantity-'.$product->id.'"   />
+                                        <input class="quantity quantity-{{ $product_list->product->id }}" value="1" min="0" name="quantity" type="number" id="quantity-'.$product->id.'" readonly="readonly"  />
                                         <input type="hidden" id="input_quantity-'.$product->id.'">
                                         <button class="plus inc" onclick="inc('.$product->id.')" ><i class="icon-plus"></i></button>
                                     </div>
                         <div class="ps-product__total"></span> </div>
                         <button class="ps-product__addcart" onclick="cart_add('.$product->id.')"><i class="icon-cart"></i>Add to cart</button>
-                        <div class="ps-product__box"><a class="ps-product__wishlist" href="wishlist.html">Wishlist</a><a class="ps-product__compare" href="wishlist.html">Compare</a></div>
+
                     </div>
                 </div>
             </div>
@@ -838,12 +1117,25 @@ class FrontController extends Controller
         <div class="modal-dialog modal-dialog-centered modal-xl ps-quickview">
         <div class="modal-content">
             <div class="modal-header">
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button class="close" type="button" data-dismiss="modal" onclick="modal_close();" aria-label="close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <div class="container-fluid quickview-body">
+
                     <div class="row">
+                    ';
+                    if($product->category->description)
+                    {
+                    $data.='
+                    <div class="col-12 col-lg-12 col-md-12 text-center alert-danger" style="top:41px">
+                    <p>'.$product->category->description.'</p>
+                    </div>
+                    ';
+                    }
+                    $data.='
+
                         <div class="col-12 col-lg-5">
+
                             <div >
                                 <div class="quickview-carousel" style="margin-top:50px"><img class="carousel__thumbnail" src="'.$product->thumbnail_image.'" alt="alt" /></div>
 
@@ -869,16 +1161,17 @@ class FrontController extends Controller
                                 $data.='
 
                                     <p class="product__unit">'.$unit.'.</p>
-                                    <div class="alert__success">Availability: <span>'.$product->stock->stock_amount.' in stock</span></div>
+
 
                                 </div>
                                 <div class="product__action">
                                     <label>Quantity: </label>
                                     <div class="def-number-input number-input safari_only">
-                                        <button class="minus dec" onclick="dec('.$product->id.')"><i class="icon-minus"></i></button>
-                                        <input class="quantity" min="0" name="quantity" value="1" type="number" id="quantity-'.$product->id.'">
+                                        <button class="minus dec" ><i class="icon-minus"></i></button>
+                                        <input class="quantity" min="0" name="quantity" value="1" type="number" id="quantity-'.$product->id.'" readonly="readonly">
                                         <input type="hidden" id="input_quantity">
-                                        <button class="plus inc" onclick="inc('.$product->id.')"><i class="icon-plus"></i></button>
+                                        <input type="hidden" name="hidden_product_id" value="'.$product->id.'">
+                                        <button class="plus inc"><i class="icon-plus"></i></button>
                                     </div>
                                     <button class="btn product__addcart"  onclick="cart_add('.$product->id.')"> <i class="icon-cart"></i>Add to cart</button>
 
@@ -893,12 +1186,84 @@ class FrontController extends Controller
         </div>
     </div>
 
-    <script src="assets/frontend/js/frontend.js?{{ time() }}"></script>
+
+    <script src="assets/frontend/plugins/bootstrap/js/bootstrap.min.js"></script>
 
 
 
         ';
         echo $data;
+        exit;
+    }
+
+    public function show_package_modal($id)
+    {
+        file_put_contents('test.txt',$id);
+        $package_product = package_product::where('package_id',$id)->where('delete_status',0)->get();
+      //  $product_in_section = homepage_product_list::where('product_list',$id)->where('status',1)->first();
+        // $discount_percentage = 0;
+
+        // $unit = $product->unit->unit_quantity." ".$product->unit->unit_type;
+
+
+
+        $data ='
+        <div class="modal-dialog modal-dialog-centered modal-xl ps-quickview">
+   <div class="modal-content">
+      <div class="modal-header">
+         <button class="close" type="button" data-dismiss="modal" onclick="modal_close();" aria-label="close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body package_modal" style="margin-top:58px">
+         <div class="container-fluid quickview-body">
+            <div class="row">
+               ';
+               foreach($package_product as $product)
+               {
+               $data.='
+               <div class="col-12 col-lg-12 col-md-12 col-sm-12" style="margin-bottom:6px">
+                  <div class="row">
+                     <div class="col-4 col-md-4 col-lg-4 text-center">
+                        <img class="carousel__thumbnail package_thumbnail" src="'.$product->product->thumbnail_image.'" alt="alt" />
+                     </div>
+                     <div class="col-8 col-md-8 col-lg-8">
+                        <div class="product__header">
+                           <div class="product__title package_title">'.$product->product->name.' <span class="product__unit" style="float:right;color:red;font-weight:bold;margin-top: 3px;"" >(x '.$product->unit_quantity.')</span></div>
+                        </div>
+                        ';
+                        $data.='
+                     </div>
+                  </div>
+               </div>
+
+                ';
+              }
+                $data.='
+            </div>
+            <div class="product__action text-center">
+            <label>Quantity: </label>
+            <div class="def-number-input number-input safari_only">
+                <button class="minus dec_package" ><i class="icon-minus"></i></button>
+                <input class="quantity_package" min="0" name="quantity" value="1" type="number" id="quantity_package-'.$product->package_id.'" readonly="readonly">
+                <input type="hidden" id="input_quantity_package">
+                <input type="hidden" name="hidden_product_id_package" value="'.$product->package_id.'">
+                <button class="plus inc_package"><i class="icon-plus"></i></button>
+            </div>
+            <button class="btn product__addcart"  onclick="cart_add_package('.$product->package_id.')"> <i class="icon-cart"></i>Add to cart</button>
+
+
+        </div>
+
+         </div>
+      </div>
+   </div>
+</div>
+    <script src="assets/frontend/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+
+
+        ';
+        echo $data;
+        exit;
     }
 
     function str_random($length = 16)
@@ -917,10 +1282,14 @@ class FrontController extends Controller
         $user->role = 'customer';
         $user->save();
         Auth::login($user);
-        return redirect()->to('/');
+        if(session()->has('cart'))
+                return redirect()->to('checkout');
+                else
+                return redirect()->to('/');
+        //return redirect()->to('/');
 
-        //User::create(['contact_no'=>$mobile_number,'name'=>$name]);
-       // User::where('contact_no',$mobile_number)->update(['name'=>$name]);
+        //user::create(['contact_no'=>$mobile_number,'name'=>$name]);
+       // user::where('contact_no',$mobile_number)->update(['name'=>$name]);
     }
 
     public function submit_otp(Request $request)
@@ -931,7 +1300,7 @@ class FrontController extends Controller
         $mobile_number = Session::get('mobile_number');
         $check = user_otp::where('token',$token)->where('otp',$otp)->first();
 
-         $user = User::where('contact_no', $mobile_number)->first();
+         $user = user::where('contact_no', $mobile_number)->first();
 
 
         if($check)
@@ -940,6 +1309,9 @@ class FrontController extends Controller
              if($user)
              {
                 Auth::login($user);
+                if(session()->has('cart'))
+                return redirect()->to('checkout');
+                else
                 return redirect()->to('/');
              }
              else
@@ -951,26 +1323,35 @@ class FrontController extends Controller
         }
         else
         {
-            return redirect()->back()->with('error','Otp Not Matched');
+            return view('auth.otp',['error'=>'Otp Not Matched','mobile_number'=>$mobile_number]);
+           /// return redirect()->back()->with('error','Otp Not Matched');
         }
 
         //return response($response, 200);
     }
     public function checkout()
     {
-        $areas = area::where('status',1)->get();
+        $areas = area::where('status',1)->where('delete_status',0)->get();
 
             $sub_total = 0;
             $cart = session()->get('cart');
-
+            $description = '';
+            $category_name='';
             foreach( $cart as $id => $details)
             {
+                $description = product::find($id)->category->description;
+                if($description)
+                {
+                    $category_name = product::find($id)->category->name;
+                }
+
+               // file_put_contents('test.txt',$description);
                 $sub_total += $details['price'] * $details['quantity'];
             }
-            $delivery_charge = 20;
+            $delivery_charge = delivery_charge::first()->unit_charge;
             $total = $sub_total+$delivery_charge;
 
-        return view('frontend.checkout',compact('areas','cart','delivery_charge','total','sub_total'));
+        return view('frontend.checkout',compact('areas','cart','delivery_charge','total','sub_total','description','category_name'));
     }
 
     public function add_address(Request $request)
@@ -994,9 +1375,9 @@ class FrontController extends Controller
         <button type="button" class="btn btn-success" onclick="edit_address_modal('.$datas[0]->id.')"><i class="icon-pencil icon-shop5" style="color:white;font-weight:bold; font-family: Linearicons, Bangla634, sans-serif;"></i></button>
         <button  type="button" class="btn btn-danger" onclick="delete_address('.$datas[0]->id.')" style="background-color:#f10000"><i class="icon-trash2 icon-shop5" style="color:white;font-weight:bold;font-family: Linearicons, Bangla634, sans-serif;"></i></button>
         </label>
-        <p>'.$datas[0]->area->name.'<span>,&nbsp'.$datas[0]->address.'</span></p>
+        <p><i class="icon-home4" style="color:black"></i>&nbsp'.$datas[0]->area->name.'<span style="color:black;font-weight:bolder">,&nbsp'.$datas[0]->address.'</span></p>
 
-        <p>'.$datas[0]->contact_no.'</p>
+        <p><i class="icon-telephone" style="color:black"></i>&nbsp'.$datas[0]->contact_no.'</p>
     </div>';
 
         }
@@ -1054,7 +1435,7 @@ class FrontController extends Controller
         Session::put('otp_token',$otp_token);
         Session::put('mobile_number',$mobile_number);
        $this->otp($mobile_number,$otp);
-        // $check_user = User::where('contact_no',$mobile_number)->first();
+        // $check_user = user::where('contact_no',$mobile_number)->first();
         // if(!$check_user)
         // {
         //     $user = new user();
@@ -1070,12 +1451,12 @@ class FrontController extends Controller
     {
         $mobile_number = '88'.$mobile_number;
         $url = "http://gsms.pw/smsapi";
-  $data = [
-    "api_key" => "C20003436040f26e6f69b0.10063984",
+     $data = [
+    "api_key" => "C2000343610a798a92fde7.49639094",
     "type" => "text",
     "contacts" => $mobile_number,
     "senderid" => "8809601001329",
-    "msg" => "Your GOGO SHO OTP is ".$otp,
+    "msg" => "Your GOGOSHOP OTP is ".$otp,
   ];
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);

@@ -2,16 +2,18 @@
 <html lang="en">
 
 
-<!-- Mirrored from edumin.dexignlab.com/xhtml/index-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 20 Dec 2020 15:51:24 GMT -->
+
 <head>
 
 	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="cache-control" content="no-cache"/>
+    <meta name="description" content="Urrbor Admin?{{time()}}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>GoGo Shop Admin </title>
+    <title>GOGO Admin </title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('assets')}}/admin/images/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('image')}}/logo2.jpg?{{time()}}">
 	<link rel="stylesheet" href="{{asset('assets')}}/admin/vendor/bootstrap-select/dist/css/bootstrap-select.min.css?{{time()}}">
     <link href="{{asset('assets')}}/admin/vendor/datatables/css/jquery.dataTables.min.css?{{time()}}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('assets')}}/admin/css/style.css?{{time()}}">
@@ -43,8 +45,8 @@
             Nav header start
         ***********************************-->
         <div class="nav-header">
-            <a href="index.html" class="brand-logo">
-                <img class="logo-abbr" src="{{asset('assets')}}/admin/images/logo.png" alt="">
+            <a href="{{ url('admin') }}" class="brand-logo">
+                {{-- <img class="logo-abbr" src="{{asset('assets')}}/admin/images/logo.png" alt=""> --}}
                 {{-- <img class="logo-compact" src="{{asset('assets')}}/admin/images/logo-text-white.png" alt="">
                 <img class="brand-title" src="{{asset('assets')}}/admin/images/logo-text-white.png" alt=""> --}}
             </a>

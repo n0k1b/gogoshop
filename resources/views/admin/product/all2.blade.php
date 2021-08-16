@@ -1,7 +1,7 @@
 <?php
-  $with_domain_status = 0;
-  $user_id = auth()->user()->id;
-  $user_role = auth()->user()->role;
+   $with_domain_status = 0;
+  $user_id = Auth::guard('admin')->user()->id;
+  $user_role = Auth::guard('admin')->user()->role;
   $role_id = DB::table('roles')->where('name',$user_role)->first()->id;
   $role_permission = DB::table('role_permisiions')->where('role_id',$role_id)->pluck('content_name')->toArray();
  //file_put_contents('role.txt',json_encode($role_permission));
@@ -191,48 +191,48 @@
 
       var table = $('#product').DataTable({
         //dom: '<"row"lfB>rtip',
-       dom: 'Blfrtip',
-        buttons: [
-                {
-                    extend: 'pdf',
-                    text: 'PDF',
-                    exportOptions: {
-                        columns: ':visible:not(.not-exported)',
-                        rows: ':visible',
+       //dom: 'Blfrtip',
+        // buttons: [
+        //         {
+        //             extend: 'pdf',
+        //             text: 'PDF',
+        //             exportOptions: {
+        //                 columns: ':visible:not(.not-exported)',
+        //                 rows: ':visible',
 
-                    },
+        //             },
 
-                },
-                // {
-                //     extend: 'csv',
-                //     text: 'CSV',
-                //     exportOptions: {
-                //         columns: ':visible:not(.not-exported)',
-                //         rows: ':visible',
-                //         stripHtml: true,
-                //         format: {
-                //             body: function ( data, row, column, node ) {
-                //                 if (column === 0 && (data.toString().indexOf('<img src=') !== -1)) {
-                //                     var regex = /<img.*?src=['"](.*?)['"]/;
-                //                     data = regex.exec(data)[1];
-                //                 }
-                //                 return data;
-                //             }
-                //         }
-                //     }
-                // },
-                {
-                    extend: 'print',
-                    text: 'Print',
-                    exportOptions: {
-                        columns: ':visible:not(.not-exported)',
-                        rows: ':visible',
-                        stripHtml: false,
-                    },
+        //         },
+        //         // {
+        //         //     extend: 'csv',
+        //         //     text: 'CSV',
+        //         //     exportOptions: {
+        //         //         columns: ':visible:not(.not-exported)',
+        //         //         rows: ':visible',
+        //         //         stripHtml: true,
+        //         //         format: {
+        //         //             body: function ( data, row, column, node ) {
+        //         //                 if (column === 0 && (data.toString().indexOf('<img src=') !== -1)) {
+        //         //                     var regex = /<img.*?src=['"](.*?)['"]/;
+        //         //                     data = regex.exec(data)[1];
+        //         //                 }
+        //         //                 return data;
+        //         //             }
+        //         //         }
+        //         //     }
+        //         // },
+        //         {
+        //             extend: 'print',
+        //             text: 'Print',
+        //             exportOptions: {
+        //                 columns: ':visible:not(.not-exported)',
+        //                 rows: ':visible',
+        //                 stripHtml: false,
+        //             },
 
-                },
+        //         },
 
-            ],
+        //     ],
 
           pageLength: 20,
           processing: true,

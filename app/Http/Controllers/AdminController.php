@@ -32,11 +32,14 @@ use App\Models\deposit;
 use App\Models\expense;
 use App\Models\supplier;
 use App\Models\purchase;
+use App\Models\package;
+use App\Models\package_product;
 use Hash;
 use Illuminate\Support\Facades\Validator;
 use DB;
 use DataTables;
 use Auth;
+use Session;
 
 
 use App\Models\product_required_filed;
@@ -44,12 +47,16 @@ use App\Models\product_required_filed;
 class AdminController extends Controller
 {
 
+    protected function guard()
+{
+    return Auth::guard('admin');
+}
    // public $role_permissions;
     public function permission ()
 {
 
-    $user_id = Auth::user()->id;
-    $user_role = Auth::user()->role;
+    $user_id = Auth::guard('admin')->user()->id;
+    $user_role = Auth::guard('admin')->user()->role;
     $role_id = DB::table('roles')->where('name',$user_role)->first()->id;
     $role_permission = DB::table('role_permisiions')->where('role_id',$role_id)->pluck('content_name')->toArray();
     return $role_permission;
@@ -59,8 +66,9 @@ class AdminController extends Controller
     //login startt
     public function login(Request $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
 
+           // file_put_contents('test2.txt',Auth::guard('admin')->user()->name);
             return redirect('admin');
 
          }
@@ -72,7 +80,7 @@ class AdminController extends Controller
 
     public function logout()
     {
-        auth()->logout();
+        auth()->guard('admin')->logout();
         return redirect()->to('admin_login');
     }
 
@@ -311,11 +319,13 @@ class AdminController extends Controller
 
         $rules = [
                 'name'=>'required',
+                'image'=>'required'
 
 
             ];
         $customMessages = [
             'name.required' => 'Category field is required.',
+            'image.required'=>'Image filed is required'
 
 
         ];
@@ -337,10 +347,15 @@ class AdminController extends Controller
         ->image
         ->move(public_path('../image/category_image') , $image);
     $image = "image/category_image/" . $image;
+    category::create(['name'=>$request->name,'image'=>$image,'description'=>$request->description]);
+        }
+        else
+        {
+            category::create(['name'=>$request->name]);
         }
        //file_put_contents('test.txt',$request->name." ".$request->image);
 
-        category::create(['name'=>$request->name,'image'=>$image]);
+
         return redirect()->route('show-all-category')->with('success','category Added Successfully');
 
 
@@ -353,10 +368,16 @@ class AdminController extends Controller
         if ($status == 1)
         {
             category::where('id', $id)->update(['status' => 0]);
+            sub_category::where('category_id',$id)->update(['status'=>0]);
+            product::where('category_id',$id)->update(['status'=>0]);
+
+
         }
         else
         {
             category::where('id', $id)->update(['status' => 1]);
+            sub_category::where('category_id',$id)->update(['status'=>1]);
+            product::where('category_id',$id)->update(['status'=>1]);
         }
     }
     public function edit_category_content_ui(Request $request)
@@ -377,7 +398,7 @@ class AdminController extends Controller
     {
         $id = $request->id;
 
-        category::where('id', $id)->update(['name' => $request->name]);
+        category::where('id', $id)->update(['name' => $request->name,'description'=>$request->description]);
 
         return redirect()
             ->route('show-all-category')
@@ -436,7 +457,7 @@ class AdminController extends Controller
     //User Start
     public function show_all_user()
     {
-        $datas = user::where('role','<>','')->where('role','<>','courier_man')->get();
+        $datas = user::where('role','<>','customer')->where('role','<>','courier_man')->get();
         $i=1;
         foreach($datas as $data)
         {
@@ -473,6 +494,27 @@ class AdminController extends Controller
         return redirect()->route('show-all-user')->with('success','User Added Successfully');
 
 
+    }
+    public function update_user_password(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => ['required','confirmed'],
+         ]);
+
+    if($validator->fails())
+    {
+        return redirect()->back()->with('errors',collect($validator->errors()->all()));
+    }
+
+    user::where('id',$request->id)->update(['password'=>Hash::make($request->password)]);
+    return redirect()
+            ->route('show-all-user')
+            ->with('success', "Data Updated Successfully");
+
+    }
+    public function reset_user_password_ui($id)
+    {
+        return view('admin.user.reset_password',compact('id'));
     }
 
     public function user_active_status(Request $request)
@@ -1521,7 +1563,7 @@ class AdminController extends Controller
       //     return redirect()->back()->with('errors',collect($validator->errors()->all()));
       // }
 
-      $request['deposit_received_by'] = Auth::user()->id;
+      $request['deposit_received_by'] = Auth::guard('admin')->user()->id;
          deposit::create($request->all());
           return redirect()->route('show-all-deposit')->with('success','deposit Added Successfully');
 
@@ -1544,7 +1586,7 @@ class AdminController extends Controller
       //     return redirect()->back()->with('errors',collect($validator->errors()->all()));
       // }
 
-      $request['deposit_received_by'] = Auth::user()->id;
+      $request['deposit_received_by'] = Auth::guard('admin')->user()->id;
          deposit::create($request->all());
           return redirect()->route('show-all-deposit')->with('success','deposit Added Successfully');
 
@@ -1768,7 +1810,7 @@ class AdminController extends Controller
                  ->addColumn('image_edit', function($data){
 
 
-                    $button = ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="sub_category_content_delete('.$data->id.')"><i class="la la-trash-o"></i></a>';
+                    $button = ' <a href="edit_sub_category_image/'.$data->id.'" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
                     return $button;
              })
                     ->rawColumns(['status','action','image_edit'])
@@ -1791,12 +1833,14 @@ class AdminController extends Controller
             'name'=>'required',
 
             'category_id'=>'required',
+            'image'=>'required',
 
         ];
     $customMessages = [
         'name.required' => 'Sub Category field is required.',
 
         'category_id.required' => 'Category field is required.',
+        'image.required'=>'Image field is required'
 
 
     ];
@@ -1836,10 +1880,12 @@ class AdminController extends Controller
         if ($status == 1)
         {
             sub_category::where('id', $id)->update(['status' => 0]);
+            product::where('sub_category_id',$id)->update(['status' => 0]);
         }
         else
         {
             sub_category::where('id', $id)->update(['status' => 1]);
+             product::where('sub_category_id',$id)->update(['status' => 1]);
         }
     }
     public function edit_sub_category_content_ui(Request $request)
@@ -1861,7 +1907,7 @@ class AdminController extends Controller
     {
         $id = $request->id;
 
-        sub_category::where('id', $id)->update(['name' => $request->name,'domain_id'=>$request->domain_id]);
+        sub_category::where('id', $id)->update(['name' => $request->name,'category_id'=>$request->category_id]);
 
         return redirect()
             ->route('show-all-sub-category')
@@ -2038,7 +2084,7 @@ class AdminController extends Controller
                     ->addIndexColumn()
                     ->addColumn('status', function($datas){
 
-                           $switch = "<label class='switch'> <input onclick='category_active_status(".$datas->id.")' type='checkbox'".$datas->checked."  /> <span class='slider round'></span> </label>";
+                           $switch = "<label class='switch'> <input onclick='product_active_status(".$datas->id.")' type='checkbox'".$datas->checked."  /> <span class='slider round'></span> </label>";
 
                             return $switch;
                     })
@@ -2139,7 +2185,7 @@ class AdminController extends Controller
                     $permission = $this->permission();
 
                     if(in_array('product_edit',$permission))
-                    $column = '<p onclick='.'edit('. $datas->id.',"produc_stock_amount")'.'>'. $datas->stock->stock_amount .'</p>';
+                    $column = '<p >'. $datas->stock->stock_amount .'</p>';
                     else
                     $column = '<p >'. $datas->stock->stock_amount .'</p>';
                      return $column;
@@ -2268,7 +2314,7 @@ class AdminController extends Controller
                  'thumbnail_image'=>'required',
                  'unit_type'=>'required',
                  'unit_quantity'=>'required',
-                 'unit_stock'=>'required',
+
                  'net_weight'=>'required',
 
             ];
@@ -2280,7 +2326,7 @@ class AdminController extends Controller
             'thumbnail_image.required' => 'Product image field is required.',
             'unit_type.required' => 'Product unit type field is required.',
             'unit_quantity.required' => 'Product unit quantity field is required.',
-            'unit_stock.required' => 'Product unit stock field is required.',
+
             'net_weight.required' => 'Product net weight field is required.',
 
 
@@ -2309,7 +2355,7 @@ class AdminController extends Controller
         {
             $description = NULL;
         }
-        $user_role = Auth::user()->role;
+        $user_role = Auth::guard('admin')->user()->role;
 
         if($user_role == 'Admin' || $user_role == 'admin')
         {
@@ -2332,7 +2378,7 @@ class AdminController extends Controller
        product_size::create(['product_id'=>$product_id,'size'=>$request->size]);
        }
        product_unit::create(['product_id'=>$product_id,'unit_quantity'=>$request->unit_quantity,'unit_type'=>$request->unit_type]);
-       product_stock::create(['product_id'=>$product_id,'stock_amount'=>$request->unit_stock]);
+      product_stock::create(['product_id'=>$product_id,'stock_amount'=>'0']);
        warehouse_product::create(['product_id'=>$product_id,'warehouse_id'=>$request->warehouse_id]);
 
 
@@ -2380,10 +2426,12 @@ class AdminController extends Controller
         if ($status == 1)
         {
             product::where('id', $id)->update(['status' => 0]);
+            homepage_product_list::where('product_list',$id)->update(['status'=>0]);
         }
         else
         {
             product::where('id', $id)->update(['status' => 1]);
+            homepage_product_list::where('product_list',$id)->update(['status'=>1]);
         }
     }
     public function edit_product_content_ui(Request $request)
@@ -2808,26 +2856,34 @@ class AdminController extends Controller
                     $datas['sl_no'] = $i++;
                     $datas->supplier = $datas->supplier->supplier_name;
                     $datas->product = $datas->product->name;
-                    file_put_contents('test.txt',$datas->product->id);
+                    //file_put_contents('test.txt',$datas->product->name);
 
                    // $datas['checked'] =$checked;
 
                 }
 
+
             return Datatables::of($data)
                     ->addIndexColumn()
-
+                    ->addColumn('supplier',function($data)
+                    {
+                        return $data->supplier;
+                    })
+                    ->addColumn('product',function($data)
+                    {
+                        return $data->product;
+                    })
                     ->addColumn('action', function($data){
 
                         $permission = $this->permission();
                         $button = '';
                         if(in_array('category_edit',$permission))
-                        $button .= ' <a href="edit_category_content/'.$data->id.'" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
+                        $button .= ' <a href="edit_purchase_content/'.$data->id.'" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
                         else
                         $button .= ' <a href="javascript:void(0);" onclick="access_alert()" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
                         $button .= '&nbsp;&nbsp;';
                         if(in_array('category_delete',$permission))
-                        $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="category_content_delete('.$data->id.')"><i class="la la-trash-o"></i></a>';
+                        $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="purchase_content_delete('.$data->id.')"><i class="la la-trash-o"></i></a>';
                         else
                         $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="access_alert()"><i class="la la-trash-o"></i></a>';
                         return $button;
@@ -2840,7 +2896,29 @@ class AdminController extends Controller
 
         return view('admin.purchase.all');
 
+
     }
+    public function edit_purchase_content_ui(Request $request)
+    {
+
+        $id = $request->id;
+
+        $datas = purchase::where('id',$id)->first();
+        file_put_contents('test.txt',json_encode($datas));
+
+        $suppliers = supplier::get();
+        $products = product::where('delete_status',0)->get();
+        return view('admin.purchase.edit',compact('datas','products','suppliers'));
+
+    }
+    public function update_purchase(Request $request)
+    {
+        purchase::where('id',$request->id)->update($request->except('_token'));
+        return redirect()
+        ->route('show-all-purchase')
+        ->with('success', "Data Updated Successfully");
+    }
+
     public function add_purchase_ui()
     {
         $products = product::where('delete_status',0)->get();
@@ -2873,6 +2951,11 @@ class AdminController extends Controller
 
 
         ]);
+
+        $remaining_stock = product_stock::where('product_id',$product_id)->first()->stock_amount;
+        $stock = $remaining_stock+$purchase_quantity;
+        product_stock::where('product_id',$product_id)->update(['stock_amount'=>$stock]);
+
             return back()->with('success','Data Addess Successfully');
 
 
@@ -2880,17 +2963,168 @@ class AdminController extends Controller
 
     //purchase end
 
+    public function show_all_report(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = order::where('status','delivered')->where('delete_status',0)->get();
+            $i=1;
+                foreach($data as $datas)
+                {
+                    //$checked = $datas->status=='1'?'checked':'';
+                    $datas['sl_no'] = $i++;
+
+                }
+
+
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('customer_name',function($data)
+                    {
+                        return $data->user->name;
+                    })
+                    ->addColumn('address',function($data)
+                    {
+                        return $data->address->address;
+                    })
+                    ->addColumn('contact_no',function($data)
+                    {
+                        return $data->address->contact_no;
+                    })
+                    ->addColumn('action', function($data){
+
+                        $permission = $this->permission();
+                        $button = '';
+                        if(in_array('category_edit',$permission))
+                        $button .= ' <a href="edit_category_content/'.$data->id.'" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
+                        else
+                        $button .= ' <a href="javascript:void(0);" onclick="access_alert()" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
+                        $button .= '&nbsp;&nbsp;';
+                        if(in_array('category_delete',$permission))
+                        $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="category_content_delete('.$data->id.')"><i class="la la-trash-o"></i></a>';
+                        else
+                        $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="access_alert()"><i class="la la-trash-o"></i></a>';
+                        return $button;
+                 })
+
+
+                    ->rawColumns(['customer_name,address,contact_no,action'])
+                    ->make(true);
+        }
+
+        return view('admin.report.show');
+    }
+
+    public function show_order_report(Request $request)
+    {
+
+        if(!$request->ajax())
+        {
+
+
+
+        $from_date = $request->from_date;
+        $from_date =  date("Y-m-d", strtotime($from_date));
+        Session::put('from_date',$from_date);
+        $to_date = $request->to_date;
+        $to_date =  date("Y-m-d", strtotime($to_date."+1 days"));
+        Session::put('to_date',$to_date);
+
+
+        }
+
+
+
+
+        if ($request->ajax()) {
+
+           $from_date = Session::get('from_date');
+           $to_date = Session::get('to_date');
+           //file_put_contents('test2.txt',$from_date." ".$to_date);
+            $data = order::whereDate('created_at','>=',$from_date)->whereDate('created_at','<=',$to_date)->get();
+           // file_put_contents('test.txt',json_encode($data));
+
+            $i=1;
+                foreach($data as $datas)
+                {
+                    //$checked = $datas->status=='1'?'checked':'';
+                    $datas['sl_no'] = $i++;
+
+                }
+
+
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('customer_name',function($data)
+                    {
+                        return $data->user->name;
+                    })
+                    ->addColumn('address',function($data)
+                    {
+                        return $data->address->address;
+                    })
+                    ->addColumn('contact_no',function($data)
+                    {
+                        return $data->address->contact_no;
+                    })
+                    ->addColumn('order_date',function($data)
+                    {
+                        $date =  date("Y-m-d h:i:s", strtotime($data->created_at));
+                        return $date;
+
+                    })
+                    ->addColumn('action', function($data){
+
+                        $permission = $this->permission();
+                        $button = '';
+                        if(in_array('category_edit',$permission))
+                        $button .= ' <a href="edit_category_content/'.$data->id.'" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
+                        else
+                        $button .= ' <a href="javascript:void(0);" onclick="access_alert()" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>';
+                        $button .= '&nbsp;&nbsp;';
+                        if(in_array('category_delete',$permission))
+                        $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="category_content_delete('.$data->id.')"><i class="la la-trash-o"></i></a>';
+                        else
+                        $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="access_alert()"><i class="la la-trash-o"></i></a>';
+                        return $button;
+                 })
+
+
+                    ->rawColumns(['customer_name,address,contact_no,action'])
+                    ->make(true);
+        }
+        return view('admin.report.order_report');
+
+
+
+
+        return view('admin.report.show');
+
+       // file_put_contents('test.txt',$from_date." ".$to_date);
+    }
+    public function report_view($type)
+    {
+        return view('admin.report.date_view',['type'=>$type]);
+    }
+
+
+
+
+
     //homepage section start
 
     public function show_all_homepage_section()
     {
+        //echo "hello";
+                //
         $datas = homepage_section::orderBy('section_order')->where('delete_status',0)->get();
+        //echo "hello";
         $i=1;
         $permission = $this->permission();
         foreach($datas as $data)
         {
             $data['sl_no'] = $i++;
         }
+        //echo "hello";
         return view('admin.homepage_section.all',['datas'=>$datas,'permission'=>$permission]);
 
 
@@ -2899,6 +3133,85 @@ class AdminController extends Controller
     public function add_homepage_section_ui()
     {
         return view('admin.homepage_section.add');
+    }
+
+    public function add_package_ui()
+    {
+        return view('admin.package.add');
+    }
+
+    public function add_package(Request $request)
+    {
+        $rules = [
+            'name'=>'required',
+            'image'=>'required',
+            'discount_percentage'=>'required'
+
+
+            ];
+        $customMessages = [
+            'name.required' => 'Package name field is required.',
+            'image.required'=>'Package image field is required',
+            'discount_percentage.required'=>'Discount percentage filed is required',
+
+
+        ];
+
+        $validator = Validator::make( $request->all(), $rules, $customMessages );
+
+
+        if($validator->fails())
+        {
+            return redirect()->back()->withInput()->with('errors',collect($validator->errors()->all()));
+        }
+        if($request->image)
+        {
+        $image = time() . '.' . request()->image->getClientOriginalExtension();
+
+    $request
+        ->image
+        ->move(public_path('../image/package_image') , $image);
+    $image = "image/package_image/" . $image;
+
+        }
+        package::create(['package_name'=>$request->name,'package_image'=>$image,'discount_percentage'=>$request->discount_percentage]);
+
+        return redirect()->route('show_all_package')->with('success','Package Added Successfully');
+
+
+
+    }
+
+    public function delete_product_from_package(Request $request)
+    {
+        $id = $request->id;
+        $package_product= package_product::where('id',$id)->first();
+        $package = package::where('id',$package_product->package_id)->first();
+        $total_price = $package->total_price;
+        $discount = $package->discount_percentage;
+        $total_price = $total_price-($package_product->product->price*$package_product->unit_quantity);
+        //file_put_contents('test.txt',$total_price." ".$package_product->product->price." ".$package_product->unit_quantity);
+        $discount_price = $total_price - floor(($total_price *  $discount)/100);
+
+        package::where('id',$package_product->package_id)->update(['total_price'=>$total_price,'discount_price'=>$discount_price]);
+        package_product::where('id', $id)->update(['delete_status'=>1]);
+
+
+
+    }
+    public function show_all_package()
+    {
+        $datas = package::where('delete_status',0)->get();
+        //echo "hello";
+        $i=1;
+        $permission = $this->permission();
+        foreach($datas as $data)
+        {
+            $data['sl_no'] = $i++;
+        }
+        //echo "hello";
+        return view('admin.package.all',['datas'=>$datas,'permission'=>$permission]);
+
     }
     public function add_homepage_section(Request $request)
     {
@@ -3179,7 +3492,7 @@ class AdminController extends Controller
 
     public function product_add_to_section_ui($id)
     {
-        $product_list = product::get();
+        $product_list = product::where('delete_status',0)->get();
         foreach($product_list as $product)
         {
             $avail = homepage_product_list::where('homepage_section_id',$id)->where('product_list',$product->id)->first();
@@ -3195,6 +3508,95 @@ class AdminController extends Controller
         return view('admin.homepage_section.product_section_all',compact('product_list','id'));
     }
 
+    public function product_add_to_package_ui($id)
+    {
+        $product_list = product::where('delete_status',0)->get();
+        foreach($product_list as $product)
+        {
+            $avail = package_product::where('package_id',$id)->where('product_id',$product->id)->first();
+            if($avail)
+            {
+                $product['avail'] = 1;
+            }
+            else
+            {
+                $product['avail'] = 0;
+            }
+        }
+        return view('admin.package.package_product',compact('product_list','id'));
+    }
+
+    public function edit_package_content_ui(Request $request)
+    {
+        $id = $request->id;
+        $data = package::where('id',$id)->first();
+        return view('admin.package.edit_content',['data'=>$data]);
+
+    }
+    public function package_content_delete(Request $request)
+    {
+        $id = $request->id;
+        package::where('id', $id)->update(['delete_status'=>1]);
+
+    }
+
+    public function edit_package_image_ui($id)
+    {
+        return view('admin.package.edit_image',['id'=>$id]);
+    }
+
+    public function update_package_image(Request $request)
+    {
+        $id = $request->id;
+        $previous_image = package::where('id',$id)->first()->package_image;
+        if($previous_image)
+        {
+
+           if(file_exists($previous_image))
+           {
+                unlink( base_path($previous_image));
+           }
+
+
+        }
+        $image = time() . '.' . request()->image->getClientOriginalExtension();
+
+        $request->image->move(public_path('../image/package_image') , $image);
+        $image = "image/package_image/" . $image;
+
+        package::where('id',$id)->update(['package_image'=>$image]);
+        return redirect()->route('show_all_package')->with('success','Image Updated Successfully');
+    }
+
+    public function update_package_content(Request $request)
+    {
+        $id = $request->id;
+        //file_put_contents('test.txt',$id);
+        $package = package::where('id',$id)->first();
+        $total_price = $package->total_price;
+        $discount_price = $total_price-floor(($total_price*$request->discount_percentage)/100);
+        package::where('id', $id)->update(['package_name' => $request->name,'discount_percentage'=>$request->discount_percentage,'discount_price'=>$discount_price]);
+
+        return redirect()
+            ->route('show_all_package')
+            ->with('success', "Data Updated Successfully");
+    }
+
+    public function package_active_status_update(Request $request)
+    {
+        $id = $request->id;
+        $status =package::where('id', $id)->first()->status;
+        if ($status == 1)
+        {
+            package::where('id', $id)->update(['status' => 0]);
+        }
+        else
+        {
+            package::where('id', $id)->update(['status' => 1]);
+        }
+    }
+
+
     public function add_product_to_section(Request $request)
     {
             $product_id = $request->product_id;
@@ -3202,20 +3604,147 @@ class AdminController extends Controller
             $homepage_section_id = $request->homepage_section_id;
             homepage_product_list::create(['homepage_section_id'=>$homepage_section_id,'product_list'=>$product_id,'discount_percentage'=>$discount_percentage]);
 
-
-
     }
+
+    public function add_product_to_package(Request $request)
+    {
+        $product_id = $request->product_id;
+        $unit_quantity = $request->unit_quantity;
+        $package_id = $request->package_id;
+        $package = package::where('id',$package_id)->first();
+        $total_price = $package->total_price;
+        $discount = $package->discount_percentage;
+        $product_price = product::where('id',$product_id)->first()->price;
+        $total_price = $total_price+$product_price*$unit_quantity;
+        $discount_price = $total_price- floor(($total_price *  $discount)/100);
+
+        package::where('id',$package_id)->update(['total_price'=>$total_price,'discount_price'=>$discount_price]);
+
+
+        package_product::create(['package_id'=>$package_id,'product_id'=>$product_id,'unit_quantity'=>$unit_quantity]);
+    }
+
 
     public function update_product_to_section(Request $request)
     {
             $product_id = $request->product_id;
             $product_percentage = $request->product_percentage;
+
             homepage_product_list::where('id',$product_id)->update(['discount_percentage'=>$product_percentage]);
 
             //homepage_product_list::update(['homepage_section_id'=>$homepage_section_id,'product_list'=>$product_id,'discount_percentage'=>$discount_percentage]);
 
     }
 
+    public function update_product_to_package(Request $request)
+    {
+            $product_id = $request->product_id;
+            $unit_quantity = $request->unit_quantity;
+            $package_product= package_product::where('id',$product_id)->first();
+            $existing_quantity = $package_product->unit_quantity;
+
+            $package = package::where('id',$package_product->package_id)->first();
+            $total_price = $package->total_price;
+            //file_put_contents('test.txt',$total_price);
+        $discount = $package->discount_percentage;
+
+        $total_price = $total_price-($package_product->product->price*$existing_quantity);
+        $total_price = $total_price+($package_product->product->price*$unit_quantity);
+
+        $discount_price = $total_price - floor(($total_price *  $discount)/100);
+
+        package::where('id',$package_product->package_id)->update(['total_price'=>$total_price,'discount_price'=>$discount_price]);
+
+            package_product::where('id',$product_id)->update(['unit_quantity'=>$unit_quantity]);
+
+            //homepage_product_list::update(['homepage_section_id'=>$homepage_section_id,'product_list'=>$product_id,'discount_percentage'=>$discount_percentage]);
+
+    }
+
+    public function get_all_package_product($id)
+    {
+      $product_list =   package_product::where('package_id',$id)->where('delete_status',0)->get();
+      //file_put_contents('test.txt',json_encode($product_list));
+        $data = '';
+
+        foreach($product_list as $product)
+        {
+
+            $after_discount_price = 10;
+            $data.='
+            <div class="col-xl-3 col-xxl-4 col-lg-4 col-md-6 col-sm-6">
+                <div class="card">
+                    <img class="img" src="../../'.$product->product->thumbnail_image.'" alt=""  height="200px">
+                    <div class="card-body">
+                        <h4>'.$product->product->name.'</h4>
+                        <ul class="list-group mb-3 list-group-flush">
+
+                            <li class="list-group-item px-0 border-top-0 d-flex justify-content-between"><span class="mb-0 text-muted">Product Price</span>
+                               <strong>'.$product->product->price.'</strong></li>
+
+                               <li class="list-group-item px-0 border-top-0 d-flex justify-content-between"><span class="mb-0 text-muted">Unit Quantity</span>
+                               <strong>'.$product->unit_quantity.'</strong></li>
+
+
+                               <li class="list-group-item px-0 border-top-0 d-flex justify-content-between"><span class="mb-0 text-muted">Price</span>
+                               <strong>'.$product->unit_quantity * $product->product->price.'</strong></li>
+
+
+                        </ul>
+                        <a href="javascript:;" onclick = "edit_quantity_modal('.$product->unit_quantity.','.$product->id.')" class="btn btn-primary">Edit Product Quantity</a>
+                        <a  href="javascript:void(0);" class="btn btn-lg btn-danger" onclick="delete_product_from_package('.$product->id.')"><i class="la la-trash-o"></i></a>
+                    </div>
+                </div>
+            </div>
+    ';
+        }
+
+        $all_product = '<label>Select Product</label>
+        <select class="form-control select2" id="product_id" name="product_id">
+            <option>Select Product</option>';
+        $product_list = product::where('delete_status',0)->get();
+        foreach($product_list as $product)
+        {
+            $avail = package_product::where('package_id',$id)->where('product_id',$product->id)->where('delete_status',0)->first();
+            if($avail)
+            {
+                $product['avail'] = 1;
+            }
+            else
+            {
+                $product['avail'] = 0;
+            }
+        }
+        foreach($product_list as $product)
+        {
+            if($product->avail == 0){
+                 $all_product.='
+
+
+                <option value="'.$product->id.'">'. $product->name.'</option>
+
+       ';
+            }
+            else{
+        $all_product.='
+
+
+        <option value="'.$product->id .'" disabled>'.$product->name.'</option>
+
+       ';
+        }
+    }
+        $all_product.=' </select>
+
+        <script src="../../assets/admin/js/select2.full.js"></script>
+        <script src="../../assets/admin/js/advanced-form-element.js"></script>
+
+        ';
+
+
+        echo json_encode(['section_product'=>$data,'all_product'=>$all_product]);
+
+    }
 
 
 
@@ -3328,7 +3857,7 @@ class AdminController extends Controller
     //order start
     public function new_order()
     {
-        $order = order::where('status','!=','delivered')->get();
+        $order = order::where('status','!=','delivered')->where('status','!=','canceled')->orderBy(DB::raw('case when status= "pending" then 1 when status= "picked" then 2 end'))->get();
         $i=1;
 
          foreach($order as $data)
@@ -3359,7 +3888,7 @@ class AdminController extends Controller
 
        public function all_order()
     {
-        $order = order::where('status','delivered')->where('delete_status',0)->get();
+        $order = order::where('status','!=','pending')->where('status','!=','picked')->where('delete_status',0)->orderBy(DB::raw('case when status= "delivered" then 1 when status= "canceled" then 2 end'))->get();
         $i=1;
 
          foreach($order as $data)
@@ -3391,15 +3920,35 @@ class AdminController extends Controller
     public function show_order_product(Request $request)
     {
         $order_no = $request->order_no;
-
+        $order = order::where('order_no',$order_no)->first();
         $order_details = order_details::where('order_no',$order_no)->get();
         $i=1;
           foreach($order_details as $data)
         {
             $data['sl_no'] = $i++;
         }
-        file_put_contents('test.txt',$order_no." ".json_encode($order_details));
-        return view('admin.order.show_product',['datas'=>$order_details]);
+       // file_put_contents('test.txt',$order_no." ".json_encode($order_details));
+        return view('admin.order.show_product',['datas'=>$order_details,'order'=>$order]);
+    }
+    public function update_order_status(Request $request)
+    {
+        $order_id = $request->order_id;
+        $order_status = $request->order_status;
+        file_put_contents('test.txt',$order_id." ".$order_status);
+        order::where('id',$order_id)->update(['status'=>$order_status]);
+        return redirect()
+        ->route('new-order')
+        ->with('success', "Data Updated Successfully");
+    }
+
+    public function change_order_status(Request $request)
+    {
+        $order_id = $request->id;
+
+        //$order = order::where('id',$order_id)->get();
+
+       // file_put_contents('test.txt',$order_no." ".json_encode($order_details));
+        return view('admin.order.update_order_status',['order_id'=>$order_id]);
     }
 
 

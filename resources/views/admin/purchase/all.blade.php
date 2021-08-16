@@ -1,7 +1,7 @@
 <?php
-  $with_domain_status = 0;
-  $user_id = auth()->user()->id;
-  $user_role = auth()->user()->role;
+   $with_domain_status = 0;
+  $user_id = Auth::guard('admin')->user()->id;
+  $user_role = Auth::guard('admin')->user()->role;
   $role_id = DB::table('roles')->where('name',$user_role)->first()->id;
   $role_permission = DB::table('role_permisiions')->where('role_id',$role_id)->pluck('content_name')->toArray();
  //file_put_contents('role.txt',json_encode($role_permission));
@@ -33,13 +33,13 @@
     <div class="row page-titles mx-0">
         <div class="col-sm-6 p-md-0">
             <div class="welcome-text">
-                <h4>All Sub Category</h4>
+                <h4>All Purchase</h4>
             </div>
         </div>
         <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item active"><a href="javascript:void(0);">Sub Category List</a></li>
+                <li class="breadcrumb-item"><a href="{{ url('admin') }}">Home</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0);">Purchase List</a></li>
             </ol>
         </div>
     </div>

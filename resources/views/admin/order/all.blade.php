@@ -54,12 +54,14 @@
 														<th>#</th>
 														<th>Order No</th>
 
-
+                                                        <th>Order Status</th>
 														<th>User Name</th>
 														<th>Delivery Address</th>
 
                                                         <th>Contact No</th>
                                                          <th>Order Date</th>
+                                                         <th>Delivery Date & Time</th>
+
                                                         <th></th>
 													</tr>
 												</thead>
@@ -69,12 +71,16 @@
 
 														<td><strong>{{$data->sl_no}}</strong></td>
 														<td>{{$data->order_no}}</td>
+                                                        @if($data->status == 'canceled')
+                                                        <td style="color:#D70F0F; font-weight:bold" >{{strtoupper($data->status)}}</td>
+                                                        @else
+                                                        <td style="color:#4AB50B; font-weight:bold">{{ strtoupper($data->status) }}</td>
+                                                        @endif
 														<td>{{$data->user->name}}</td>
-														<td>{{$data->address->address}}</td>
+														<td>{{$data->address->address}}, {{ $data->address->area->name }}</td>
 														<td>{{$data->address->contact_no}}</td>
-														<td>{{$data->created_at}}</td>
-
-
+														<td>{{date('d/m/Y h:i A',strtotime($data->created_at))}}</td>
+                                                        <td>{{$data->delivery_date." ".$data->delivery_time}}</td>
                                                         <td>
 															<a href="show-order-product/{{$data->order_no}}" class="btn btn-sm btn-info">Show Product</a>
 

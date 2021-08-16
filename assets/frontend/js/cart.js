@@ -73,6 +73,7 @@
     }
     function cart_add(id)
     {
+        alert('hello');
        var quantity = $("#quantity-"+id).val()
        var formdata = new FormData();
        formdata.append('id',id);
@@ -104,11 +105,11 @@ function dec(product_id)
     $("#input_quantity").val(product_id);
 
 }
-$(".inc").click(function() {
+$(document).on("click", '.inc', function(event) {
     updateValue(this, 1);
-
 });
-$(".dec").click(function() {
+
+$(document).on("click", '.dec', function(event) {
     updateValue(this, -1);
 });
 
@@ -118,6 +119,7 @@ function updateValue(obj, delta) {
     var newValue = parseInt(item.val(), 10) + delta;
     item.val(Math.max(newValue, 0));
     var product_id = $('#input_quantity').val();
+    // alert(product_id)
     $(".quantity-"+product_id).val(newValue);
 
 

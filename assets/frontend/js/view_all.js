@@ -10,6 +10,7 @@ $( document ).ready(function() {
 
 
 
+
 });
 
 function get_homepage_section(){
@@ -20,7 +21,7 @@ function get_homepage_section(){
         url: 'get_all_homepage_section/'+type,
         success: function (data) {
 
-            $(".category_list").html(data);
+            $(".category_list_view_all").html(data);
 
         }
     })
@@ -33,12 +34,16 @@ function get_product()
         type: 'GET',
         url: 'get_all_product_view_all/'+type,
         success: function (data) {
-            $("#product_list").html(data);
-            get_homepage_section();//get homepage category
-
+            setTimeout(() => {
+                $(".screen_overlay").css("display", "none");
+                $("#product_list").html(data);
+                get_homepage_section();//get homepage category
+            }, 1000)
         }
     })
 }
+
+
 
 
 

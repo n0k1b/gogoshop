@@ -24,7 +24,8 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ url('admin') }}">Home</a></li>
 
-                            <li class="breadcrumb-item active"><a href="javascript:void(0);">Add Category</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);">Category</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0);">Add</a></li>
                         </ol>
                     </div>
                 </div>
@@ -39,7 +40,7 @@
 									<div class="row">
 
 
-									 <div class="col-lg-12 col-md-12 col-sm-12">
+									    <div class="col-lg-12 col-md-12 col-sm-12">
 											<div class="form-group">
 												<label class="form-label">Category Name</label>
 												<input type="text" class="form-control" name="name" value="{{ old('name') }}">
@@ -47,10 +48,13 @@
 										</div>
 
 
+
+
+
 										<div class="col-lg-12 col-md-12 col-sm-12">
 											<div class="form-group">
 												<div class="field" align="left">
-													<label class="form-label">Category Image(Optional)</label>
+													<label class="form-label">Category Image</label>
 													<input type="file" id="files" name="image" />
 												  </div>
 											</div>
