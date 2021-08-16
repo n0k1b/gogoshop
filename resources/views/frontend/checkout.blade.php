@@ -248,26 +248,6 @@
 
                             </div>
                         </div>
-                        <h3 class="checkout__title">Pick a delivery date & time </h3>
-                        <div class="col col-12 col-lg-12" style="background-color:#F7F9F9; margin-top:25px;padding-bottom:30px;padding:17px">
-                            @if($description)
-
-                            <p class="alert alert-danger">Since you have ordered product from {{ $category_name }} category, {{ $description }} </p>
-                            @endif
-                            <div class="row">
-                                <div class="col">
-                                    <label>Select Date</label>
-                                    <input type='text' placeholder="Delivery Date" name="delivery_date" class="form-control" id="datepicker" autocomplete="off" readonly="readonly" />
-                                </div>
-                                <div class="col">
-                                    <label>Select Time</label>
-                                    <input type='text' placeholder="Delivery Time" name="delivery_time" class="form-control" id='timepicker' autocomplete="off" readonly="readonly" />
-                                </div>
-
-                            </div>
-
-
-                        </div>
 
                     </div>
 
