@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\user;
+use App\Models\User;
 use App\Models\domain;
 use App\Models\category;
 use App\Models\sub_category;
@@ -399,7 +399,7 @@ class AndroidController extends Controller
         // $user = user::where('contact_no',$mobile_number)->first();
         // if($user)
         // {
-        //      $response = ['status_code'=>202,'message'=>'user Already Registered'];
+        //      $response = ['status_code'=>202,'message'=>'User Already Registered'];
         //     return response($response, 200);
         // }
         $otp = mt_rand(1000,9999);
@@ -420,7 +420,7 @@ class AndroidController extends Controller
         // }
         // else
         // {
-        //     $response = ["message" =>'user does not exist','status_code'=>422];
+        //     $response = ["message" =>'User does not exist','status_code'=>422];
         //     return response($response, 422);
         // }
     }
@@ -431,7 +431,7 @@ class AndroidController extends Controller
         $user = user::where('contact_no',$mobile_number)->first();
         if($user)
         {
-             $response = ['status_code'=>202,'message'=>'user Already Registered'];
+             $response = ['status_code'=>202,'message'=>'User Already Registered'];
             return response($response, 200);
         }
         $otp = mt_rand(1000,9999);
@@ -452,7 +452,7 @@ class AndroidController extends Controller
         // }
         // else
         // {
-        //     $response = ["message" =>'user does not exist','status_code'=>422];
+        //     $response = ["message" =>'User does not exist','status_code'=>422];
         //     return response($response, 422);
         // }
     }
@@ -522,7 +522,7 @@ class AndroidController extends Controller
             {
                 if(courier_man::where('user_id',$user->id)->first()->status == 0)
                 {
-                     $response = ["code" =>403,'message'=>'user not approved by Adminstrator'];
+                     $response = ["code" =>403,'message'=>'User not approved by Adminstrator'];
                      return response($response, 200);
                 }
 
@@ -549,7 +549,7 @@ class AndroidController extends Controller
             }
             else
             {
-                $response = ["code" =>404,'message'=>'user Not Registered. Please contact with Administrator'];
+                $response = ["code" =>404,'message'=>'User Not Registered. Please contact with Administrator'];
                  return response($response, 200);
             }
 
@@ -569,7 +569,7 @@ class AndroidController extends Controller
              $user = user::where('contact_no',$contact_no)->first();
              if($user)
              {
-                 $response = ["code" =>404,'message'=>'user Already Registered'];
+                 $response = ["code" =>404,'message'=>'User Already Registered'];
                  return response($response, 200);
              }
              else if(user::where('email',$a->email)->first())
@@ -579,7 +579,7 @@ class AndroidController extends Controller
              }
              else
              {
-                  $user = new user();
+                  $user = new User();
                   $user->name = $a->name;
                 $user->email = $a->email;
                   $user->contact_no = $contact_no;
