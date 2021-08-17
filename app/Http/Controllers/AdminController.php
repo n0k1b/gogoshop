@@ -2065,8 +2065,9 @@ class AdminController extends Controller
 
     public function get_all_product(Request $request)
     {
+        file_put_contents('test.txt',$request." ".time());
         if ($request->ajax()) {
-            $datas = product::where('delete_status',0)->get();
+            $datas = product::with('category:id,name','sub_category:id,category_id,name','warehouse:id,warehouse_id,product_id','warehouse.warehouse:id,name','unit:id,product_id,unit_type,unit_quantity','stock:id,product_id,stock_amount')->where('delete_status',0)->get();
             $i=1;
                 foreach($datas as $data)
                 {
@@ -2142,17 +2143,17 @@ class AdminController extends Controller
 
                  ->addColumn('product_image', function($datas){
                     $permission = $this->permission();
-                    // $url = $datas->thumbnail_image;
-                    // $type = pathinfo($url, PATHINFO_EXTENSION);
-                    // $image = file_get_contents($url);
-                    // $base64 = 'data:image/' . $type . ';base64,' . base64_encode($image);
+                    $url = $datas->thumbnail_image;
+                    $type = pathinfo($url, PATHINFO_EXTENSION);
+                    $image = file_get_contents($url);
+                    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($image);
 
                     if(in_array('product_edit',$permission))
                     {
-                    $column = '<img onclick='.'edit('. $datas->id.',"product_image")'.'  src="../'.$datas->thumbnail_image.'"  width="100px" class="img-thumbnail product-image" />';
+                    $column = '<img  onclick='.'edit('. $datas->id.',"product_image")'.'  src="'.$base64.'"  width="100px" class="img-thumbnail product-image lazy" />';
                     }
                     else
-                    $column = '<img   src="../'.$datas->thumbnail_image.'" width="100px" class="img-thumbnail" />';
+                    $column = '<img   src="../'.$datas->thumbnail_image.'" width="100px" class="img-thumbnail lazy" />';
                      return $column;
                  })
                  ->addColumn('product_price', function($datas){
@@ -2205,7 +2206,7 @@ class AdminController extends Controller
 
 
 
-                    ->rawColumns(['status','category_name','sub_category_name','product_name','warehouse','product_image','product_price','product_unit_type','product_unit_quantity','produc_stock_amount','action'])
+                    ->rawColumns(['status','category_name','sub_category_name','product_name','product_image','warehouse','product_price','product_unit_type','product_unit_quantity','produc_stock_amount','action'])
                     ->make(true);
         }
 
