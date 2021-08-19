@@ -357,6 +357,7 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
 
 
 
-
+Route::get('update_unit','AdminController@update_unit');
+Route::get('update_stock','AdminController@update_stock');
 Route::view('error','error');
 Route::get('test','AdminController@test');

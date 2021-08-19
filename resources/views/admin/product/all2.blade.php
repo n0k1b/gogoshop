@@ -88,7 +88,7 @@
                 </ul>
             </div>
      @endif
-				<div class="row page-titles mx-0">
+    			<div class="row page-titles mx-0">
                     <div class="col-sm-6 p-md-0">
                         <div class="welcome-text">
                             <h4>All Product</h4>
@@ -124,12 +124,12 @@
 											<table id="product" class="display" style="min-width: 845px">
 												<thead>
 													<tr>
-														<th>#</th>
+														{{-- <th>#</th> --}}
 														<th>Category Name</th>
                                                         <th>Sub Category Name</th>
 
                                                         <th>Product Name</th>
-                                                        <th>Warehouse</th>
+                                                        {{-- <th>Warehouse</th> --}}
                                                         <th>Image</th>
                                                         <th>Unit Price</th>
 
@@ -260,10 +260,10 @@
 
 
 
-          processing: true,
+            processing: true,
          language: {
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
-},
+        },
           serverSide: true,
 
           ajax: "{{ route('get_all_product') }}",
@@ -273,33 +273,24 @@
         // },
           deferRender: true,
           columns: [
-              {data: 'sl_no', name: 'sl_no'},
+            //   {data: 'sl_no'},
 
-              {data:'category_name',name:'category_name'},
+            {data:'category_name',name:'category_name'},
               {data:'sub_category_name',name:'sub_category_name'},
-              {data:'product_name',name:'product_name'},
-              {data:'warehouse',name:'warehouse'},
+              {data:'product_name',name:'name'},
+            //   {data:'warehouse',name:'warehouse'},
             {data:'product_image',name:'product_image'},
               {data:'product_price',name:'product_price'},
               {data:'product_unit_type',name:'product_unit_type'},
               {data:'product_unit_quantity',name:'product_unit_quantity'},
               {data:'produc_stock_amount',name:'produc_stock_amount'},
-
-
             {
-
                 data: 'status',
                 name: 'status',
-
-
             },
-
                 {
-
                 data: 'action',
                 name: 'action',
-
-
                 },
 
           ],

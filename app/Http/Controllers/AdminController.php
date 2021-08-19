@@ -2065,27 +2065,32 @@ class AdminController extends Controller
 
     public function get_all_product(Request $request)
     {
-        file_put_contents('test.txt',$request." ".time());
+        //file_put_contents('test.txt',$request." ".time());
         if ($request->ajax()) {
-            $datas = product::with('category:id,name','sub_category:id,category_id,name','warehouse:id,warehouse_id,product_id','warehouse.warehouse:id,name','unit:id,product_id,unit_type,unit_quantity','stock:id,product_id,stock_amount')->where('delete_status',0)->get();
+            $datas = product::with('category:id,name','sub_category:id,category_id,name','unit:id,unit_type,unit_quantity')->where('delete_status',0)->select(['*']);
+
             $i=1;
                 foreach($datas as $data)
                 {
-                    $checked = $data->status=='1'?'checked':'';
-                    $data['sl_no'] = $i++;
+                  $checked = $data->status=='1'?'checked':'';
+                    $data->sl_no= $i++;
                    // $data['category_name'] = $data->sub_category->category->name;
 
-
-
-                    $data['checked'] =$checked;
+                    $data->chekced =$checked;
 
                 }
 
+              //  file_put_contents('test.txt',$datas);
+
             return Datatables::of($datas)
                     ->addIndexColumn()
+
                     ->addColumn('status', function($datas){
 
-                           $switch = "<label class='switch'> <input onclick='product_active_status(".$datas->id.")' type='checkbox'".$datas->checked."  /> <span class='slider round'></span> </label>";
+                            if($datas->status == 1)
+                           $switch = "<label class='switch'> <input onclick='product_active_status(".$datas->id.")' type='checkbox' checked /> <span class='slider round'></span> </label>";
+                           else
+                           $switch = "<label class='switch'> <input onclick='product_active_status(".$datas->id.")' type='checkbox' /> <span class='slider round'></span> </label>";
 
                             return $switch;
                     })
@@ -2123,16 +2128,7 @@ class AdminController extends Controller
                      return $column;
                  })
 
-                 ->addColumn('warehouse', function($datas){
 
-                    $permission = $this->permission();
-
-                    if(in_array('product_edit',$permission))
-                    $column = '<p onclick='.'edit('. $datas->id.',"warehouse")'.'>'. $datas->warehouse->warehouse->name .'</p>';
-                    else
-                    $column = '<p >'. $datas->warehouse->warehouse->name .'</p>';
-                     return $column;
-                 })
 
                 //  ->addColumn('warehouse', function($datas){
 
@@ -2186,9 +2182,9 @@ class AdminController extends Controller
                     $permission = $this->permission();
 
                     if(in_array('product_edit',$permission))
-                    $column = '<p >'. $datas->stock->stock_amount .'</p>';
+                    $column = '<p >'. $datas->stock .'</p>';
                     else
-                    $column = '<p >'. $datas->stock->stock_amount .'</p>';
+                    $column = '<p >'. $datas->stock .'</p>';
                      return $column;
                  })
                  ->addColumn('action', function($data){
@@ -2206,7 +2202,7 @@ class AdminController extends Controller
 
 
 
-                    ->rawColumns(['status','category_name','sub_category_name','product_name','product_image','warehouse','product_price','product_unit_type','product_unit_quantity','produc_stock_amount','action'])
+                    ->rawColumns(['status','category_name','sub_category_name','product_name','product_image','product_price','product_unit_type','product_unit_quantity','produc_stock_amount','action'])
                     ->make(true);
         }
 
@@ -2223,7 +2219,7 @@ class AdminController extends Controller
     //     {
     //         $checked = $data->status=='1'?'checked':'';
 
-    //         $product.='	<tr>
+    //         $product.='    <tr>
 
 
 
@@ -2327,7 +2323,6 @@ class AdminController extends Controller
             'thumbnail_image.required' => 'Product image field is required.',
             'unit_type.required' => 'Product unit type field is required.',
             'unit_quantity.required' => 'Product unit quantity field is required.',
-
             'net_weight.required' => 'Product net weight field is required.',
 
 
@@ -2343,6 +2338,7 @@ class AdminController extends Controller
     {
         return redirect()->back()->withInput()->with('errors',collect($validator->errors()->all()));
     }
+    $product_unit = product_unit::create(['unit_quantity'=>$request->unit_quantity,'unit_type'=>$request->unit_type]);
         $image = time() . '.' . request()->thumbnail_image->getClientOriginalExtension();
 
 
@@ -2360,62 +2356,25 @@ class AdminController extends Controller
 
         if($user_role == 'Admin' || $user_role == 'admin')
         {
-            $product = product::create(['category_id'=>$request->category_id,'sub_category_id'=>$request->sub_category_id,'brand_id'=>$request->brand_id,'name'=>$request->name,'price'=>$request->price,'thumbnail_image'=>$image,'description'=>$description,'net_weight'=>$request->net_weight]);
+            $product = product::create(['stock'=>0,'unit_id'=>$product_unit->id,'category_id'=>$request->category_id,'sub_category_id'=>$request->sub_category_id,'brand_id'=>$request->brand_id,'name'=>$request->name,'price'=>$request->price,'thumbnail_image'=>$image,'description'=>$description,'net_weight'=>$request->net_weight]);
 
         }
         else
         {
-            $product = product::create(['category_id'=>$request->category_id,'sub_category_id'=>$request->sub_category_id,'brand_id'=>$request->brand_id,'name'=>$request->name,'price'=>$request->price,'thumbnail_image'=>$image,'description'=>$description,'net_weight'=>$request->net_weight,'status'=>0]);
+            $product = product::create(['stock'=>0,'category_id'=>$request->category_id,'sub_category_id'=>$request->sub_category_id,'brand_id'=>$request->brand_id,'name'=>$request->name,'price'=>$request->price,'thumbnail_image'=>$image,'description'=>$description,'net_weight'=>$request->net_weight,'status'=>0]);
         }
 
         //$product = product::create(['category_id'=>$request->category_id,'sub_category_id'=>$request->sub_category_id,'brand_id'=>$request->brand_id,'name'=>$request->name,'price'=>$request->price,'thumbnail_image'=>$image,'description'=>$description,'net_weight'=>$request->net_weight]);
        $product_id = $product->id;
-       if($request->color)
-       {
-       product_color::create(['product_id'=>$product_id,'color'=>$request->color]);
-       }
-       if($request->size)
-       {
-       product_size::create(['product_id'=>$product_id,'size'=>$request->size]);
-       }
-       product_unit::create(['product_id'=>$product_id,'unit_quantity'=>$request->unit_quantity,'unit_type'=>$request->unit_type]);
-      product_stock::create(['product_id'=>$product_id,'stock_amount'=>'0']);
+
+
+     // product_stock::create(['product_id'=>$product_id,'stock_amount'=>'0']);
        warehouse_product::create(['product_id'=>$product_id,'warehouse_id'=>$request->warehouse_id]);
 
 
 
-       if($request->file('detail_image'))
-       {
-        $increment = 0;
-        foreach ($request->file('detail_image') as $detail_image) {
-            $filesName = time().$increment.'.'.$detail_image->getClientOriginalExtension();
-            $detail_image->move(public_path('../Apartment photoes'), $filesName);
-            product_detail_image::create(['product_id'=>$product_id,'image'=>$detail_image]);
-            //detailes_image::create(['apartment_id'=>$apartment->id,'image'=>$filesName]);
-            //myfile = fopen("courier_manMaskNumbers.txt", "a+") or die("Unable to open file!");
-            //fwrite($myfile,$filesName."\n");
-            $increment++;
-        }
-    }
+
     return redirect()->route('show-all-product')->with('success','Product Added Successfully');
-
-    //     if($request->image)
-    //     {
-    //     $image = time() . '.' . request()->image->getClientOriginalExtension();
-
-    // $request
-    //     ->image
-    //     ->move(public_path('../image/product_image') , $image);
-    // $image = "image/product_image/" . $image;
-    // product::create(['name'=>$request->name,'image'=>$image]);
-    //     }
-    //    //file_put_contents('test.txt',$request->name." ".$request->image);
-
-    //    else
-    //    {
-    //     product::create(['name'=>$request->name]);
-    //    }
-    //     return redirect()->route('show-all-product')->with('success','Product Added Successfully');
 
 
     }
@@ -4027,6 +3986,29 @@ class AdminController extends Controller
 
 
     }
+
+
+    public function update_unit()
+    {
+        $product = product::get();
+        foreach($product as $data)
+        {
+            $unit_id = product_unit::where('product_id',$data->id)->first()->id;
+            product::where('id',$data->id)->update(['unit_id'=>$unit_id]);
+        }
+    }
+
+    public function update_stock()
+    {
+        $product = product::get();
+        foreach($product as $data)
+        {
+            $stock = product_stock::where('product_id',$data->id)->first()->stock_amount;
+            product::where('id',$data->id)->update(['stock'=>$stock]);
+        }
+    }
+
+
 
 
 }
