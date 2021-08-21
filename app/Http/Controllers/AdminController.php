@@ -2069,6 +2069,7 @@ class AdminController extends Controller
         if ($request->ajax()) {
             $datas = product::with('category:id,name','sub_category:id,category_id,name','unit:id,unit_type,unit_quantity')->where('delete_status',0)->select(['*']);
 
+
             $i=1;
                 foreach($datas as $data)
                 {
@@ -2082,7 +2083,8 @@ class AdminController extends Controller
 
               //  file_put_contents('test.txt',$datas);
 
-            return Datatables::of($datas)
+            return Datatables::eloquent($datas)
+
                     ->addIndexColumn()
 
                     ->addColumn('status', function($datas){
