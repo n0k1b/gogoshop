@@ -61,7 +61,7 @@ class AndroidController extends Controller
                foreach($section_product->product_list as $product_list)
                {
                     $discount_price =$product_list->product->price- floor(($product_list->product->price*$product_list->discount_percentage)/100);
-                   array_push($product,['id'=>$product_list->product->id,'name'=>$product_list->product->name,'image'=>$this->base_url.$product_list->product->thumbnail_image,'unit'=>$product_list->product->unit->unit_quantity." ".$product_list->product->unit->unit_type,'price'=> $product_list->product->price,'discount_price'=>$discount_price,'stock'=>$product_list->product->stock->stock_amount]);
+                   array_push($product,['id'=>$product_list->product->id,'name'=>$product_list->product->name,'image'=>$this->base_url.$product_list->product->thumbnail_image,'unit'=>$product_list->product->unit->unit_quantity." ".$product_list->product->unit->unit_type,'price'=> $product_list->product->price,'discount_price'=>$discount_price,'stock'=>$product_list->product->stock]);
                }
 
                array_push($data,['section_name'=>$section_product->section_name,'product'=>$product]);
@@ -198,7 +198,7 @@ class AndroidController extends Controller
                         {
                             $discount_price = $product->price;
                         }
-                    array_push($product_list,['id'=>$product->id,'name'=>$product->name,'image'=>$this->base_url.$product->thumbnail_image,'unit'=>$product->unit->unit_quantity." ".$product->unit->unit_type,'price'=> $product->price,'stock'=>$product->stock->stock_amount,'discount_price'=>$discount_price]);
+                    array_push($product_list,['id'=>$product->id,'name'=>$product->name,'image'=>$this->base_url.$product->thumbnail_image,'unit'=>$product->unit->unit_quantity." ".$product->unit->unit_type,'price'=> $product->price,'stock'=>$product->stock,'discount_price'=>$discount_price]);
                     }
                    array_push($data_sub_category,['id'=>$sub_category->id,'name'=>$sub_category->name,'image'=>$this->base_url.$sub_category->image,'product'=>$product_list]);
                }
@@ -306,7 +306,7 @@ class AndroidController extends Controller
                         {
                             $discount_price = $product->price;
                         }
-            array_push($product_list,['id'=>$product->id,'name'=>$product->name,'image'=>$this->base_url.$product->thumbnail_image,'unit'=>$product->unit->unit_quantity." ".$product->unit->unit_type,'price'=> $product->price,'stock'=>$product->stock->stock_amount,'discount_price'=>$discount_price]);
+            array_push($product_list,['id'=>$product->id,'name'=>$product->name,'image'=>$this->base_url.$product->thumbnail_image,'unit'=>$product->unit->unit_quantity." ".$product->unit->unit_type,'price'=> $product->price,'stock'=>$product->stock,'discount_price'=>$discount_price]);
 
         }
 
