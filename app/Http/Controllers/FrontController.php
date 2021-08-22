@@ -465,7 +465,6 @@ class FrontController extends Controller
         //session()->forget('cart');
         $rules = [
             'address_id'=>'required',
-
         ];
 
 
@@ -514,7 +513,7 @@ class FrontController extends Controller
            order_details::create(['order_no'=>$order_no,'package_id'=>$id,'unit_quantity'=>$details['unit'],'count'=>$details['quantity'],'price'=>$details['price']]);
         }
         $delivery_fee =delivery_charge::first()->unit_charge ;
-        $order = order::create(['address_id'=>$address_id,'user_id'=>$user_id,'order_no'=>$order_no,'status'=>'pending','total_price'=>$total,'delivery_fee'=>$delivery_fee]);
+        $order = order::create(['address_id'=>$address_id,'user_id'=>$user_id,'order_no'=>$order_no,'status'=>'pending','total_price'=>$total,'delivery_fee'=>$delivery_fee,'courier_man'=>$courier_man]);
 
         $status = $order->status;
         $order_no = $order->order_no;
