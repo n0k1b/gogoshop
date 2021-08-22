@@ -506,11 +506,8 @@ class FrontController extends Controller
            $remaining_stock = product_stock::where('product_id',$id)->first()->stock_amount;
            $stock = $remaining_stock-$details['quantity'];
            product_stock::where('product_id',$id)->update(['stock_amount'=>$stock]);
-
-           if($details['type'] == 'product')
            order_details::create(['order_no'=>$order_no,'product_id'=>$id,'unit_quantity'=>$details['unit'],'count'=>$details['quantity'],'price'=>$details['price']]);
-           else
-           order_details::create(['order_no'=>$order_no,'package_id'=>$id,'unit_quantity'=>$details['unit'],'count'=>$details['quantity'],'price'=>$details['price']]);
+
         }
         $delivery_fee =delivery_charge::first()->unit_charge ;
         $order = order::create(['address_id'=>$address_id,'user_id'=>$user_id,'order_no'=>$order_no,'status'=>'pending','total_price'=>$total,'delivery_fee'=>$delivery_fee,'courier_man'=>$courier_man]);
