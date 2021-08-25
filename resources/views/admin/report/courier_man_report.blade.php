@@ -63,22 +63,41 @@
 												<thead class="thead-dark">
 													<tr>
 														<th>#</th>
-														<th>Order No</th>
+                                                        <th>Order No</th>
+                                                        <th>Date</th>
+														<th>Delivery Man</th>
 
 
-														<th>Customer</th>
-														<th>Delivery Address</th>
+														<th>Address</th>
+														<th>Total Bill</th>
 
-                                                        <th>Contact No</th>
-                                                        <th>Total Price</th>
-                                                        <th>Order Status</th>
-                                                        <th>Order Date</th>
-                                                        <th></th>
+                                                        <th>Deposit Note</th>
+                                                        <th>Status</th>
+
+
+
 													</tr>
 												</thead>
 												<tbody>
 
 												</tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+														<th></th>
+
+
+														<th>Total</th>
+														<th>0</th>
+
+                                                        <th></th>
+                                                        <th></th>
+
+                                                      </tr>
+
+                                                </tfoot>
 											</table>
 										</div>
 									</div>
@@ -98,6 +117,7 @@
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://cdn.datatables.net/plug-ins/1.10.25/api/sum().js" type="text/javascript"></script>
 {{-- <script>
     $("#example3").DataTable({
        ordering: false
@@ -106,61 +126,89 @@
 </script> --}}
 
 <script type="text/javascript">
-    $(function () {
+       $(function () {
 
-      var table = $('#order_report_table').DataTable({
-          processing: true,
-          serverSide: true,
-          ajax: "{{ route('show_order_report') }}",
+var table = $('#order_report_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: "{{ route('show_courier_report') }}",
+    columnDefs: [ {
+targets: 7,
+createdCell: function (td, cellData, rowData, row, col) {
+  $(td).css('text-transform','uppercase');
+  $(td).css('font-weight','bold');
 
-          columns: [
-              {data: 'sl_no', name: 'sl_no'},
+    if(cellData=='received')
+    {
+        $(td).css('color','green');
+    }
+    else{
+        $(td).css('color','red');
+    }
 
-              {data:'order_no',name:'order_no'},
+     // $(td).css('color', 'red');
 
-            {
+}
+} ],
 
-                data: 'customer_name',
-                name: 'customer_name',
+    columns: [
+        {data: 'sl_no', name: 'sl_no'},
 
+        {data: 'order_no', name: 'order_no'},
 
-            },
-            {
-                data:'address',
-                name:'address',
-            },
-
-
-
-
-            {
-                data:'contact_no',
-                name:'contact_no',
-            },
-            {
-                data:'total_price',
-                name:'total_price',
-            },
-
-            {
-                data:'status',
-                name:'status',
-            },
-
-
-            {
-                data:'order_date',
-                name:'order_date',
-            }
+        {data:'date',name:'date'},
 
 
 
+      {
+
+          data: 'courier_man',
+          name: 'courier_man',
+
+      },
+
+        {
+
+          data: 'address',
+          name: 'address',
 
 
-          ]
-      });
+      },
 
-    });
+      {
+          data:'total_bill',
+          name:'total_bill',
+      },
+
+
+      {
+          data:'deposit_note',
+          name:'deposit_note',
+      },
+
+      {
+          data:'status',
+          name:'status'
+      },
+
+
+
+
+
+    ],
+    drawCallback: function () {
+            var api = this.api();
+            datatable_sum(api, false);
+        },
+});
+
+function datatable_sum(dt_selector, is_calling_first) {
+        //col start from 0
+        $( dt_selector.column(5).footer() ).html(dt_selector.column( 5, {page:'current'} ).data().sum());
+
+    }
+
+});
   </script>
 <script src="{{asset('assets')}}/admin/js/admin.js?{{time()}}"></script>
 @endsection

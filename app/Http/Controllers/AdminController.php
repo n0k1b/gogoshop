@@ -1502,15 +1502,18 @@ class AdminController extends Controller
       {
 
         if ($request->ajax()) {
-            $data = deposit::where('delete_status',0)->get();
+            $data = deposit::where('delete_status',0)->where('status','pending')->get();
             $i=1;
                 foreach($data as $datas)
                 {
 
                     $datas['sl_no'] = $i++;
                     $datas['date'] = date("d-m-Y", strtotime($datas->created_at));
+                    $datas['order_no'] = $datas->order->order_no;
                     $datas['deposit_received_by'] = $datas->deposit_received->name;
-                    $datas['courier_man'] = $datas->courier->name;
+                    $datas['courier_man'] = $datas->order->user->name;
+                   $datas['address']=  $datas->order->address->area->name.','.$datas->order->address->address;
+                   $datas['total_bill'] = $datas->order->total_price+$datas->order->delivery_fee;
 
 
 
@@ -1523,7 +1526,7 @@ class AdminController extends Controller
                     ->addIndexColumn()
                     ->addColumn('accept_payment',function($data){
                         $button = '';
-                        $button .= ' <a href="edit_deposit_content/'.$data->id.'" class="btn btn-sm btn-primary">Accept</a>';
+                        $button .= ' <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="accept_deposit_payment('.$data->id.')">Accept</a>';
                         return $button;
                     })
 
@@ -1644,6 +1647,14 @@ class AdminController extends Controller
       {
           $id = $request->id;
           deposit::where('id', $id)->update(['delete_status'=>1]);
+
+      }
+
+      public function accept_deposit_payment(Request $request)
+      {
+
+        $id = $request->id;
+        deposit::where('id', $id)->update(['status'=>'received']);
 
       }
       //deposit end
@@ -2980,7 +2991,63 @@ class AdminController extends Controller
 
         return view('admin.report.show');
     }
+    public function show_courier_report(Request $request)
+    {
 
+        if(!$request->ajax())
+        {
+
+
+
+        $from_date = $request->from_date;
+        $from_date =  date("Y-m-d", strtotime($from_date));
+        Session::put('from_date',$from_date);
+        $to_date = $request->to_date;
+        $to_date =  date("Y-m-d", strtotime($to_date."+1 days"));
+        Session::put('to_date',$to_date);
+
+
+        }
+
+
+        if ($request->ajax()) {
+            $from_date = Session::get('from_date');
+            $to_date = Session::get('to_date');
+            $data = deposit::whereDate('created_at','>=',$from_date)->whereDate('created_at','<=',$to_date)->get();
+            $i=1;
+                foreach($data as $datas)
+                {
+
+                    $datas['sl_no'] = $i++;
+                    $datas['date'] = date("d-m-Y", strtotime($datas->created_at));
+                    $datas['order_no'] = $datas->order->order_no;
+                    $datas['deposit_received_by'] = $datas->deposit_received->name;
+                    $datas['courier_man'] = $datas->order->user->name;
+                   $datas['address']=  $datas->order->address->area->name.','.$datas->order->address->address;
+                   $datas['total_bill'] = $datas->order->total_price+$datas->order->delivery_fee;
+
+
+
+                }
+
+            return Datatables::of($data)
+                    ->addIndexColumn()
+
+                    ->make(true);
+        }
+
+
+
+
+        return view('admin.report.courier_man_report');
+
+
+
+
+
+
+       // file_put_contents('test.txt',$from_date." ".$to_date);
+    }
     public function show_order_report(Request $request)
     {
 
@@ -3064,7 +3131,6 @@ class AdminController extends Controller
 
 
 
-        return view('admin.report.show');
 
        // file_put_contents('test.txt',$from_date." ".$to_date);
     }

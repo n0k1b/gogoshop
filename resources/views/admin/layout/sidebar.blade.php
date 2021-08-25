@@ -173,6 +173,7 @@
                     <ul aria-expanded="false">
 
                         <li><a href="{{url('admin/report/order')}}">Order Report</a></li>
+                        <li><a href="{{url('admin/report/courier_man')}}">Courier Man</a></li>
                         {{-- <li><a href="#">Purchase Report</a></li>
                         <li><a href="#">Exense Report</a></li> --}}
 

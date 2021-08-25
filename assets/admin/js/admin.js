@@ -117,6 +117,8 @@ function domain_active_status(id) {
     })
 }
 
+
+
 function domain_content_delete(id) {
 
     var conf = confirm('Are you sure?');
@@ -643,6 +645,26 @@ function deposit_content_delete(id) {
             url: 'deposit_content_delete/' + id,
             success: function(data) {
                 alert('Content Delete Successfully')
+                location.reload();
+
+            }
+        })
+    }
+}
+
+
+function accept_deposit_payment(id)
+{
+    var conf = confirm('Are you sure?');
+
+    if (conf == true) {
+        $.ajax({
+            processData: false,
+            contentType: false,
+            type: 'GET',
+            url: 'accept_deposit_payment/' + id,
+            success: function(data) {
+                alert('Payment Received Successfully')
                 location.reload();
 
             }

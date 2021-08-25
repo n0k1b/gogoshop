@@ -95,7 +95,9 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
 
       //Report Start
       Route::get('report/{type}','AdminController@report_view');
+
       Route::get('show_order_report','AdminController@show_order_report')->name('show_order_report');
+      Route::get('show_courier_report','AdminController@show_courier_report')->name('show_courier_report');
       Route::post('show_all_report','AdminController@show_all_report')->name('show_all_report');
 
       //
@@ -315,6 +317,7 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
    Route::get('edit_deposit_content/{id}','AdminController@edit_deposit_content_ui');
    Route::post('update_deposit_content','AdminController@update_deposit_content')->name('update_deposit_content');
    Route::get('deposit_content_delete/{id}','AdminController@deposit_content_delete')->name('deposit_content_delete');
+   Route::get('accept_deposit_payment/{id}','AdminController@accept_deposit_payment');
    Route::get('deposit_product/{id}','AdminController@deposit_content_delete')->name('deposit_content_delete');
    //Deposit End
 

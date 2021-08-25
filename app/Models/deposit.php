@@ -13,11 +13,17 @@ class deposit extends Model
     {
         return $this->belongsTo('App\Models\user','courier_man','id');
     }
+    public function order()
+    {
+        return $this->belongsTo('App\Models\order','order_id','id');
+    }
 
     public function deposit_received()
     {
         return $this->belongsTo('App\Models\user','deposit_received_by','id')->withDefault();
     }
+
+
 
 
 

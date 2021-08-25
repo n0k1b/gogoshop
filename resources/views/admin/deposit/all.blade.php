@@ -70,6 +70,7 @@
 												<thead>
 													<tr>
 														<th>#</th>
+                                                        <th>Order No</th>
                                                         <th>Date</th>
 														<th>Delivery Man</th>
 
@@ -120,10 +121,24 @@
           processing: true,
           serverSide: true,
           ajax: "{{ route('show-all-deposit') }}",
+          columnDefs: [ {
+    targets: 7,
+    createdCell: function (td, cellData, rowData, row, col) {
+        $(td).css('text-transform','uppercase');
+        $(td).css('font-weight','bold');
+        $(td).css('color','green');
+
+           // $(td).css('color', 'red');
+
+    }
+} ],
           columns: [
               {data: 'sl_no', name: 'sl_no'},
 
+              {data: 'order_no', name: 'order_no'},
+
               {data:'date',name:'date'},
+
 
 
             {
@@ -131,16 +146,21 @@
                 data: 'courier_man',
                 name: 'courier_man',
 
+            },
+
+              {
+
+                data: 'address',
+                name: 'address',
+
 
             },
+
             {
-                data:'deposit_amount',
-                name:'deposit_amount',
+                data:'total_bill',
+                name:'total_bill',
             },
-            {
-                data:'deposit_received_by',
-                name:'deposit_received_by',
-            },
+
 
             {
                 data:'deposit_note',

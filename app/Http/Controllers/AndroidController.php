@@ -811,7 +811,7 @@ class AndroidController extends Controller
 
             $order = order::where('order_no',$order_no)->first();
             $order_id = $order->id;
-            $total_bill = $order->total_price+$order->delivery_fee;
+          //  $total_bill = $order->total_price+$order->delivery_fee;
             deposit::create(['order_id'=>$order_id]);
 
             $response = ['status_code'=>200];
