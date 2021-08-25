@@ -78,6 +78,8 @@
 														<th>Total Bill</th>
 
                                                         <th>Deposit Note</th>
+                                                        <th>Status</th>
+                                                        <th></th>
                                                         <th>Action</th>
 
 													</tr>
@@ -143,6 +145,15 @@
             {
                 data:'deposit_note',
                 name:'deposit_note',
+            },
+
+            {
+                data:'status',
+                name:'status'
+            },
+            {
+                data:'accept_payment',
+                name:'accept_payment'
             },
 
             {

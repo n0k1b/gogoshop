@@ -1521,6 +1521,11 @@ class AdminController extends Controller
 
             return Datatables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('accept_payment',function($data){
+                        $button = '';
+                        $button .= ' <a href="edit_deposit_content/'.$data->id.'" class="btn btn-sm btn-primary">Accept</a>';
+                        return $button;
+                    })
 
                     ->addColumn('action', function($data){
 
@@ -1539,7 +1544,7 @@ class AdminController extends Controller
                  })
 
 
-                    ->rawColumns(['action'])
+                    ->rawColumns(['action','accept_payment'])
                     ->make(true);
         }
 

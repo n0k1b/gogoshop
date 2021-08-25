@@ -810,9 +810,9 @@ class AndroidController extends Controller
             order::where('order_no',$order_no)->update(['status'=>'delivered']);
 
             $order = order::where('order_no',$order_no)->first();
-            $courier_man = $order->courier_man;
+            $order_id = $order->id;
             $total_bill = $order->total_price+$order->delivery_fee;
-            deposit::create(['courier_man'=>$courier_man,'deposit_amount'=>$total_bill]);
+            deposit::create(['order_id'=>$order_id]);
 
             $response = ['status_code'=>200];
             return response($response, 200);

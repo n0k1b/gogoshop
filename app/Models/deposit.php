@@ -16,7 +16,9 @@ class deposit extends Model
 
     public function deposit_received()
     {
-        return $this->belongsTo('App\Models\user','deposit_received_by','id');
+        return $this->belongsTo('App\Models\user','deposit_received_by','id')->withDefault();
     }
+
+
 
 }
