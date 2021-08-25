@@ -2235,7 +2235,7 @@ class AdminController extends Controller
 
     //             <td onclick='.'edit('. $data->id.',"product_unit_type")'.'>'. $data->unit->unit_type .'</td>
     //             <td onclick='.'edit('. $data->id.',"product_unit_quantity")'.'>'. $data->unit->unit_quantity .'</td>
-    //             <td onclick='.'edit('. $data->id.',"produc_stock_amount")'.'>'. $data->stock->stock_amount .'</td>
+    //             <td onclick='.'edit('. $data->id.',"produc_stock_amount")'.'>'. $data->stock .'</td>
     //             <td> <label class="switch">
     //                 <input type="checkbox"  onclick="product_active_status('.$data->id.')" '.$checked.'>
     //                     <span class="slider round"></span>
@@ -2689,7 +2689,7 @@ class AdminController extends Controller
         if($column_name == 'produc_stock_amount')
         {
             $product = product::where('id',$product_id)->first();
-            $product_stock_amount = $product->stock->stock_amount;
+            $product_stock_amount = $product->stock;
             $data.='<div class="col-lg-12 col-md-12 col-sm-12">
             <div class="form-group">
                 <label>Product Stock Amount</label>

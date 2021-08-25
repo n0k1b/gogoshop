@@ -74,8 +74,8 @@
 														<th>Delivery Man</th>
 
 
-														<th>Deposit Amount</th>
-														<th>Deposit Received By</th>
+														<th>Address</th>
+														<th>Total Bill</th>
 
                                                         <th>Deposit Note</th>
                                                         <th>Action</th>
