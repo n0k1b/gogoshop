@@ -29,6 +29,8 @@ use App\Models\order_details;
 use App\Models\package;
 use App\Models\package_product;
 use App\Models\delivery_charge;
+use App\Models\deposit;
+
 
 
 use DB;
@@ -459,6 +461,17 @@ class FrontController extends Controller
         $order_no = $request->order_no;
         order::where('order_no',$order_no)->update(['status'=>'canceled']);
     }
+    public function receive_order(Request $request)
+    {
+        $order_no = $request->order_no;
+        order::where('order_no',$order_no)->update(['status'=>'delivered']);
+        $order = order::where('order_no',$order_no)->first();
+        $order_id = $order->id;
+      //  $total_bill = $order->total_price+$order->delivery_fee;
+        deposit::create(['order_id'=>$order_id]);
+
+    }
+
 
     public function place_order(Request $request)
     {

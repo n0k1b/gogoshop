@@ -74,6 +74,8 @@ Route::group(['middleware' => 'IsLoggedIn'], function()
    Route::get('edit_address/{id}','FrontController@edit_address');
    Route::get('order_list','FrontController@order_list');
    Route::post('view_order_details','FrontController@view_order_details')->name('view_order_details');
+   Route::post('cancel_order','FrontController@cancel_order')->name('cancel_order');
+   Route::post('receive_order','FrontController@receive_order')->name('receive_order');
 
 });
 

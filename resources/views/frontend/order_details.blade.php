@@ -235,6 +235,13 @@
                             <button type="button" class="btn btn-danger btn-lg" onclick="cancel_order('{{ $order_no }}')">Cacnel</button>
                         </div>
                         @endif
+
+                        @if($status=="picked")
+                        <div class="text-center">
+                            <h5>Would you like to receive the order?</h5>
+                            <button type="button" class="btn btn-success btn-lg" onclick="receive_order('{{ $order_no }}')">Received</button>
+                        </div>
+                        @endif
                     </div>
 
                     <div class="col-4 col-md-4 col-sm-12">
