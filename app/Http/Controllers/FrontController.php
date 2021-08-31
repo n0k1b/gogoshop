@@ -30,7 +30,7 @@ use App\Models\package;
 use App\Models\package_product;
 use App\Models\delivery_charge;
 use App\Models\deposit;
-use App\Models\user_role;
+use App\Models\user_token;
 use App\Http\Traits\FirebaseTrait;
 
 
@@ -515,7 +515,7 @@ class FrontController extends Controller
        // return response($response, 200);
        return back()->with('error','No courier man available at this time. Please try again after sometimes');
         }
-        $token = user_role::where('user_id',$courier_man)->first()->firebase_token;
+        $token = user_token::where('user_id',$courier_man)->first()->firebase_token;
         $text = "New Order";
         $body = "You have a new order";
         $this->sendPushNotification($token,$text,$body);
