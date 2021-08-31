@@ -30,6 +30,8 @@ use App\Models\package;
 use App\Models\package_product;
 use App\Models\delivery_charge;
 use App\Models\deposit;
+use App\Models\user_role;
+use App\Http\Traits\FirebaseTrait;
 
 
 
@@ -42,6 +44,7 @@ class FrontController extends Controller
 {
 
     //
+    use FirebaseTrait;
 
     public function view_order_details(Request $request)
     {
@@ -504,6 +507,11 @@ class FrontController extends Controller
        // $courier_man = 1;//$this->search_courier_man($area_id);
 
        $courier_man =$this->search_courier_man($area_id);
+       $token = user_role::where('user_id',$courier_man)->first()->firebase_token;
+       $text = "New Order";
+       $body = "You have a new order";
+       $this->sendPushNotification($token,$text,$body);
+
         if($courier_man == 0)
         {
         //$response = ['status_code'=>414,];

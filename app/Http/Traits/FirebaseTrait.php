@@ -1,16 +1,22 @@
 <?php
 namespace App\Http\Traits;
+use App\Models\user;
+use App\Models\user_token;
+use Auth;
+//use Config;
+
+
 
 trait FirebaseTrait{
 
-    public function sendPushNotification()
+    public function sendPushNotification($firebaseToken,$title,$body)
     {
 
         $title = "Text";
         $body = "Hello";
-        $firebaseToken = "dAwZHN74Sz-jTcPDxj1iIz:APA91bGahsVEZlYMUYnt0UCT6NA95o3KoZ_uYwXymQiQdncj9pGSsvL8QcWR25sqn0g3wS0KfX7xzCO2yc4Uc8tXPZlUwE6L4N6V6eG4xdvtKbbjW1710C178axGTBLEo8rm_ItKJuXe";
+       // $firebaseToken = "dAwZHN74Sz-jTcPDxj1iIz:APA91bGahsVEZlYMUYnt0UCT6NA95o3KoZ_uYwXymQiQdncj9pGSsvL8QcWR25sqn0g3wS0KfX7xzCO2yc4Uc8tXPZlUwE6L4N6V6eG4xdvtKbbjW1710C178axGTBLEo8rm_ItKJuXe";
 
-        $SERVER_API_KEY = 'AAAACkd3hVY:APA91bHgFSXOwUPvR3sU_J6snRQ5G1jKHWyUiL_vabQwE9nr1Y8ZToe-7r34ZqRghdzcKCJ1eyZ0jW7r9co-ivcA8MoguMNE5qSK7lf7R1ZnfcsdbYN39mpPfUq-RC-W_PeZgYv99K-T';
+        $SERVER_API_KEY = config('firebase.server_key');
 
         $data = [
             "to" => $firebaseToken,

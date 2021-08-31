@@ -28,6 +28,10 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'firebase'=>[
+        'server_key'=>env('Firebase_Server_Key')
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
