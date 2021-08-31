@@ -12,11 +12,12 @@ trait FirebaseTrait{
     public function sendPushNotification($firebaseToken,$title,$body)
     {
 
-        $title = "Text";
-        $body = "Hello";
-       // $firebaseToken = "dAwZHN74Sz-jTcPDxj1iIz:APA91bGahsVEZlYMUYnt0UCT6NA95o3KoZ_uYwXymQiQdncj9pGSsvL8QcWR25sqn0g3wS0KfX7xzCO2yc4Uc8tXPZlUwE6L4N6V6eG4xdvtKbbjW1710C178axGTBLEo8rm_ItKJuXe";
+       // $title = "Text";
+        //$body = "Hello";
 
-        $SERVER_API_KEY = config('firebase.server_key');
+
+        $SERVER_API_KEY = env('Firebase_Server_Key');
+        file_put_contents('test.txt',$SERVER_API_KEY);
 
         $data = [
             "to" => $firebaseToken,
@@ -44,7 +45,7 @@ trait FirebaseTrait{
 
         $response = curl_exec($ch);
 
-        dd($response);
+        //dd($response);
     }
 
 }

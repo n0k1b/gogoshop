@@ -509,6 +509,7 @@ class FrontController extends Controller
        $courier_man =$this->search_courier_man($area_id);
 
 
+
         if($courier_man == 0)
         {
         //$response = ['status_code'=>414,];
