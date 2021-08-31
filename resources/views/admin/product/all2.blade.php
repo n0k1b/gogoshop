@@ -111,6 +111,7 @@
 								<div class="card">
 									<div class="card-header">
 										<h4 class="card-title"></h4>
+
                                         @if(in_array('product_add',$role_permission))
                                         <a href="{{ route('add-product') }}" class="btn btn-primary">+ Add new</a>
                                         @else
