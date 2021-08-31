@@ -507,10 +507,7 @@ class FrontController extends Controller
        // $courier_man = 1;//$this->search_courier_man($area_id);
 
        $courier_man =$this->search_courier_man($area_id);
-       $token = user_role::where('user_id',$courier_man)->first()->firebase_token;
-       $text = "New Order";
-       $body = "You have a new order";
-       $this->sendPushNotification($token,$text,$body);
+
 
         if($courier_man == 0)
         {
@@ -518,7 +515,10 @@ class FrontController extends Controller
        // return response($response, 200);
        return back()->with('error','No courier man available at this time. Please try again after sometimes');
         }
-
+        $token = user_role::where('user_id',$courier_man)->first()->firebase_token;
+        $text = "New Order";
+        $body = "You have a new order";
+        $this->sendPushNotification($token,$text,$body);
 
 
         foreach( $cart as $id => $details)
