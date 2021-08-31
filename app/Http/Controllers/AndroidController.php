@@ -26,6 +26,7 @@ use App\Models\courier_man;
 use App\Models\user_token;
 use App\Models\warehouse;
 use App\Models\deposit;
+use App\Http\Traits\FirebaseTrait;
 
 use Hash;
 use DB;
@@ -34,6 +35,8 @@ use DB;
 class AndroidController extends Controller
 {
     //
+    use FirebaseTrait;
+
     public $base_url = "http://gogoshopbd.com/";
     protected $current_date;
 
@@ -125,7 +128,7 @@ class AndroidController extends Controller
     {
         //file_put_contents('test.txt',$request);
         $address_id = $request->address_id;
-        file_put_contents('order_id_test.txt',$address_id);
+        //file_put_contents('order_id_test.txt',$address_id);
 
         $carts  = json_decode(json_encode($request->cart));
 
@@ -138,7 +141,10 @@ class AndroidController extends Controller
         $response = ['status_code'=>414,'message'=>'No Courier Man Available. Please try again later'];
         return response($response, 200);
         }
-
+        $token = user_token::where('user_id',$courier_man)->first()->firebase_token;
+        $text = "New Order";
+        $body = "You have a new order";
+        $this->sendPushNotification($token,$text,$body);
 
         foreach($carts as $cart)
         {
