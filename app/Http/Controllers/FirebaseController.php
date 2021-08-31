@@ -13,7 +13,7 @@ class FirebaseController extends Controller
 
         $title = "Text";
         $body = "Hello";
-        $firebaseToken = "epht0Se5QIy3woz9wJq8k7:APA91bFceWjAw6bv_S7PNwLGjf0c15obywF0wnuXX3Q3YjtL20KY8Oj2EKo4_xdSPdav2z6QrtjxmWnRsP9JZ9gdvBL89p89XzF7KyVDjFaUlh1BFkOzYEFR3264GzrQPw5g-kkkKlz5";
+        $firebaseToken = "dAwZHN74Sz-jTcPDxj1iIz:APA91bGahsVEZlYMUYnt0UCT6NA95o3KoZ_uYwXymQiQdncj9pGSsvL8QcWR25sqn0g3wS0KfX7xzCO2yc4Uc8tXPZlUwE6L4N6V6eG4xdvtKbbjW1710C178axGTBLEo8rm_ItKJuXe";
 
         $SERVER_API_KEY = 'AAAACkd3hVY:APA91bHgFSXOwUPvR3sU_J6snRQ5G1jKHWyUiL_vabQwE9nr1Y8ZToe-7r34ZqRghdzcKCJ1eyZ0jW7r9co-ivcA8MoguMNE5qSK7lf7R1ZnfcsdbYN39mpPfUq-RC-W_PeZgYv99K-T';
 
