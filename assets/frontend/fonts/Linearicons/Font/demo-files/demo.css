@@ -164,6 +164,9 @@ p {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+.icon-google::before{
+    content: "\ea83";
+}
 .icon-home:before {
 	content: "\e600";
 }

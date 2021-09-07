@@ -1,6 +1,9 @@
 @extends('admin.layout.app')
 @section('page_css')
 <link rel="stylesheet" href="{{asset('assets')}}/admin/css/image_preview.css?{{time()}}">
+<link rel="stylesheet" href="{{asset('assets')}}/admin/css/select2.min.css?{{time()}}" />
+<link rel="stylesheet" href="{{asset('assets')}}/admin/css/select2_custom.css?{{time()}}" />
+<link href="{{asset('assets')}}/admin/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
 @endsection
 @section('content')
 <div class="container-fluid">
@@ -65,6 +68,18 @@
 												<label class="form-label">Address</label>
 												<input type="text" class="form-control" name="address" placeholder="Address" value="{{ old('address') }}">
 											</div>
+									    </div>
+
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label>Area</label>
+                                                <select  multiple class="form-control" id="sel1" name="area_id[]">
+
+                                                    @foreach($areas as $data)
+                                                    <option value="{{$data->id}}">{{$data->name}}</option>
+                                                   @endforeach
+                                                </select>
+                                        </div>
 									    </div>
 
                                         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -139,4 +154,7 @@
 
 @section('page_js')
 <script src="{{asset('assets')}}/admin/js/single_image_preview.js?{{time()}}"></script>
+<script src="{{ asset('assets') }}/admin/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+<script src="{{asset('assets')}}/admin/js/select2.full.js"></script>
+<script src="{{asset('assets')}}/admin/js/advanced-form-element.js"></script>
 @endsection

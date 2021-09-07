@@ -44,7 +44,8 @@ Route::post('submit_otp','FrontController@submit_otp')->name('submit_otp');
 Route::get('logout','FrontController@logout')->name('logout');
 Route::view('otp','auth.save_name');
 
-
+Route::get('auth/google', 'GoogleController@redirectToGoogle');
+Route::get('auth/google/callback', 'GoogleController@handleGoogleCallback');
 
 
 Route::get('login', function () {
@@ -218,15 +219,15 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
 
     //All courier start
 
-     Route::get('show-all-courier','AdminController@show_all_courier_man')->name('show-all-courier');
-     Route::get('add-courier','AdminController@add_courier_man_ui');
-     Route::post('add-courier','AdminController@add_courier_man')->name('add-courier');
-     Route::get('courier_man_active_status/{id}','AdminController@courier_man_active_status');
-     Route::get('edit_courier_content/{id}','AdminController@edit_courier_content_ui')->name('edit_courier_content');
-     Route::post('update_courier_content','AdminController@update_courier_content')->name('update_courier_content');
-     Route::get('courier_man_delete/{id}','AdminController@courier_man_content_delete')->name('courier_man_delete');
-     Route::get('reset_courier_man_password/{id}','AdminController@reset_courier_man_password')->name('reset_courier_man_password');
-     Route::post('update_password','AdminController@update_password')->name('update_password');
+     Route::get('show-all-courier','CouriermanController@show_all_courier_man')->name('show-all-courier');
+     Route::get('add-courier','CouriermanController@add_courier_man_ui');
+     Route::post('add-courier','CouriermanController@add_courier_man')->name('add-courier');
+     Route::get('courier_man_active_status/{id}','CouriermanController@courier_man_active_status');
+     Route::get('edit_courier_content/{id}','CouriermanController@edit_courier_content_ui')->name('edit_courier_content');
+     Route::post('update_courier_content','CouriermanController@update_courier_content')->name('update_courier_content');
+     Route::get('courier_man_delete/{id}','CouriermanController@courier_man_content_delete')->name('courier_man_delete');
+     Route::get('reset_courier_man_password/{id}','CouriermanController@reset_courier_man_password')->name('reset_courier_man_password');
+     Route::post('update_password','CouriermanController@update_password')->name('update_password');
 
     //All courier end
 

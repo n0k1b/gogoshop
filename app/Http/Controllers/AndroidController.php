@@ -828,7 +828,7 @@ class AndroidController extends Controller
         {
             $user_id = auth('api')->user()->id;
            $total_earn =  order::where('courier_man',$user_id)->where('status','delivered')->sum('total_price');
-           $total_deposit = deposit::where('courier_man',$user_id)->sum('deposit_amount');
+           $total_deposit = 0;// deposit::where('courier_man',$user_id)->sum('deposit_amount');
             $deposit =$total_earn-$total_deposit ;
             $response = ['status_code'=>200,'deposit'=>$deposit];
             return response($response, 200);

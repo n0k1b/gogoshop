@@ -32,5 +32,10 @@ return [
     'firebase'=>[
         'server_key'=>env('Firebase_Server_Key')
     ],
+    'google' => [
+        'client_id' => '569102437762-dpi77toft13t7oq1s26acn5vvcr4cb14.apps.googleusercontent.com',
+        'client_secret' => 'aT0dJq_kFzvjHlTRlSSCp6_-',
+        'redirect' => 'http://localhost/gogoshop/auth/google/callback',
+    ],
 
 ];

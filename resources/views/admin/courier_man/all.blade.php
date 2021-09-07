@@ -68,6 +68,7 @@
                                                         <th>User Document Back</th>
                                                         <th>User Image</th>
                                                         <th>Address</th>
+                                                        <th>Area</th>
                                                         <th>Reference Name</th>
                                                         <th>Active Status</th>
                                                         <th>Action</th>
@@ -90,7 +91,10 @@
                                                         {{-- <td><img id="myImg" src='../{{$data->personal_document }}' width='100px' class='img-thumbnail' /></td> --}}
 
                                                         <td><a href="../{{$data->user_image }}" data-lightbox="image-1" > <img  src='../{{$data->user_image }}' width='100px' class='img-thumbnail' /></a></td>
+
                                                         <td>{{ $data->address }}</td>
+
+                                                        <td>{{ $data->area_name }}</td>
                                                         <td>{{ $data->reference_name }}</td>
 														<td> <label class="switch">
 															<input type="checkbox"  onclick="courier_man_active_status({{$data->id}})" {{$checked}}>
