@@ -123,6 +123,8 @@ class CouriermanController extends Controller
     for($i=0;$i<sizeof($area);$i++)
     {
         $area_id.=$area[$i];
+        if($i<sizeof($area)-1)
+        $area_id.=',';
 
     }
 
@@ -156,8 +158,8 @@ class CouriermanController extends Controller
         $courier_man_image = "image/courier_man_image/" . $courier_man_image;
         //user::create(['name'=>$request->name,'contact_no'=>$request->contact_no,'password'=>Hash::make($request->password),'role'=>'courier_man']);
 
-       courier_man::create(['user_id'=>$user->id,'personal_document_front'=>$personal_document_front,'personal_document_back'=>$personal_document_back,'user_image'=>$courier_man_image,'address'=>$request->address,'reference_name'=>$request->reference_name]);
-        return redirect()->route('show-all-courier')->with('success','courier_man Added Successfully');
+       courier_man::create(['user_id'=>$user->id,'area_id'=>$area_id,'personal_document_front'=>$personal_document_front,'personal_document_back'=>$personal_document_back,'user_image'=>$courier_man_image,'address'=>$request->address,'reference_name'=>$request->reference_name]);
+        return redirect()->route('show-all-courier')->with('success','Courier Man Added Successfully');
 
 
     }
@@ -199,6 +201,26 @@ class CouriermanController extends Controller
     {
         $id = $request->id;
         courier_man::where('id', $id)->update(['delete_status'=>1]);
+
+    }
+
+    public function edit_courierman_information_ui(Request $request)
+    {
+        $id = $request->id;
+        $data = courier_man::where('id',$id)->first();
+        return view('admin.courier_man.edit_information',['data'=>$data]);
+    }
+
+    public function update_courier_information(Request $request)
+    {
+        $id = $request->id;
+
+        courier_man::where('id',$id)->update(['address'=>$request->address,'reference_name'=>$request->reference_name]);
+        $user_id = courier_man::where('id',$id)->first()->user_id;
+        user::where('id',$user_id)->update(['name'=>$request->name,'contact_no'=>$request->contact_no]);
+        return redirect()->route('show-all-courier')->with('success','Password Reset Successfully');
+
+
 
     }
 

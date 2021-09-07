@@ -228,6 +228,9 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
      Route::get('courier_man_delete/{id}','CouriermanController@courier_man_content_delete')->name('courier_man_delete');
      Route::get('reset_courier_man_password/{id}','CouriermanController@reset_courier_man_password')->name('reset_courier_man_password');
      Route::post('update_password','CouriermanController@update_password')->name('update_password');
+     Route::get('edit_courierman_information/{id}','CouriermanController@edit_courierman_information_ui');
+     Route::post('update_courier_information','CouriermanController@update_courier_information')->name('update_courier_information');
+
 
     //All courier end
 

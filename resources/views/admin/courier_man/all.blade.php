@@ -72,7 +72,7 @@
                                                         <th>Reference Name</th>
                                                         <th>Active Status</th>
                                                         <th>Action</th>
-                                                        <th>Reset Password</th>
+
 
 													</tr>
 												</thead>
@@ -101,26 +101,16 @@
 																<span class="slider round"></span>
 															</label></td>
 														<td>
-                                                            @if(in_array('courier_man_edit',$permission))
-															<a href="#" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>
-                                                            @else
-                                                            <a href="javascript:void(0);" onclick="access_alert()" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>
-                                                            @endif
-                                                            @if(in_array('courier_man_delete',$permission))
-															<a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="courier_man_delete({{$data->id}})"><i class="la la-trash-o"></i></a>
-                                                            @else
-                                                            <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="access_alert()"><i class="la la-trash-o"></i></a>
-                                                            @endif
-
+                                                            <div class="btn-group">
+                                                                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Action</button>
+                                                                <div class="dropdown-menu"><a href="reset_courier_man_password/{{$data->id}}" class="dropdown-item">Reset Password</a>
+                                                                    <a class="dropdown-item" href="edit_courierman_information/{{$data->id}}">Edit Information</a>
+                                                                    <a class="dropdown-item" href="javascript:void()">Edit Area</a>
+                                                                    <a class="dropdown-item" href="javascript:void()">Edit Document</a>
+                                                                </div>
+                                                            </div>
                                                         </td>
-                                                         <td>
-															@if(in_array('courier_man_edit',$permission))
-															<a href="reset_courier_man_password/{{$data->id}}" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>
-                                                            @else
-                                                            <a href="javascript:void(0);" onclick="access_alert()" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>
-                                                            @endif
 
-                                                        </td>
 
 													</tr>
 
