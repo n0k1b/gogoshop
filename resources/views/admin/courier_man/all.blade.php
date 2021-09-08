@@ -105,7 +105,7 @@
                                                                 <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Action</button>
                                                                 <div class="dropdown-menu"><a href="reset_courier_man_password/{{$data->id}}" class="dropdown-item">Reset Password</a>
                                                                     <a class="dropdown-item" href="edit_courierman_information/{{$data->id}}">Edit Information</a>
-                                                                    <a class="dropdown-item" href="javascript:void()">Edit Area</a>
+                                                                    <a class="dropdown-item" href="edit_courierman_area/{{$data->id}}">Edit Area</a>
                                                                     <a class="dropdown-item" href="javascript:void()">Edit Document</a>
                                                                 </div>
                                                             </div>

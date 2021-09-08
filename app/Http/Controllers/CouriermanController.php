@@ -221,7 +221,37 @@ class CouriermanController extends Controller
         return redirect()->route('show-all-courier')->with('success','Password Reset Successfully');
 
 
+    }
+
+
+    public function edit_courierman_area_ui(Request $request)
+    {
+        $id = $request->id;
+
+        $data = courier_man::where('id',$id)->first();
+        $user_area = explode(',',$data->area_id);
+        $areas = area::where('delete_status',0)->where('status',1)->get();
+        return view('admin.courier_man.edit_area',['data'=>$data,'areas'=>$areas,'user_area'=>$user_area]);
+    }
+
+    public function update_courier_area(Request $request)
+    {
+        $id = $request->id;
+        $area = json_decode(json_encode($request->area_id));
+        $area_id = '';
+        for($i=0;$i<sizeof($area);$i++)
+        {
+            $area_id.=$area[$i];
+            if($i<sizeof($area)-1)
+            $area_id.=',';
+
+        }
+        courier_man::where('id',$id)->update(['area_id'=>$area_id]);
+
+        return redirect()->route('show-all-courier')->with('success','Password Reset Successfully');
+
 
     }
+
 
 }
