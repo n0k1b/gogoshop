@@ -218,7 +218,7 @@ class CouriermanController extends Controller
         courier_man::where('id',$id)->update(['address'=>$request->address,'reference_name'=>$request->reference_name]);
         $user_id = courier_man::where('id',$id)->first()->user_id;
         user::where('id',$user_id)->update(['name'=>$request->name,'contact_no'=>$request->contact_no]);
-        return redirect()->route('show-all-courier')->with('success','Password Reset Successfully');
+        return redirect()->route('show-all-courier')->with('success','Data Updated Successfully');
 
 
     }
@@ -248,7 +248,7 @@ class CouriermanController extends Controller
         }
         courier_man::where('id',$id)->update(['area_id'=>$area_id]);
 
-        return redirect()->route('show-all-courier')->with('success','Password Reset Successfully');
+        return redirect()->route('show-all-courier')->with('success','Data Updated Successfully');
 
 
     }
