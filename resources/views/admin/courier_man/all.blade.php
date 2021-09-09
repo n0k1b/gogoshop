@@ -106,7 +106,8 @@
                                                                 <div class="dropdown-menu"><a href="reset_courier_man_password/{{$data->id}}" class="dropdown-item">Reset Password</a>
                                                                     <a class="dropdown-item" href="edit_courierman_information/{{$data->id}}">Edit Information</a>
                                                                     <a class="dropdown-item" href="edit_courierman_area/{{$data->id}}">Edit Area</a>
-                                                                    <a class="dropdown-item" href="javascript:void()">Edit Document</a>
+                                                                    <a class="dropdown-item" href="edit_courierman_document/{{$data->id}}">Edit Document</a>
+                                                                    <a class="dropdown-item" href="javascript:void()">Edit Image</a>
                                                                 </div>
                                                             </div>
                                                         </td>

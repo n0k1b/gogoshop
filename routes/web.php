@@ -230,8 +230,10 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
      Route::post('update_password','CouriermanController@update_password')->name('update_password');
      Route::get('edit_courierman_information/{id}','CouriermanController@edit_courierman_information_ui');
      Route::get('edit_courierman_area/{id}','CouriermanController@edit_courierman_area_ui');
+     Route::get('edit_courierman_document/{id}','CouriermanController@edit_courierman_document_ui');
      Route::post('update_courier_information','CouriermanController@update_courier_information')->name('update_courier_information');
      Route::post('update_courier_area','CouriermanController@update_courier_area')->name('update_courier_area');
+     Route::post('update_courier_document','CouriermanController@update_courier_document')->name('update_courier_document');
 
 
     //All courier end

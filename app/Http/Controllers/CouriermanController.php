@@ -234,6 +234,12 @@ class CouriermanController extends Controller
         return view('admin.courier_man.edit_area',['data'=>$data,'areas'=>$areas,'user_area'=>$user_area]);
     }
 
+    public function edit_courierman_document_ui(Request $request)
+    {
+        $id = $request->id;
+        return view('admin.courier_man.edit_document',compact('id'));
+    }
+
     public function update_courier_area(Request $request)
     {
         $id = $request->id;
@@ -247,6 +253,56 @@ class CouriermanController extends Controller
 
         }
         courier_man::where('id',$id)->update(['area_id'=>$area_id]);
+
+        return redirect()->route('show-all-courier')->with('success','Data Updated Successfully');
+
+
+    }
+
+    public function update_courier_document(Request $request)
+    {
+        $id = $request->id;
+        $user_id = courier_man::where('id',$id)->first()->user_id;
+
+        $previous_image_front = courier_man::where('id',$id)->first()->personal_document_front;
+        if($previous_image_front)
+        {
+
+           if(file_exists($previous_image_front))
+           {
+                unlink( base_path($previous_image_front));
+           }
+
+
+        }
+
+        $previous_image_back = courier_man::where('id',$id)->first()->personal_document_back;
+        if($previous_image_back)
+        {
+
+           if(file_exists($previous_image_back))
+           {
+                unlink( base_path($previous_image_back));
+           }
+
+
+        }
+        $personal_document_front = 'nid_front_'.$user_id.'_'.time() . '.' . request()->personal_document_front->getClientOriginalExtension();
+
+        $request
+            ->personal_document_front
+            ->move(public_path('../image/courier_man_document') , $personal_document_front);
+        $personal_document_front = "image/courier_man_document/" . $personal_document_front;
+
+
+        $personal_document_back = 'nid_back_'.$user_id.'_'.time() . '.' . request()->personal_document_back->getClientOriginalExtension();
+
+        $request
+            ->personal_document_back
+            ->move(public_path('../image/courier_man_document') , $personal_document_back);
+        $personal_document_back = "image/courier_man_document/" . $personal_document_back;
+
+        courier_man::where('id',$id)->update(['personal_document_front'=>$personal_document_front,'personal_document_back'=>$personal_document_back]);
 
         return redirect()->route('show-all-courier')->with('success','Data Updated Successfully');
 
