@@ -12,6 +12,11 @@ class order extends Model
     {
         return $this->belongsTo('App\Models\User','user_id','id');
     }
+
+    public function courier()
+    {
+        return $this->belongsTo('App\Models\User','courier_man','id');
+    }
      public function address()
     {
         return $this->belongsTo('App\Models\user_address','address_id','id');
