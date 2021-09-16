@@ -17,13 +17,14 @@ trait FirebaseTrait{
 
 
         $SERVER_API_KEY = env('Firebase_Server_Key');
-        file_put_contents('test.txt',$SERVER_API_KEY);
+        //file_put_contents('test.txt',$SERVER_API_KEY);
 
         $data = [
             "to" => $firebaseToken,
             "notification" => [
                 "title" => $title,
                 "body" => $body,
+                'sound'=>"default"
             ]
         ];
         $dataString = json_encode($data);
