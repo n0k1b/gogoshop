@@ -46,6 +46,8 @@ class FrontController extends Controller
     //
     use FirebaseTrait;
 
+
+
     public function view_order_details(Request $request)
     {
         $order_no = $request->order_no;
@@ -228,6 +230,8 @@ class FrontController extends Controller
     public function index()
     {
        // session()->forget('cart');
+
+        file_put_contents('date.txt',date('Y-m-d H:i:s'));
         $banners = banner::where('status',1)->orderBy('order')->get();
         $categories = category::where('status',1)->get();
         $homepage_section_content = homepage_section::where('status',1)->where('delete_status',0)->orderBy('section_order')->get();
