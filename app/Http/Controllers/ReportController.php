@@ -8,6 +8,7 @@ use App\Models\sub_category;
 use App\Models\product;
 use App\Models\area;
 use App\Models\order;
+use App\Models\user;
 use DB;
 use DataTables;
 use Auth;
@@ -79,6 +80,119 @@ class ReportController extends Controller
         }
 
         return view('admin.report.show');
+    }
+
+
+    public function show_courier_report(Request $request)
+    {
+
+        if(!$request->ajax())
+        {
+
+
+
+        $from_date = $request->from_date;
+        $from_date =  date("Y-m-d", strtotime($from_date));
+        Session::put('from_date',$from_date);
+        $to_date = $request->to_date;
+        $to_date =  date("Y-m-d", strtotime($to_date."+1 days"));
+        Session::put('to_date',$to_date);
+
+
+        }
+
+
+        if ($request->ajax()) {
+            $from_date = Session::get('from_date');
+            $to_date = Session::get('to_date');
+            $data = deposit::whereDate('created_at','>=',$from_date)->whereDate('created_at','<=',$to_date)->get();
+            $i=1;
+                foreach($data as $datas)
+                {
+
+                    $datas['sl_no'] = $i++;
+                    $datas['date'] = date("d-m-Y", strtotime($datas->created_at));
+                    $datas['order_no'] = $datas->order->order_no;
+                    $datas['deposit_received_by'] = $datas->deposit_received->name;
+                    $datas['courier_man'] = $datas->order->user->name;
+                   $datas['address']=  $datas->order->address->area->name.','.$datas->order->address->address;
+                   $datas['total_bill'] = $datas->order->total_price+$datas->order->delivery_fee;
+
+
+
+                }
+
+            return Datatables::of($data)
+                    ->addIndexColumn()
+
+                    ->make(true);
+        }
+
+
+
+
+        return view('admin.report.courier_man_report');
+
+
+
+
+
+
+       // file_put_contents('test.txt',$from_date." ".$to_date);
+    }
+
+    public function show_user_report(Request $request)
+    {
+
+
+        if(!$request->ajax())
+        {
+
+
+
+        $from_date = $request->from_date;
+        $from_date =  date("Y-m-d", strtotime($from_date));
+        Session::put('from_date',$from_date);
+        $to_date = $request->to_date;
+        $to_date =  date("Y-m-d", strtotime($to_date."+1 days"));
+        Session::put('to_date',$to_date);
+
+
+        }
+
+
+        if ($request->ajax()) {
+            $from_date = Session::get('from_date');
+            $to_date = Session::get('to_date');
+            $data = user::whereDate('created_at','>=',$from_date)->whereDate('created_at','<=',$to_date)->whereNull('password')->get();
+            //file_put_contents('test.txt',"hello2");
+            $i=1;
+                foreach($data as $datas)
+                {
+
+                    $datas['sl_no'] = $i++;
+                    $datas['date'] = date("d-m-Y H:i:s", strtotime($datas->created_at));
+
+
+                }
+
+            return Datatables::of($data)
+                    ->addIndexColumn()
+
+                    ->make(true);
+        }
+
+
+
+
+        return view('admin.report.user_report');
+
+
+
+
+
+
+       // file_put_contents('test.txt',$from_date." ".$to_date);
     }
 
     public function show_order_report(Request $request)

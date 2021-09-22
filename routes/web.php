@@ -99,9 +99,10 @@ Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
       //Report Start
       Route::get('report/{type}','AdminController@report_view');
 
-      Route::get('show_order_report','AdminController@show_order_report')->name('show_order_report');
-      Route::get('show_courier_report','AdminController@show_courier_report')->name('show_courier_report');
-      Route::post('show_all_report','AdminController@show_all_report')->name('show_all_report');
+      Route::get('show_order_report','ReportController@show_order_report')->name('show_order_report');
+      Route::get('show_courier_report','ReportController@show_courier_report')->name('show_courier_report');
+      Route::get('show_user_report','ReportController@show_user_report')->name('show_user_report');
+      Route::post('show_all_report','ReportController@show_all_report')->name('show_all_report');
 
       //
 

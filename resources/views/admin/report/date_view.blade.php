@@ -40,6 +40,21 @@
                 <button type="submit" class="btn btn-primary" style="float: right">Submit</button>
               </div>
               </form>
+
+              @elseif($type == 'user')
+              <form method="GET" action="{{ route('show_user_report') }}">
+                @csrf
+              <div class="card-body">
+                <p class="mb-1">From Date</p>
+                <input name="from_date" class="datepicker-default form-control" id="datepicker">
+
+                <br>
+                <p class="mb-1">To Date</p>
+                <input name="to_date" class="datepicker-default form-control" id="datepicker">
+                <br>
+                <button type="submit" class="btn btn-primary" style="float: right">Submit</button>
+              </div>
+              </form>
               @endif
 
 
