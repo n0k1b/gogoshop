@@ -32,7 +32,7 @@ class OrderController extends Controller
 
     public function new_order()
     {
-        $order = order::where('status','!=','delivered')->where('status','!=','canceled')->orderBy(DB::raw('case when status= "pending" then 1 when status= "picked" then 2 end'))->get();
+        $order = order::where('status','!=','delivered')->where('status','!=','canceled')->orderBy(DB::raw('case when status= "pending" then 1 when status= "picked" then 2 end'))->orderBy('created_at','DESC')->get();
         $i=1;
 
          foreach($order as $data)
