@@ -481,7 +481,11 @@ function  update_product_value()
        // $("#product_update_modal").modal('hide');
 
             $('#product_update_modal').modal('hide');
-            $('#product').DataTable().ajax.reload();
+            $('#product').DataTable().ajax.reload(null,false);
+            // $('#product').DataTable();
+            // $('.dataTables_length').addClass('bs-select');
+            // let pageItems = $('#product_wrapper').find('.page-item');
+            // pageItems.last().prev().click();
             alert('Data Updated');
 
 
