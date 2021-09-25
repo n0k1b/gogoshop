@@ -183,6 +183,20 @@
             Content body start
         ***********************************-->
         <div class="content-body">
+
+            <div role="alert" aria-live="assertive" aria-atomic="true" class="toast" data-autohide="false">
+                <div class="toast-header">
+
+                  <strong class="mr-auto">Bootstrap</strong>
+                  <small>11 mins ago</small>
+                  <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="toast-body">
+                  Hello, world! This is a toast message.
+                </div>
+              </div>
             <!-- row -->
              @yield('content')
         </div>
@@ -244,8 +258,28 @@
 
     <script src="{{asset('assets')}}/admin/vendor/datatables/js/jquery.dataTables.min.js?{{time()}}"></script>
     <script src="{{asset('assets')}}/admin/js/plugins-init/datatables.init.js?{{time()}}"></script>
+    <script src="{{asset('public/js/app.js') }}"></script>
+    <script src="{{asset('js/app.js') }}"></script>
+    <script>
+        console.log('hello')
+        window.Echo.channel('events')
+            .listen('OrderNotification', (e) => console.log('RealTimeMessage: ' + e.message));
+    </script>
+    <script>
+
+    </script>
+    <script>
+        $(document).ready(function(){
+        //   $('.toast').toast('show');
+
+        });
+        </script>
+
+
 
     @yield('page_js')
+
+
 
 </body>
 

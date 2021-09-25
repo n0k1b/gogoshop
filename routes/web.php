@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
+| routes are loaded by the RouteServicfeProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
 */
@@ -18,7 +18,10 @@ use Illuminate\Support\Facades\Route;
 //test route end
 
 
+Route::get('test-notification', function() {
 
+    event(new App\Events\OrderNotification('Hello World'));
+});
 
 
 //frontend start
