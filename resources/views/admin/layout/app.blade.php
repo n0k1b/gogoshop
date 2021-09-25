@@ -18,6 +18,7 @@
     <link href="{{asset('assets')}}/admin/vendor/datatables/css/jquery.dataTables.min.css?{{time()}}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('assets')}}/admin/css/style.css?{{time()}}">
     <link rel="stylesheet" href="{{asset('assets')}}/admin/css/skin.css?{{time()}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     @yield('page_css')
 </head>
 <body>
@@ -184,19 +185,7 @@
         ***********************************-->
         <div class="content-body">
 
-            <div role="alert" aria-live="assertive" aria-atomic="true" class="toast" data-autohide="false">
-                <div class="toast-header">
 
-                  <strong class="mr-auto">Bootstrap</strong>
-                  <small>11 mins ago</small>
-                  <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="toast-body">
-                  Hello, world! This is a toast message.
-                </div>
-              </div>
             <!-- row -->
              @yield('content')
         </div>
@@ -260,17 +249,35 @@
     <script src="{{asset('assets')}}/admin/js/plugins-init/datatables.init.js?{{time()}}"></script>
     <script src="{{asset('public/js/app.js') }}"></script>
     <script src="{{asset('js/app.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.js"></script>
     <script>
         console.log('hello')
-        window.Echo.channel('events')
-            .listen('OrderNotification', (e) => console.log('RealTimeMessage: ' + e.message));
+        var a = Echo.channel('events')
+            .listen('OrderNotification', (e) => {
+                this.toast()
+
+            });
+        //  window.Echo.channel('events')
+        //     .listen('OrderNotification', (e) => console.log('RealTimeMessage: ' + e.message));
+        function toast(message)
+        {
+            iziToast.warning({
+    title: 'Order',
+    message: 'You have new order',
+    close: true,
+    closeOnClick: true,
+     timeout: 0,
+});
+
+        }
     </script>
     <script>
 
     </script>
     <script>
         $(document).ready(function(){
-        //   $('.toast').toast('show');
+       // $('.toast').toast('hide');
+
 
         });
         </script>
