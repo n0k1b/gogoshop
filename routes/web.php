@@ -84,7 +84,7 @@ Route::group(['middleware' => 'IsLoggedIn'], function()
 });
 
 
-Route::group(['middleware' => 'Isuser'], function()
+Route::group(['middleware' => 'IsUser'], function()
 {
     Route::post('submit_user_information','FrontController@submit_user_information')->name('submit_user_information');
 });
