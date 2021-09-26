@@ -184,6 +184,8 @@
             Content body start
         ***********************************-->
         <div class="content-body">
+
+
             <!-- row -->
              @yield('content')
         </div>
@@ -269,6 +271,8 @@
     </script>
 
     @yield('page_js')
+
+
 
 </body>
 

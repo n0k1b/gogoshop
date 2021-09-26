@@ -32,6 +32,7 @@ use App\Models\delivery_charge;
 use App\Models\deposit;
 use App\Models\user_token;
 use App\Http\Traits\FirebaseTrait;
+use App\Events\OrderNotification;
 
 
 
@@ -520,10 +521,10 @@ class FrontController extends Controller
        // return response($response, 200);
        return back()->with('error','No courier man available at this time. Please try again after sometimes');
         }
-        $token = user_token::where('user_id',$courier_man)->first()->firebase_token;
+       // $token = user_token::where('user_id',$courier_man)->first()->firebase_token;
         $text = "New Order";
         $body = "You have a new order";
-        $this->sendPushNotification($token,$text,$body);
+       // $this->sendPushNotification($token,$text,$body);
 
 
         foreach( $cart as $id => $details)
@@ -554,6 +555,7 @@ class FrontController extends Controller
         $delivery_charge = delivery_charge::first()->unit_charge;
         $total = $sub_total+$delivery_charge;
         session()->forget('cart');
+        event(new OrderNotification('hello world'));
         return view('frontend.order_tracking',compact('status','order_no','order_date','delivery_address','delivery_charge','total','sub_total','order_detail'));
        // $order_no = $order->order_no;
 

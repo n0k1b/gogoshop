@@ -486,6 +486,7 @@ var buildURL = __webpack_require__(/*! ../helpers/buildURL */ "./node_modules/ax
 var InterceptorManager = __webpack_require__(/*! ./InterceptorManager */ "./node_modules/axios/lib/core/InterceptorManager.js");
 var dispatchRequest = __webpack_require__(/*! ./dispatchRequest */ "./node_modules/axios/lib/core/dispatchRequest.js");
 var mergeConfig = __webpack_require__(/*! ./mergeConfig */ "./node_modules/axios/lib/core/mergeConfig.js");
+
 /**
  * Create a new instance of Axios
  *
@@ -25577,7 +25578,8 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   key: "dfec9fda5b7ec4e2d315",
   cluster: "ap1",
   forceTLS: false,
-  wsHost: window.location.hostname
+  wsHost: window.location.hostname,
+  wsPort: 6001
 });
 
 /***/ }),

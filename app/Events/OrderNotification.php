@@ -20,13 +20,11 @@ class OrderNotification implements ShouldBroadcast
      * @return void
      */
     public string $message;
-
     public function __construct(string $message)
     {
         //
         $this->message = $message;
     }
-
 
     /**
      * Get the channels the event should broadcast on.

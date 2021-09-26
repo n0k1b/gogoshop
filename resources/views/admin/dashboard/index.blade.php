@@ -531,4 +531,5 @@
 
 <script src="{{asset('assets')}}/admin/js/charts-custom.js?{{time()}}"></script>
 <script src="{{asset('assets')}}/admin/js/Chart.min.js?{{time()}}"></script>
+
 @endsection
