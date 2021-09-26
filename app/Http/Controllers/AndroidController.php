@@ -27,6 +27,7 @@ use App\Models\user_token;
 use App\Models\warehouse;
 use App\Models\deposit;
 use App\Http\Traits\FirebaseTrait;
+use App\Events\OrderNotification;
 
 use Hash;
 use DB;
@@ -172,7 +173,7 @@ class AndroidController extends Controller
 
             array_push($order_list,['order_no'=>$order->order_no,'order_date'=>$order_date,'status'=>$order->status,'delivery_fee'=>$delivery_fee,'delivery_address'=>$order->address->address,'subtotal'=>$sub_total+$delivery_fee,'product'=>$order_details]);
 
-
+            event(new OrderNotification('hello world'));
 
          $response = ['status_code'=>200,'order'=>$order_list];
         return response($response, 200);
