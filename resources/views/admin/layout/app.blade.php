@@ -18,6 +18,7 @@
     <link href="{{asset('assets')}}/admin/vendor/datatables/css/jquery.dataTables.min.css?{{time()}}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('assets')}}/admin/css/style.css?{{time()}}">
     <link rel="stylesheet" href="{{asset('assets')}}/admin/css/skin.css?{{time()}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     @yield('page_css')
 </head>
 <body>
@@ -244,6 +245,28 @@
 
     <script src="{{asset('assets')}}/admin/vendor/datatables/js/jquery.dataTables.min.js?{{time()}}"></script>
     <script src="{{asset('assets')}}/admin/js/plugins-init/datatables.init.js?{{time()}}"></script>
+    <script src="//js.pusher.com/3.1/pusher.min.js"></script>
+
+    <script src="{{ asset('public/js/app.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.js"></script>
+    <script>
+
+        var a = Echo.channel('events')
+            .listen('OrderNotification', (e) => {
+                this.toast()
+            });
+
+        function toast(message)
+        {
+            iziToast.warning({
+    title: 'Order',
+    message: 'You have new order',
+    close: true,
+    closeOnClick: true,
+     timeout: 0,
+});
+        }
+    </script>
 
     @yield('page_js')
 

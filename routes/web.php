@@ -18,7 +18,10 @@ use Illuminate\Support\Facades\Route;
 //test route end
 
 
-
+Route::get('test-event', function () {
+    event(new App\Events\OrderNotification('Hello World'));
+    return "Event has been sent!";
+});
 
 
 //frontend start
