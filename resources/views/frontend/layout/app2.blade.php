@@ -151,7 +151,7 @@
                     {{-- cart start --}}
                     <div class="header-inner__right">
                       {{-- <a class="button-icon icon-md" href="#"><i class="icon-heart"></i><span class="badge bg-warning">2</span></a> --}}
-                        <div class="button-icon btn-cart-header"><i class="icon-cart icon-Ecommerce5"></i><span class="badge bg-warning cart_itemt_count" id="cart_itemt_count"></span>
+                      <div class="button-icon btn-cart-header"><i class="icon-cart icon-Ecommerce5"></i><span class="badge bg-warning cart_itemt_count total-count" id="cart_itemt_countt"></span>
                             <div class="mini-cart">
                                 <div class="mini-cart--content">
                                     <div class="mini-cart--overlay"></div>
@@ -161,10 +161,26 @@
                                                 <h5>Ecommerceping Cart(3)</h5><a class="close-cart" href="javascript:void(0);"><i class="icon-arrow-right"></i></a>
                                             </div>
                                         </div>
-                                        <div id="cart_box">
+
+                                        <div class="mini-cart__products">
+                                            <div class="out-box-cart">
+                                               <div class="triangle-box">
+                                                  <div class="triangle"></div>
+                                               </div>
+                                            </div>
+                                            <ul class="list-cart show-cart">
+                                            </ul>
+                                         </div>
+
+                                         <div class="mini-cart__footer row">
+                                            <div class="col-6 title">Total(Tk)</div>
+                                            <div class="col-6 text-right total total-cart"></div>
+                                            <div class="col-12 d-flex"><a class="checkout" href="view_cart">View cart</a></div>
+                                         </div>
 
 
-                                        </div>
+
+
                                 </div>
                                 </div>
                             </div>
@@ -338,7 +354,7 @@
         </div>
 
     </nav>
-
+    @include('frontend.layout.javascript_url');
 
     <script src="{{asset('assets')}}/frontend/plugins/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
@@ -362,6 +378,7 @@
     <script src="{{asset('assets')}}/frontend/js/sweetalert.js?{{ time() }}"></script>
     <script src="{{asset('assets')}}/frontend/js/custom.js"></script>
     <script src="{{asset('assets')}}/frontend/js/frontend.js?{{ time() }}" async></script>
+    <script src="{{asset('assets')}}/frontend/js/cart_store.js?{{ time() }}" async></script>
 
     {{-- <script src="{{asset('assets')}}/frontend/js/cart.js?{{ time() }}"></script> --}}
     @yield('page_js')

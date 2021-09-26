@@ -336,5 +336,13 @@
 @endsection
 
 @section('page_js')
+<script>
+    $(function() {
+
+        shoppingCart.clearCart();
+        displayCart();
+        //alert('hello')
+});
+</script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 @endsection

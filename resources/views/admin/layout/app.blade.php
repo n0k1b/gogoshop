@@ -260,6 +260,7 @@
 
         function toast(message)
         {
+
             iziToast.warning({
     title: 'Order',
     message: 'You have new order',

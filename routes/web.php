@@ -66,10 +66,11 @@ Route::get('get_all_product_view_all/{type}','FrontController@get_all_product_vi
 Route::get('view_all','FrontController@view_alll_category_product')->name('view_all_product');
 Route::post('search_product','FrontController@search_product')->name('search_product');
 Route::get('get_all_homepage_section/{type}','FrontController@get_all_homepage_section');
+Route::post('checkout','FrontController@checkout')->name('checkout');
 
 Route::group(['middleware' => 'IsLoggedIn'], function()
 {
-   Route::get('checkout','FrontController@checkout');
+    Route::get('checkout','FrontController@checkout_from');
    Route::get('get_all_address','FrontController@get_all_address');
    Route::post('add_address','FrontController@add_address');
    Route::get('delete_address/{id}','FrontController@delete_address');

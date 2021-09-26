@@ -387,8 +387,8 @@ class FrontController extends Controller
     public function view_cart()
     {
 
-
-        return view('frontend.view_cart');
+        $delivery_charge = delivery_charge::first()->unit_charge;
+        return view('frontend.view_cart',compact('delivery_charge'));
     }
     public function search_product(Request $request)
     {
@@ -501,10 +501,10 @@ class FrontController extends Controller
         return redirect()->back()->with('errors',collect($validator->errors()->all()));
     }
         $address_id = $request->address_id;
-        $delivery_date = $request->delivery_date;
-        $delivery_time = $request->delivery_time;
+
         $cart = session()->get('cart');
-        $total = 0;
+        $total = session()->get('sub_total'); ;
+        ;
 
         $user_id = auth()->user()->id;
         $order_no = 'GG'.$user_id.mt_rand(10000,99999);
@@ -527,14 +527,13 @@ class FrontController extends Controller
        // $this->sendPushNotification($token,$text,$body);
 
 
-        foreach( $cart as $id => $details)
+        foreach( $cart as $product)
         {
-           $total += $details['price'] * $details['quantity'];
-           $remaining_stock = product_stock::where('product_id',$id)->first()->stock_amount;
-           $stock = $remaining_stock-$details['quantity'];
-           product_stock::where('product_id',$id)->update(['stock_amount'=>$stock]);
-           order_details::create(['order_no'=>$order_no,'product_id'=>$id,'unit_quantity'=>$details['unit'],'count'=>$details['quantity'],'price'=>$details['price']]);
-
+            $id = $product->id;
+            $remaining_stock = product::where('id',$id)->first()->stock;
+            $stock = $remaining_stock-$product->count;
+            product::where('id',$id)->update(['stock'=>$stock]);
+            order_details::create(['order_no'=>$order_no,'product_id'=>$id,'unit_quantity'=>$product->unit,'count'=>$product->count,'price'=>$product->count]);
         }
         $delivery_fee =delivery_charge::first()->unit_charge ;
         $order = order::create(['address_id'=>$address_id,'user_id'=>$user_id,'order_no'=>$order_no,'status'=>'pending','total_price'=>$total,'delivery_fee'=>$delivery_fee,'courier_man'=>$courier_man]);
@@ -545,7 +544,7 @@ class FrontController extends Controller
         $delivery_address = $order->address->address;
 
         $order_detail = order_details::where('order_no',$order_no)->get();
-        $sub_total = 0;
+        $sub_total = $total;
         for($j=0;$j<sizeof($order_detail);$j++)
         {
             $sub_total+=$order_detail[$j]->price*$order_detail[$j]->count;
@@ -555,6 +554,7 @@ class FrontController extends Controller
         $delivery_charge = delivery_charge::first()->unit_charge;
         $total = $sub_total+$delivery_charge;
         session()->forget('cart');
+        session()->forget('sub_total');
         event(new OrderNotification('hello world'));
         return view('frontend.order_tracking',compact('status','order_no','order_date','delivery_address','delivery_charge','total','sub_total','order_detail'));
        // $order_no = $order->order_no;
@@ -1353,29 +1353,66 @@ class FrontController extends Controller
 
         //return response($response, 200);
     }
-    public function checkout()
+
+
+    public function checkout_from()
     {
+        $cart = session()->get('cart');
+        //file_put_contents('test.txt',$cart[0]->name);
+
         $areas = area::where('status',1)->where('delete_status',0)->get();
 
-            $sub_total = 0;
-            $cart = session()->get('cart');
+            $sub_total = session()->get('sub_total');
+           // $cart = session()->get('cart');
             $description = '';
             $category_name='';
-            foreach( $cart as $id => $details)
+            foreach( $cart as $product)
             {
-                $description = product::find($id)->category->description;
+                //file_put_contents('test.txt',$product->id);
+                if($product->type=='product'){
+               $description = product::find($product->id)->category->description;
                 if($description)
                 {
-                    $category_name = product::find($id)->category->name;
+                    $category_name = product::find($product->id)->category->name;
                 }
+            }
 
                // file_put_contents('test.txt',$description);
-                $sub_total += $details['price'] * $details['quantity'];
+            // $sub_total += $details['price'] * $details['quantity'];
             }
             $delivery_charge = delivery_charge::first()->unit_charge;
             $total = $sub_total+$delivery_charge;
+            //$data=  array('areas'=>$areas,'cart'=>$cart,'delivery_charge'=>$delivery_charge,'total'=>$total,'sub_total'=>$sub_total,'description'=>$description,'category_name'=>$category_name);
+            return view('frontend.checkout',compact('areas','cart','delivery_charge','total','sub_total','description','category_name'));
+       //return response()->json($data);
+    }
+    public function checkout(Request $request)
+    {
+        $cart = json_decode($request->cart);
+        session()->put('cart',$cart);
+        session()->put('sub_total',$request->sub_total);
 
-        return view('frontend.checkout',compact('areas','cart','delivery_charge','total','sub_total','description','category_name'));
+        // $areas = area::where('status',1)->where('delete_status',0)->get();
+
+        //     $sub_total = 0;
+        //     $cart = session()->get('cart');
+        //     $description = '';
+        //     $category_name='';
+        //     foreach( $cart as $id => $details)
+        //     {
+        //         $description = product::find($id)->category->description;
+        //         if($description)
+        //         {
+        //             $category_name = product::find($id)->category->name;
+        //         }
+
+        //        // file_put_contents('test.txt',$description);
+        //         $sub_total += $details['price'] * $details['quantity'];
+        //     }
+        //     $delivery_charge = delivery_charge::first()->unit_charge;
+        //     $total = $sub_total+$delivery_charge;
+
+        // return view('frontend.checkout',compact('areas','cart','delivery_charge','total','sub_total','description','category_name'));
     }
 
     public function add_address(Request $request)

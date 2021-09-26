@@ -11,9 +11,9 @@ $( document ).ready(function() {
      get_all_category_mobile();
 
 
-    get_cart_count();
+   // get_cart_count();
 
-    get_cart_box();
+    //get_cart_box();
 
 
     // $(".inc").click(function() {
@@ -181,8 +181,8 @@ function delete_cart(id)
     url: 'cart_delete/'+id,
     success: function (data) {
         $('.mini-cart').toggleClass('open');
-        get_cart_count();
-         get_cart_box();
+       // get_cart_count();
+         //get_cart_box();
 
     }
 })
@@ -326,8 +326,8 @@ function cart_add(id)
     url: 'cart_add',
     data:formdata,
     success: function (data) {
-        get_cart_count();
-         get_cart_box();
+        //get_cart_count();
+         //get_cart_box();
       $(".cart_modal").modal('hide');
 
     }
@@ -350,8 +350,8 @@ function cart_add_package(id)
     url: 'cart_add_package',
     data:formdata,
     success: function (data) {
-        get_cart_count();
-         get_cart_box();
+        //get_cart_count();
+         //get_cart_box();
       $(".package_modal").modal('hide');
 
     }

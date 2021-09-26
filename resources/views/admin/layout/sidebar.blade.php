@@ -117,7 +117,7 @@
 
                  	<li><a class="has-arrow" href="javascript:void()" aria-expanded="false">
 						<i class="la la-shopping-cart"></i>
-						<span class="nav-text">Order</span>
+						<span class="nav-text">Order </span>
 					    </a>
                         <ul aria-expanded="false">
                             @if(in_array('new_order_view',$role_permission))

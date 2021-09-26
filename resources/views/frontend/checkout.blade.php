@@ -187,12 +187,6 @@
 
 
         <div class="container">
-            @if(Session::has('error'))
-            <div class="col-md-10 col-sm-10 col-10 offset-md-1 offset-sm-10 alert alert-danger mt-4" style="font-size: 14px;color:white;background: #dd0505;
-            border-color: #dd0505;font-weight:bold">
-                {{Session::get('error')}}
-            </div>
-            @endif
             @if (count($errors)>0)
     <div class="col-md-10 col-sm-10 col-10 offset-md-1 offset-sm-10 alert alert-danger mt-4" style="background: #dd0505;
     border-color: #dd0505;font-weight:bold">
@@ -249,6 +243,8 @@
                             </div>
                         </div>
 
+
+
                     </div>
 
                     <div class="col-6 col-md-6 col-sm-12">
@@ -264,16 +260,16 @@
                                     </div>
                                 </div>
                                 <div class="checkout__list">
-                                    @foreach($cart as $id =>$details)
+                                    @foreach($cart as $product)
 
                                     <div class="checkout__product__item">
                                         <div class="checkout-product">
-                                            <div class="product__name">{{ $details['name'] }}<span>(x{{ $details['quantity'] }})</span></div>
-                                            @if($details['type'] =='product')
-                                            <div class="product__unit">{{ $details['unit'] }}</div>
+                                            <div class="product__name">{{$product->name }}<span>(x{{ $product->count }})</span></div>
+                                            @if($product->type =='product')
+                                            <div class="product__unit">{{ $product->unit }}</div>
                                             @endif
                                         </div>
-                                        <div class="checkout-price">{{ $details['price']*$details['quantity'] }}</div>
+                                        <div class="checkout-price">{{ $product->price*$product->count }}</div>
                                     </div>
                                     @endforeach
                                 </div>
