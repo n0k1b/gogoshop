@@ -67,6 +67,7 @@ Route::get('view_all','FrontController@view_alll_category_product')->name('view_
 Route::post('search_product','FrontController@search_product')->name('search_product');
 Route::get('get_all_homepage_section/{type}','FrontController@get_all_homepage_section');
 Route::post('checkout','FrontController@checkout')->name('checkout');
+Route::get('product_details/{id}','FrontController@product_details');
 
 Route::group(['middleware' => 'IsLoggedIn'], function()
 {

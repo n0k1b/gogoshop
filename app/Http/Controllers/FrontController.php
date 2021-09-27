@@ -74,6 +74,23 @@ class FrontController extends Controller
    // return view('frontend.checkout',compact('areas','cart','delivery_charge','total','sub_total'));
         return view('frontend.order_details',compact('order_no','order_date','delivery_address','status','areas','delivery_charge','total','sub_total','order_detail'));
     }
+
+    public function product_details(Request $request)
+    {
+        $id = $request->id;
+        $product = product::where('id',$id)->first();
+        $homepage_avail = homepage_product_list::where('product_list',$id)->first();
+        $discount_percentage = 0;
+        $discount_price = 0;
+        if($homepage_avail)
+        {
+            $discount_percentage  = $homepage_avail->discount_percentage;
+            $discount_price =$product->price- floor(($product->price*$homepage_avail->discount_percentage)/100);
+        }
+        $company_info = company_info::first();
+        return view('frontend.product_details',compact('product','company_info','discount_percentage','discount_price'));
+
+    }
     public function order_list()
     {
         $user_id = auth()->user()->id;
@@ -399,8 +416,8 @@ class FrontController extends Controller
         foreach($products as $product)
         {
             $data.='<li class="cart-item">
-            <div class="ps-product--mini-cart"><a href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')" "><img class="ps-product__thumbnail" src="'.$product->thumbnail_image.'" alt="alt" /></a>
-                <div class="ps-product__content"><a class="ps-product__name" href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')">'.$product->name.'</a>
+            <div class="ps-product--mini-cart"><a href="product_details/'.$product->id.'"  "><img class="ps-product__thumbnail" src="'.$product->thumbnail_image.'" alt="alt" /></a>
+                <div class="ps-product__content"><a class="ps-product__name" href="product_details/'.$product->id.'" >'.$product->name.'</a>
                     <p class="ps-product__meta">Tk  <span class="ps-product__price">'.$product->price.'</span>
                     </p>
                 </div>
@@ -904,14 +921,14 @@ class FrontController extends Controller
             {
                 $discount_price =$product->product->price- floor(($product->product->price*$product->discount_percentage)/100);
                 $data.='<div class="col-6 col-md-4 col-lg-2dot4 p-0">
-                <div class="ps-product--standard"><a  href="javascript:void(0);" onclick="show_cart_modal('.$product->product->id.')"><img class="ps-product__thumbnail" height="150px"   src="'.$product->product->thumbnail_image.'" alt="alt" /></a><a class="ps-product__expand" href="javascript:void(0);" onclick="show_cart_modal('.$product->product->id.')"><i class="icon-expand"></i></a>
+                <div class="ps-product--standard"><a  href="product_details/'.$product->product->id.'"><img class="ps-product__thumbnail" height="150px"   src="'.$product->product->thumbnail_image.'" alt="alt" /></a><a class="ps-product__expand" href="product_details/'.$product->product->id.'"><i class="icon-expand"></i></a>
                     <div class="ps-product__content">
 
-                        <h5><a class="ps-product__name" href="javascript:void(0);" onclick="show_cart_modal('.$product->product->id.')" >'.$product->product->name.'</a></h5>
+                        <h5><a class="ps-product__name" href="product_details/'.$product->product->id.'" >'.$product->product->name.'</a></h5>
 
 
 
-                        <p class="ps-product__unit">'.$product->product->unit->unit_quantity .$product->product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">'.$discount_price.'</span><span class="ps-product__price">TK '.$product->product->price.' </span><span class="ps-product__off">'.$product->discount_percentage.'% Off</span> </span></p>
+                        <p class="ps-product__unit product_unit">'.$product->product->unit->unit_quantity .$product->product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">'.$discount_price.'</span><span class="ps-product__price">TK '.$product->product->price.' </span><span class="ps-product__off">'.$product->discount_percentage.'% Off</span> </span></p>
 
 
 
@@ -969,10 +986,11 @@ class FrontController extends Controller
                // file_put_contents('test2.txt',json_encode($product->product));
                 // $discount_price =$product->product->price- floor(($product->product->price*$product->discount_percentage)/100);
                 $data.='<div class="col-6 col-md-4 col-lg-2dot4 p-0">
-                <div class="ps-product--standard"><a  href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')"><img class="ps-product__thumbnail" height="150px"   src="'.$product->thumbnail_image.'" alt="alt" /></a><a class="ps-product__expand" href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')"><i class="icon-expand"></i></a>
+                <div class="ps-product--standard"><a href="product_details/'.$product->id.'"><img class="ps-product__thumbnail" height="150px"   src="'.$product->thumbnail_image.'" alt="alt" /></a>
+                <a class="ps-product__expand" href="product_details/'.$product->id.'"><i class="icon-expand"></i></a>
                     <div class="ps-product__content">
 
-                        <h5><a class="ps-product__name" href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')" >'.$product->name.'</a></h5>
+                        <h5><a class="ps-product__name" href="product_details/'.$product->id.'" >'.$product->name.'</a></h5>
                         ';
                         if($discount_avail)
                         {
@@ -981,7 +999,7 @@ class FrontController extends Controller
                             {
                             $discount_price =$product->price- floor(($product->price*$discount_avail->discount_percentage)/100);
                         $data.='
-                        <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.
+                        <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.
                         '<span class="ps-product-price-block"> Tk <span class="ps-product__sale">'. $discount_price.'</span><span class="ps-product__price">TK  '.$product->price.'</span><span class="ps-product__off">'.$discount_avail->discount_percentage.'% Off</span></span></p>
 
                         ';
@@ -989,7 +1007,7 @@ class FrontController extends Controller
                         else
                         {
                             $data.='
-                            <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
                             '.$product->price.'</span> </span></p>
                             ';
                         }
@@ -999,7 +1017,7 @@ class FrontController extends Controller
                         else
                         {
                             $data.='
-                            <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
                             '.$product->price.'</span> </span></p>
                             ';
                         }
@@ -1061,10 +1079,11 @@ class FrontController extends Controller
                // file_put_contents('test2.txt',json_encode($product->product));
                 // $discount_price =$product->product->price- floor(($product->product->price*$product->discount_percentage)/100);
                 $data.='<div class="col-6 col-md-4 col-lg-2dot4 p-0">
-                <div class="ps-product--standard"><a  href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')"><img class="ps-product__thumbnail" height="150px"   src="'.$product->thumbnail_image.'" alt="alt" /></a><a class="ps-product__expand" href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')"><i class="icon-expand"></i></a>
+                <div class="ps-product--standard"><a  href="product_details/'.$product->id.'"><img class="ps-product__thumbnail" height="150px"   src="'.$product->thumbnail_image.'" alt="alt" /></a>
+                <a class="ps-product__expand" href="product_details/'.$product->id.'"><i class="icon-expand"></i></a>
                     <div class="ps-product__content">
 
-                        <h5><a class="ps-product__name" style="height:48px" href="javascript:void(0);" onclick="show_cart_modal('.$product->id.')" >'.$product->name.'</a></h5>';
+                        <h5><a class="ps-product__name" style="height:48px" href="product_details/'.$product->id.'" >'.$product->name.'</a></h5>';
 
                         if($discount_avail)
                         {
@@ -1072,7 +1091,7 @@ class FrontController extends Controller
                             {
                             $discount_price =$product->price- floor(($product->price*$discount_avail->discount_percentage)/100);
                         $data.='
-                        <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.
+                        <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.
                         '<span class="ps-product-price-block"> Tk <span class="ps-product__sale">'. $discount_price.'</span><span class="ps-product__price">TK  '.$product->price.'</span><span class="ps-product__off">'.$discount_avail->discount_percentage.'% Off</span></span></p>
 
                         ';
@@ -1080,7 +1099,7 @@ class FrontController extends Controller
                         else
                         {
                             $data.='
-                            <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
                             '.$product->price.'</span> </span></p>
                             ';
                         }
@@ -1088,7 +1107,7 @@ class FrontController extends Controller
                         else
                         {
                             $data.='
-                            <p class="ps-product__unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
                             '.$product->price.'</span> </span></p>
                             ';
                         }
@@ -1197,6 +1216,9 @@ class FrontController extends Controller
                                         <input type="hidden" name="hidden_product_id" value="'.$product->id.'">
                                         <button class="plus inc"><i class="icon-plus"></i></button>
                                     </div>
+                                    ';
+
+                                    $data.='
                                     <button class="btn product__addcart"  onclick="cart_add('.$product->id.')"> <i class="icon-cart"></i>Add to cart</button>
 
 

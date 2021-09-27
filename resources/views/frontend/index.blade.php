@@ -45,13 +45,14 @@
 
 
 
+
     <section class="ps-component ps-component--flash">
         <div class="container">
             <div class="component__header">
                 <h3 class="component__title">{{ $section_product->section_name }}</h3><a class="component__view" href="view_all/section_prodcut-{{$section_product->id}}">View all <i class="icon-chevron-right"></i></a>
             </div>
             <div class="component__content">
-                <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="5000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="false" data-owl-item="5" data-owl-item-xs="5" data-owl-item-sm="2" data-owl-item-md="3" data-owl-item-lg="5"
+                <div class="owl-carousel" data-owl-auto="true" data-owl-loop="false" data-owl-speed="5000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="false" data-owl-item="5" data-owl-item-xs="5" data-owl-item-sm="2" data-owl-item-md="3" data-owl-item-lg="5"
                     data-owl-duration="1000" data-owl-mousedrag="on">
                     @foreach($section_product->product_list as $product_list)
                     <?php
@@ -59,20 +60,22 @@
                     ?>
                     <div class="ps-flash__product">
                         <div class="ps-product--standard">
-                            <a href="javascript:void(0);" onclick="show_cart_modal({{$product_list->product->id}})"><img class="ps-product__thumbnail" height="150px"  src="{{ $product_list->product->thumbnail_image }}" alt="alt" /></a><a class="ps-product__expand" href="javascript:void(0);" onclick="show_cart_modal({{$product_list->product->id}})"><i class="icon-expand"></i></a>
-                            <div class="ps-product__content" href="javascript:void(0);" onclick="show_cart_modal({{$product_list->product->id}})">
+                            <a href="product_details/{{ $product_list->product->id }}" ><img class="ps-product__thumbnail" height="150px"  src="{{ $product_list->product->thumbnail_image }}" alt="alt" /></a><a class="ps-product__expand" href="product_details/{{ $product_list->product->id }}" ><i class="icon-expand"></i></a>
+                            <div class="ps-product__content" href="product_details/{{ $product_list->product->id }}" >
 
-                                <h5><a class="ps-product__name" style="height: 40px" href="javascript:void(0);" onclick="show_cart_modal({{$product_list->product->id}})">{{ $product_list->product->name }}</a></h5>
+                                <h5><a class="ps-product__name" style="height: 40px" href="product_details/{{ $product_list->product->id }}" >{{ $product_list->product->name }}</a></h5>
 
                                 @if($product_list->discount_percentage>0)
-                                <p class="ps-product__unit">{{ $product_list->product->unit->unit_quantity }} {{ $product_list->product->unit->unit_type }}<span class="ps-product-price-block"> Tk <span class="ps-product__sale">{{ $discount_price }}</span><span class="ps-product__price">TK {{ $product_list->product->price }}</span><span class="ps-product__off">{{ $product_list->discount_percentage }}% Off</span></span></p>
+                                <p class="ps-product__unit product_unit">{{ $product_list->product->unit->unit_quantity }} {{ $product_list->product->unit->unit_type }}<span class="ps-product-price-block"> Tk <span class="ps-product__sale">{{ $discount_price }}</span><span class="ps-product__price">TK {{ $product_list->product->price }}</span><span class="ps-product__off">{{ $product_list->discount_percentage }}% Off</span></span></p>
 
 
                                 @else
-                                <p class="ps-product__unit text-center">{{ $product_list->product->unit->unit_quantity }} {{ $product_list->product->unit->unit_type }}<span clas="ps-product-price-block"> Tk <span class="ps-product__sale">{{ $discount_price }}</span></span></p>
+                                <p class="ps-product__unit text-center product_unit">{{ $product_list->product->unit->unit_quantity }} {{ $product_list->product->unit->unit_type }}<span clas="ps-product-price-block"> Tk <span class="ps-product__sale">{{ $discount_price }}</span></span></p>
                                 {{-- <p class="ps-product-price-block">Tk <span class="ps-product__sale">{{ $discount_price }}</span> --}}
                                 </p>
                                 @endif
+
+                                <p class="ps-product__unit text-center">Stock: {{ $product_list->product->stock }} Unit</p>
 
                                 {{-- <p class="ps-product__sold">Stock in Unit: {{ $product_list->product->stock->stock_amount }}</p> --}}
                             </div>
