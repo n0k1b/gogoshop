@@ -863,7 +863,7 @@ class FrontController extends Controller
         </div>';
         }
         $data.=' </div>';
-        $data.='<script src="assets/frontend/js/main.js?'.time().'"></script>';
+        $data.='<script src="assets/frontend/js/main2.js?'.time().'"></script>';
     }
     if (strpos($type, 'category_prodcut') !== false) {
 
@@ -928,7 +928,7 @@ class FrontController extends Controller
 
 
 
-                        <p class="ps-product__unit product_unit">'.$product->product->unit->unit_quantity .$product->product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">'.$discount_price.'</span><span class="ps-product__price">TK '.$product->product->price.' </span><span class="ps-product__off">'.$product->discount_percentage.'% Off</span> </span></p>
+                        <p class="ps-product__unit product_unit">'.$product->product->unit_quantity .$product->product->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">'.$discount_price.'</span><span class="ps-product__price">TK '.$product->product->price.' </span><span class="ps-product__off">'.$product->discount_percentage.'% Off</span> </span></p>
 
 
 
@@ -942,7 +942,7 @@ class FrontController extends Controller
                                         <button class="plus inc" onclick="inc('.$product->product->id.')" ><i class="icon-plus"></i></button>
                                     </div>
                         <div class="ps-product__total"></span> </div>
-                        <button class="ps-product__addcart" onclick="cart_add('.$product->product->id.')"><i class="icon-cart"></i>Add to cart</button>
+                        <button class="add-to-cart  ps-product__addcart"  data-type="product"  data-unit="'.$product->product->unit_quantity. $product->product->unit_type.'" data-id = "'.$product->product->id.'" data-image="'.$product->product->thumbnail_image.'" data-name="'.$product->product->name.'" data-price="'.$discount_price.'" ><i class="icon-cart"></i>Add to cart</button>
 
                     </div>
                 </div>
@@ -999,7 +999,7 @@ class FrontController extends Controller
                             {
                             $discount_price =$product->price- floor(($product->price*$discount_avail->discount_percentage)/100);
                         $data.='
-                        <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.
+                        <p class="ps-product__unit product_unit">'.$product->unit_quantity .$product->unit_type.
                         '<span class="ps-product-price-block"> Tk <span class="ps-product__sale">'. $discount_price.'</span><span class="ps-product__price">TK  '.$product->price.'</span><span class="ps-product__off">'.$discount_avail->discount_percentage.'% Off</span></span></p>
 
                         ';
@@ -1007,7 +1007,7 @@ class FrontController extends Controller
                         else
                         {
                             $data.='
-                            <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            <p class="ps-product__unit product_unit">'.$product->unit_quantity .$product->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
                             '.$product->price.'</span> </span></p>
                             ';
                         }
@@ -1017,7 +1017,7 @@ class FrontController extends Controller
                         else
                         {
                             $data.='
-                            <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            <p class="ps-product__unit product_unit">'.$product->unit_quantity .$product->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
                             '.$product->price.'</span> </span></p>
                             ';
                         }
@@ -1034,8 +1034,12 @@ class FrontController extends Controller
                                         <button class="plus inc" onclick="inc('.$product->id.')" ><i class="icon-plus"></i></button>
                                     </div>
                         <div class="ps-product__total"></span> </div>
-                        <button class="ps-product__addcart" onclick="cart_add('.$product->id.')"><i class="icon-cart"></i>Add to cart</button>
-
+                        ';
+                        if($discount_price>0)
+                        $data.='<button class="add-to-cart  ps-product__addcart"  data-type="product"  data-unit="'.$product->product->unit_quantity. $product->product->unit_type.'" data-id = "'.$product->product->id.'" data-image="'.$product->product->thumbnail_image.'" data-name="'.$product->product->name.'" data-price="'.$discount_price.'" ><i class="icon-cart"></i>Add to cart</button>
+                        ';
+                        else
+                        $data.='<button class="add-to-cart  ps-product__addcart"  data-type="product"  data-unit="'.$product->product->unit_quantity. $product->product->unit_type.'" data-id = "'.$product->product->id.'" data-image="'.$product->product->thumbnail_image.'" data-name="'.$product->product->name.'" data-price="'.$product->product->price.'" ><i class="icon-cart"></i>Add to cart</button>
                     </div>
                 </div>
             </div>
@@ -1091,7 +1095,7 @@ class FrontController extends Controller
                             {
                             $discount_price =$product->price- floor(($product->price*$discount_avail->discount_percentage)/100);
                         $data.='
-                        <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.
+                        <p class="ps-product__unit product_unit">'.$product->unit_quantity .$product->unit_type.
                         '<span class="ps-product-price-block"> Tk <span class="ps-product__sale">'. $discount_price.'</span><span class="ps-product__price">TK  '.$product->price.'</span><span class="ps-product__off">'.$discount_avail->discount_percentage.'% Off</span></span></p>
 
                         ';
@@ -1099,7 +1103,7 @@ class FrontController extends Controller
                         else
                         {
                             $data.='
-                            <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            <p class="ps-product__unit product_unit">'.$product->unit_quantity .$product->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
                             '.$product->price.'</span> </span></p>
                             ';
                         }
@@ -1107,7 +1111,7 @@ class FrontController extends Controller
                         else
                         {
                             $data.='
-                            <p class="ps-product__unit product_unit">'.$product->unit->unit_quantity .$product->unit->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
+                            <p class="ps-product__unit product_unit">'.$product->unit_quantity .$product->unit_type.' <span class="ps-product-price-block"><span class="ps-product__sale">
                             '.$product->price.'</span> </span></p>
                             ';
                         }
@@ -1124,7 +1128,13 @@ class FrontController extends Controller
                                         <button class="plus inc" onclick="inc('.$product->id.')" ><i class="icon-plus"></i></button>
                                     </div>
                         <div class="ps-product__total"></span> </div>
-                        <button class="ps-product__addcart" onclick="cart_add('.$product->id.')"><i class="icon-cart"></i>Add to cart</button>
+                        ';
+                        if($discount_price>0)
+
+                        $data.='<button class="add-to-cart  ps-product__addcart"  data-type="product"  data-unit="'.$product->product->unit_quantity. $product->product->unit_type.'" data-id = "'.$product->product->id.'" data-image="'.$product->product->thumbnail_image.'" data-name="'.$product->product->name.'" data-price="'.$discount_price.'" ><i class="icon-cart"></i>Add to cart</button>
+                        ';
+                        else
+                        $data.='<button class="add-to-cart  ps-product__addcart"  data-type="product"  data-unit="'.$product->product->unit_quantity. $product->product->unit_type.'" data-id = "'.$product->product->id.'" data-image="'.$product->product->thumbnail_image.'" data-name="'.$product->product->name.'" data-price="'.$product->product->price.'" ><i class="icon-cart"></i>Add to cart</button>
 
                     </div>
                 </div>
@@ -1143,6 +1153,7 @@ class FrontController extends Controller
 
     echo $data;
     }
+
     public function show_cart_modal($id)
     {
         $product = product::find($id);
