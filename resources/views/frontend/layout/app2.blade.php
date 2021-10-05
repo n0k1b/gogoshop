@@ -175,7 +175,7 @@
                                          <div class="mini-cart__footer row">
                                             <div class="col-6 title">Total(Tk)</div>
                                             <div class="col-6 text-right total total-cart"></div>
-                                            <div class="col-12 d-flex"><a class="checkout" href="view_cart">View cart</a></div>
+                                            <div class="col-12 d-flex"><a class="checkout" href="{{ route("view_cart") }}">View cart</a></div>
                                          </div>
 
 
