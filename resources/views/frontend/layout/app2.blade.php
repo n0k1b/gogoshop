@@ -256,9 +256,9 @@
             <div class="ps-footer--service">
                 <div class="row">
                     <div class="col-12 col-lg-4">
-                        <div class="service__payment"><img src="{{asset('assets')}}/frontend/img/promotion/payment_paypal.jpg" alt><img src="{{asset('assets')}}/frontend/img/promotion/payment_visa.jpg" alt><img src="{{asset('assets')}}/frontend/img/promotion/payment_mastercart.jpg" alt><img src="{{asset('assets')}}/frontend/img/promotion/payment_electron.jpg" alt><img src="{{asset('assets')}}/frontend/img/promotion/payment_skrill.jpg" alt></div>
+                        <div class="service__payment"><img loading="lazy" src="{{asset('assets')}}/frontend/img/promotion/payment_paypal.jpg" alt><img loading="lazy" src="{{asset('assets')}}/frontend/img/promotion/payment_visa.jpg" alt><img loading="lazy" src="{{asset('assets')}}/frontend/img/promotion/payment_mastercart.jpg" alt><img loading="lazy" src="{{asset('assets')}}/frontend/img/promotion/payment_electron.jpg" alt><img loading="lazy" src="{{asset('assets')}}/frontend/img/promotion/payment_skrill.jpg" alt></div>
                         <p class="service__app">Get GOGOSHOP App </p>
-                        <div class="service__download"><a href="#"><img src="{{asset('assets')}}/frontend/img/promotion/appStore.jpg" alt></a><a href="#"><img src="{{asset('assets')}}/frontend/img/promotion/googlePlay.jpg" alt></a></div>
+                        <div class="service__download"><a href="#"><img loading="lazy" src="{{asset('assets')}}/frontend/img/promotion/appStore.jpg" alt></a><a href="#"><img loading="lazy" src="{{asset('assets')}}/frontend/img/promotion/googlePlay.jpg" alt></a></div>
                     </div>
 
                     <div class="col-12 col-lg-4">
