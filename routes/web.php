@@ -91,15 +91,20 @@ Route::group(['middleware' => 'IsUser'], function()
     Route::post('submit_user_information','FrontController@submit_user_information')->name('submit_user_information');
 });
 
+
 Route::view('admin_login','admin.auth.login');
 Route::post('admin_login','AdminController@login')->name('admin_login');
 
 
-Route::group(['prefix' => 'admin','middleware' => 'IsAdmin'], function()
+Route::group(['prefix' => 'admin','middleware' => ['prevent-back-history','IsAdmin']], function()
 {
     Route::get('/','AdminController@show_dashboard');
 
-    Route::get('logout_admin','AdminController@logout')->name('logout_admin');
+
+        Route::get('logout_admin','AdminController@logout')->name('logout_admin');
+
+
+
 
       //Report Start
       Route::get('report/{type}','AdminController@report_view');

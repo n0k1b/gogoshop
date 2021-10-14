@@ -72,6 +72,7 @@ class Kernel extends HttpKernel
         'IsLoggedIn' => \App\Http\Middleware\IsLoggedIn::class,
         'IsAdmin' => \App\Http\Middleware\IsAdmin::class,
         'IsUser' => \App\Http\Middleware\IsUser::class,
+        'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
 
     ];
 }
