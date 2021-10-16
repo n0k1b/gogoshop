@@ -910,6 +910,7 @@ class FrontController extends Controller
     public function get_all_product_view_all($type)
     {
        // file_put_contents('test.txt',$type);
+       $discount_price = 0;
        $data = '';
         if (strpos($type, 'section') !== false) {
             $homepage_section = explode('-',$type);
