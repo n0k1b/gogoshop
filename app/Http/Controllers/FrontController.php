@@ -1040,8 +1040,9 @@ class FrontController extends Controller
                         $data.='<button class="add-to-cart  ps-product__addcart"  data-type="product"  data-unit="'.$product->unit_quantity. $product->unit_type.'" data-id = "'.$product->id.'" data-image="'.$product->thumbnail_image.'" data-name="'.$product->name.'" data-price="'.$discount_price.'" ><i class="icon-cart"></i>Add to cart</button>
                         ';
                         else
-                        $data.='<button class="add-to-cart  ps-product__addcart"  data-type="product"  data-unit="'.$product->unit_quantity. $product->unit_type.'" data-id = "'.$product->id.'" data-image="'.$product->thumbnail_image.'" data-name="'.$product->name.'" data-price="'.$product->price.'" ><i class="icon-cart"></i>Add to cart</button>
-                    </div>
+                        $data.='<button class="add-to-cart  ps-product__addcart"  data-type="product"  data-unit="'.$product->unit_quantity. $product->unit_type.'" data-id = "'.$product->id.'" data-image="'.$product->thumbnail_image.'" data-name="'.$product->name.'" data-price="'.$product->price.'" ><i class="icon-cart"></i>Add to cart</button>';
+                        $data.='
+                     </div>
                 </div>
             </div>
 
@@ -1135,8 +1136,9 @@ class FrontController extends Controller
                         $data.='<button class="add-to-cart  ps-product__addcart"  data-type="product"  data-unit="'.$product->unit_quantity. $product->unit_type.'" data-id = "'.$product->id.'" data-image="'.$product->thumbnail_image.'" data-name="'.$product->name.'" data-price="'.$discount_price.'" ><i class="icon-cart"></i>Add to cart</button>
                         ';
                         else
-                        $data.='<button class="add-to-cart  ps-product__addcart"  data-type="product"  data-unit="'.$product->unit_quantity. $product->unit_type.'" data-id = "'.$product->id.'" data-image="'.$product->thumbnail_image.'" data-name="'.$product->name.'" data-price="'.$product->price.'" ><i class="icon-cart"></i>Add to cart</button>
+                        $data.='<button class="add-to-cart  ps-product__addcart"  data-type="product"  data-unit="'.$product->unit_quantity. $product->unit_type.'" data-id = "'.$product->id.'" data-image="'.$product->thumbnail_image.'" data-name="'.$product->name.'" data-price="'.$product->price.'" ><i class="icon-cart"></i>Add to cart</button>';
 
+                        $data.='
                     </div>
                 </div>
             </div>

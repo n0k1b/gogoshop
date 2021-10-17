@@ -240,7 +240,7 @@ var shoppingCart = (function() {
 
       output += '<li class="cart-item">'
       +'<div class="ps-product--mini-cart">'
-         +'<a href="product-default.html"><img style="min-width:60px" class="ps-product__thumbnail" src='+ image_asset(cartArray[i].image) +' alt="alt" /></a>'
+         +'<a href="#"><img style="min-width:60px" class="ps-product__thumbnail" src='+ image_asset(cartArray[i].image) +' alt="alt" /></a>'
         + '<div class="ps-product__content">'
             +'<a class="ps-product__name" href="#">'+cartArray[i].name+'</a>'
             +'<p class="ps-product__unit">'+cartArray[i].unit+'</p>'
@@ -270,40 +270,25 @@ var shoppingCart = (function() {
 
   })
 
-  $('.show-cart-all').on("click", ".delete-item", function(event) {
+
+
+
+
+  $('.mini-cart').on("click", ".delete-item", function(event) {
+
 
     var count = $('.total-count').html();
-    if(count>1)
-    {
+
+
         var id = $(this).data('id');
         //alert(id);
         shoppingCart.removeItemFromCartAll(id);
 
         //$('.mini-cart').toggleClass('open');
         displayCart();
-        displayAll();
-    }
-    else
-    {
-        swal({
-            title: "Are you sure?",
-            text: "This is the last item of your cart. If you remove it,you will redirect to homepage",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-          })
-          .then((willDelete) => {
-            if (willDelete) {
 
-                var id = $(this).data('id');
-                shoppingCart.removeItemFromCartAll(id);
-                displayCart();
-                displayAll();
-                document.location.href='home';
 
-            }
-          })
-    }
+
 
 
   })
