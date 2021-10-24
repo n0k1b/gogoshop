@@ -324,7 +324,7 @@ class HomepageContentController extends Controller
         $product_list = product::where('delete_status',0)->get();
         foreach($product_list as $product)
         {
-            $avail = homepage_product_list::where('homepage_section_id',$id)->where('product_list',$product->id)->first();
+            $avail = homepage_product_list::where('homepage_section_id',$id)->where('product_list',$product->id)->where('delete_status',0)->first();
             if($avail)
             {
                 $product['avail'] = 1;
