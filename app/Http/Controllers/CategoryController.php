@@ -118,7 +118,7 @@ class CategoryController extends Controller
         ->image
         ->move(public_path('../image/category_image') , $image);
     $image = "image/category_image/" . $image;
-    category::create(['name'=>$request->name,'image'=>$image,'description'=>$request->description]);
+    category::create(['name'=>$request->name,'image'=>$image]);
         }
         else
         {
