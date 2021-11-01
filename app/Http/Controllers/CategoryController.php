@@ -169,7 +169,7 @@ class CategoryController extends Controller
     {
         $id = $request->id;
 
-        category::where('id', $id)->update(['name' => $request->name,'description'=>$request->description]);
+        category::where('id', $id)->update(['name' => $request->name]);
 
         return redirect()
             ->route('show-all-category')
