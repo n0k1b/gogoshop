@@ -22,11 +22,11 @@
                 <h3 class="component__title">Shop By Category</h3><a class="component__view" href="#">View all <i class="icon-chevron-right"></i></a>
             </div>
             <div class="component__content">
-                <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="4000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="6" data-owl-item-xs="3" data-owl-item-sm="3" data-owl-item-md="3" data-owl-item-lg="5" data-owl-duration="1000"
+                <div class="owl-carousel" data-owl-auto="false" data-owl-loop="false" data-owl-speed="4000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="6" data-owl-item-xs="3" data-owl-item-sm="3" data-owl-item-md="3" data-owl-item-lg="5" data-owl-duration="1000"
                     data-owl-mousedrag="on">
                     @foreach ($categories as $category)
                     <div class="ps-category__item">
-                        <a href="view_all/category_prodcut-{{$category->id}}"><img loading="lazy" class="ps-categories__thumbnail" style="width:100px;height:100px" src="{{ $category->image }}" alt></a><a class="ps-categories__name" href="view_all/category_prodcut-{{$category->id}}">{{ $category->name }} </a>
+                        <a href="view_all/category_prodcut-{{$category->id}}"><img loading="lazy" class="ps-categories__thumbnail" style="width:140px;height:140px" src="{{ $category->image }}" alt></a><a class="ps-categories__name" href="view_all/category_prodcut-{{$category->id}}">{{ $category->name }} </a>
                     </div>
                     @endforeach
 
